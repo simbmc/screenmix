@@ -12,7 +12,7 @@ from kivy.uix.slider import Slider
 from kivy.uix.widget import Widget
 from numpy import spacing
 from cgitb import text
-from cross_section_view.Controller_View import Controller_View
+from cross_section_view.Controller import Controller
 
 '''
 the class Cross_Section_Information was developed to show 
@@ -23,7 +23,7 @@ class Cross_Section_Information(BoxLayout):
     #Constructor
     def __init__(self, **kwargs):
         super(Cross_Section_Information, self).__init__(**kwargs)
-        self.controller=Controller_View()
+        self.controller=Controller()
         self.orientation='vertical'
         self.create_scale_area()
         self.create_cross_section_area()
@@ -122,13 +122,13 @@ class Cross_Section_Information(BoxLayout):
     def create_add_material_information_area(self):
         self.adding_material_area=GridLayout(cols=2)
         self.adding_material_area.add_widget(Label(text='material:'))
-        #combobox
-        self.adding_material_area.add_widget(Label(text='percent: 10%'))
-        #slider
-        confirm_btn=Button(text='confirm')
-        confirm_btn.bind(on_press=self.create_new_material)
-        cancel_btn=Button(text='cancel')
-        cancel_btn.bind(on_press=self.cancel_adding)
+        self.adding_material_area.add_widget(Label(text='Combobox'))
+        self.material_percent_while_creating=Label(text='percent: 10%')
+        self.adding_material_area.add_widget(self.material_percent_while_creating)
+        slider_material_percent=Slider(min=5,max=20,value=10)
+        slider_material_percent.bind(value=self.set_percenet_while_creating)
+        self.adding_material_area.add_widget(slider_material_percent)
+       
     
     '''
     the method create_confirm_cancel_area create the area where you can 
@@ -146,7 +146,6 @@ class Cross_Section_Information(BoxLayout):
     '''
     the method set_height_value change the height of the cs_view
     '''
-    #not finished yet (wait for the cs_view)
     def set_height_value(self, instance, value):
         self.controller.change_height(value)
         value=int(value)
@@ -155,20 +154,29 @@ class Cross_Section_Information(BoxLayout):
     '''
     the method set_width_value change the width of the cs_view
     '''
-    #not finished yet (wait for the cs_view)
     def set_width_value(self, instance, value):
         self.controller.change_width(value)
         value=int(value)
         self.width_value.text='width: 0,'+str(value)+' m'
     
     '''
-    the method set_height_value change the percentage share 
-    of the material
+    the method set_percent change the percentage share 
+    of the material. 
+    Attention: this method must be call when the material already exist
     '''
-    #not finished yet (wait for the cs_view)
     def set_percent(self, instance, value):
+        self.controller.change_percent(value)
         value=int(value)
         self.material_percent.text=str(value)+' %'
+    
+    '''
+    the method set_percenet_while_creating change the percentage share 
+    of the material. Attention: this method must be call 
+    when the material isn't exist
+    '''
+    def set_percenet_while_creating(self,instance,value):
+        value=int(value)
+        self.material_percent_while_creating.text='percent: '+str(value)+' %'
     
     '''
     the method add_material was developed to show the 
@@ -193,10 +201,9 @@ class Cross_Section_Information(BoxLayout):
     '''
     the method create_new_material
     '''
-    #not yet implemented
     def create_new_material(self,button):
         self.finished_adding()
-        print('add new material is not yet implemented')
+        #self.controller.add_material(0.05,'test')
     
     '''
     the method cancel_adding would be must call when the user wouldn't 
@@ -209,9 +216,8 @@ class Cross_Section_Information(BoxLayout):
     the method delete_material was developed to delete a existing
     material
     '''
-    #not yet implemented (wait for the cs_view)
     def delete_material(self, button):
-        print('delete is not yet implemented')
+        self.controller.delete_material()
     
     '''
     the method update_material_information update the material information.
@@ -226,13 +232,18 @@ class Cross_Section_Information(BoxLayout):
     '''
     the method update_cross_section_information update the cross section information.
     '''
-    #not finished yet (wait for the cs_calculation)
     def update_cross_section_information(self,price, weight,strength):
         self.cross_section_price.text=str(price)
         self.cross_section_weight.text=str(weight)
         self.cross_section_strength.text=str(strength)
+    
+    
         
 #Just for testing
+
+'''
+Just for Testing
+'''
 class CSIApp(App):
     def build(self):
         layout=GridLayout(cols=2)
