@@ -27,11 +27,11 @@ class AView(object):
         pass
     
     @abstractmethod
-    def add_material(self, percent,name):
+    def add_layer(self, percent,name):
         pass
     
     @abstractmethod
-    def delete_material(self):
+    def delete_layer(self):
         pass
     
     def set_height(self,value):

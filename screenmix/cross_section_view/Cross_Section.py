@@ -12,18 +12,13 @@ from cross_section_view import AView
 
 
 '''
-the Controller was developed to undock the cs_information from the view
+the Cross_Section was developed to undock the cs_information from the view
 '''
-class Controller(Widget): 
+class Cross_Section(Widget): 
     #Constructor
     def __init__(self, **kwargs):
-        super(Controller, self).__init__(**kwargs)
+        super(Cross_Section, self).__init__(**kwargs)
         self.view=CS_Rectangle_View()
-    
-    '''not finished yet
-    def set_view(self, view):
-        self.view=AView(view)
-    '''
     
     '''
     the method change_height changes the height of the view
@@ -41,19 +36,17 @@ class Controller(Widget):
     the method change_percent change the percentage share of the selected material
     '''
     def change_percent(self, value):
-        pass
-        #self.view.change_percent(value)
+        self.view.change_percent(value)
     
     '''
-    the method add_material add new material in the view
+    the method add_layer add new material in the view
     '''
-    def add_material(self,percent,name):
-        self.view.add_material(percent, name)
-        
+    def add_layer(self,percent):
+        self.view.add_layer(percent)
     
     '''
-    the method delete_material delete the selected material
+    the method delete_layer delete the selected material
     '''
-    def delete_material(self):
-        self.view.delete_material()
+    def delete_layer(self):
+        self.view.delete_layer()
     

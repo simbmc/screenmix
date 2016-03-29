@@ -12,7 +12,7 @@ from kivy.uix.slider import Slider
 from kivy.uix.widget import Widget
 from numpy import spacing
 from cgitb import text
-from cross_section_view.Controller import Controller
+from cross_section_view.Cross_Section import Cross_Section
 
 '''
 the class Cross_Section_Information was developed to show 
@@ -23,7 +23,7 @@ class Cross_Section_Information(BoxLayout):
     #Constructor
     def __init__(self, **kwargs):
         super(Cross_Section_Information, self).__init__(**kwargs)
-        self.controller=Controller()
+        self.cross_section=Cross_Section()
         self.orientation='vertical'
         self.create_scale_area()
         self.create_cross_section_area()
@@ -39,13 +39,13 @@ class Cross_Section_Information(BoxLayout):
     def create_scale_area(self):
         self.scale_area=GridLayout(cols=2)
         #adding_material_area to manage the height-area
-        self.height_value=Label(text='height: 0,25 m',size_hint_x=None, width=100)
-        slider_height=Slider(min=10, max=50, value=25)
+        self.height_value=Label(text='height: 0.5 m',size_hint_x=None, width=100)
+        slider_height=Slider(min=10, max=50, value=50)
         slider_height.bind(value=self.set_height_value)
         self.scale_area.add_widget(self.height_value)
         self.scale_area.add_widget(slider_height)
         #adding_material_area to manage the width-area
-        self.width_value=Label(text='width: 0,25 m',size_hint_x=None, width=100)
+        self.width_value=Label(text='width: 0.25 m',size_hint_x=None, width=100)
         slider_width=Slider(min=10, max=50, value=25)
         slider_width.bind(value=self.set_width_value)
         self.scale_area.add_widget(self.width_value)
@@ -58,10 +58,10 @@ class Cross_Section_Information(BoxLayout):
     '''
     def create_add_delete_area(self):
         self.btn_area=BoxLayout(spacing=10, orientation='horizontal')
-        add_btn=Button(text='add material')
-        add_btn.bind(on_press=self.add_material)
-        delete_btn=Button(text='delete material')
-        delete_btn.bind(on_press=self.delete_material)
+        add_btn=Button(text='add layer')
+        add_btn.bind(on_press=self.add_layer)
+        delete_btn=Button(text='delete layer')
+        delete_btn.bind(on_press=self.delete_layer)
         self.btn_area.add_widget(add_btn)
         self.btn_area.add_widget(delete_btn)
         self.add_widget(self.btn_area)
@@ -121,14 +121,11 @@ class Cross_Section_Information(BoxLayout):
     #not finished yet
     def create_add_material_information_area(self):
         self.adding_material_area=GridLayout(cols=2)
-        self.adding_material_area.add_widget(Label(text='material:'))
-        self.adding_material_area.add_widget(Label(text='Combobox'))
         self.material_percent_while_creating=Label(text='percent: 10%')
         self.adding_material_area.add_widget(self.material_percent_while_creating)
         slider_material_percent=Slider(min=5,max=20,value=10)
         slider_material_percent.bind(value=self.set_percenet_while_creating)
         self.adding_material_area.add_widget(slider_material_percent)
-       
     
     '''
     the method create_confirm_cancel_area create the area where you can 
@@ -147,17 +144,17 @@ class Cross_Section_Information(BoxLayout):
     the method set_height_value change the height of the cs_view
     '''
     def set_height_value(self, instance, value):
-        self.controller.change_height(value)
-        value=int(value)
-        self.height_value.text='height: 0,'+str(value)+' m'
+        value=int(value)/100.
+        self.cross_section.change_height(value)
+        self.height_value.text='height: '+str(value)+' m'
     
     '''
     the method set_width_value change the width of the cs_view
     '''
     def set_width_value(self, instance, value):
-        self.controller.change_width(value)
-        value=int(value)
-        self.width_value.text='width: 0,'+str(value)+' m'
+        value=int(value)/100.
+        self.cross_section.change_width(value)
+        self.width_value.text='width: '+str(value)+' m'
     
     '''
     the method set_percent change the percentage share 
@@ -165,9 +162,9 @@ class Cross_Section_Information(BoxLayout):
     Attention: this method must be call when the material already exist
     '''
     def set_percent(self, instance, value):
-        self.controller.change_percent(value)
         value=int(value)
         self.material_percent.text=str(value)+' %'
+        self.cross_section.change_percent(value/100.)
     
     '''
     the method set_percenet_while_creating change the percentage share 
@@ -179,10 +176,10 @@ class Cross_Section_Information(BoxLayout):
         self.material_percent_while_creating.text='percent: '+str(value)+' %'
     
     '''
-    the method add_material was developed to show the 
-    the adding_material_area and hide the material_area 
+    the method add_layer was developed to show the 
+    the adding_material_area and hide the material_information
     '''
-    def add_material(self, button):
+    def add_layer(self, button):
         self.remove_widget(self.material_area)
         self.remove_widget(self.btn_area)
         self.add_widget(self.adding_material_area,0)
@@ -203,7 +200,7 @@ class Cross_Section_Information(BoxLayout):
     '''
     def create_new_material(self,button):
         self.finished_adding()
-        #self.controller.add_material(0.05,'test')
+        self.cross_section.add_layer(0.05)
     
     '''
     the method cancel_adding would be must call when the user wouldn't 
@@ -213,11 +210,11 @@ class Cross_Section_Information(BoxLayout):
         self.finished_adding()
     
     '''
-    the method delete_material was developed to delete a existing
+    the method delete_layer was developed to delete a existing
     material
     '''
-    def delete_material(self, button):
-        self.controller.delete_material()
+    def delete_layer(self, button):
+        self.cross_section.delete_layer()
     
     '''
     the method update_material_information update the material information.
@@ -236,11 +233,7 @@ class Cross_Section_Information(BoxLayout):
         self.cross_section_price.text=str(price)
         self.cross_section_weight.text=str(weight)
         self.cross_section_strength.text=str(strength)
-    
-    
         
-#Just for testing
-
 '''
 Just for Testing
 '''
@@ -248,10 +241,9 @@ class CSIApp(App):
     def build(self):
         layout=GridLayout(cols=2)
         csi=Cross_Section_Information()
-        layout.add_widget(csi.controller.view)
+        layout.add_widget(csi.cross_section.view)
         layout.add_widget(csi)
         return layout
-
 
 if __name__ == '__main__':
     CSIApp().run()
