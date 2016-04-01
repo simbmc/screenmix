@@ -15,19 +15,19 @@ class AView(object):
         self.view=CS_Rectangle_View()
         
     @abstractmethod
-    def change_height(self,value):
+    def set_height(self,value):
         pass
     
     @abstractmethod
-    def change_width(self, value):
+    def set_width(self, value):
         pass
     
     @abstractmethod
-    def change_percent(self, value):
+    def set_percent(self, value):
         pass
     
     @abstractmethod
-    def add_layer(self, percent,name):
+    def show_add_layer_area(self, percent,name):
         pass
     
     @abstractmethod
