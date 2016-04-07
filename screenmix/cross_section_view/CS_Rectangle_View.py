@@ -9,10 +9,11 @@ from kivy.garden.graph import Graph, MeshLinePlot
 from kivy.app import App 
 from kivy.uix.boxlayout import BoxLayout 
 from itertools import cycle
+from cross_section_view.AView import AView
 colors = [0.8, 0.3, 0.5, 0.2, 0.1, 0.7, 0.1]
 colorcycler = cycle(colors)
 
-class Layer:
+class Layer_Rectangle:
     # Constructor
     def __init__(self, x_coordinate, y_coordinate, height, width, colors):
         self.x_coordinate = x_coordinate
@@ -35,7 +36,7 @@ class Layer:
             return False
     
     '''
-    checked wheter the rectangles are the same
+    checked wheter the layers are the same
     '''    
     def equals(self, x, y, width, height):
         if self.x_coordinate == x and self.y_coordinate == y and self._height == height and self._width == width:
@@ -44,31 +45,31 @@ class Layer:
             return False
     
     '''
-    the method set_height change the height of the layer-rectangle
+    the method set_height change the height of the small_keyboard-rectangle
     '''
     def set_height(self, value):
         self._height = value
     
     '''
-    the method set_width change the width of the layer-rectangle
+    the method set_width change the width of the small_keyboard-rectangle
     '''
     def set_width(self, value):
         self._width = value
         
     '''
-    the method set_y_coordinate change the y_coordinate of the layer-rectangle
+    the method set_y_coordinate change the y_coordinate of the small_keyboard-rectangle
     '''
     def set_y_coordinate(self, value):
         self.y_coordinate = value
     
     '''
-    the method set_material was developed to set the layer the material
+    the method set_material was developed to set the small_keyboard the materials
     '''
     def set_material(self, material):
         self.material = material
     
     '''
-    return the material information
+    return the materials information
     '''
     def get_material_informations(self):
         return [self.material.name, self.material.price, self.material.density, self.material.stiffness, self.material.strength]
@@ -82,13 +83,13 @@ class Layer:
 the class CS_Rectangle_View was developed to show the the cross section,
 which has a rectangle shape
 '''      
-class CS_Rectangle_View(BoxLayout):
+class CS_Rectangle_View(BoxLayout, AView):
     # Constructor
     def __init__(self, **kwargs):
         super(CS_Rectangle_View, self).__init__(**kwargs)
         self.cross_section_height = 0.5
         self.cross_section_width = 0.25
-        self.rectangles = []
+        self.layers = []
         self.create_graph()
         self.add_widget(self.update_all_graph)
     
@@ -101,14 +102,14 @@ class CS_Rectangle_View(BoxLayout):
         list = []
         for plot in self.graph.plots:
             list.append(plot)
-        for rectangle in self.rectangles:
-            if rectangle.focus:
-                rectangle.rect = MeshLinePlot(color=[1, 0, 0, 1])
-                print(rectangle.y_coordinate)
+        for layer in self.layers:
+            if layer.focus:
+                layer.rect = MeshLinePlot(color=[1, 0, 0, 1])
+                print(layer.y_coordinate)
             else:
-                rectangle.rect = MeshLinePlot(color=rectangle.colors)
-            rectangle.rect.points = self.draw_rect(self.cross_section_width / 2, rectangle.y_coordinate, self.cross_section_width, rectangle._height)
-            self.graph.add_plot(rectangle.rect)
+                layer.rect = MeshLinePlot(color=layer.colors)
+                layer.rect.points = self.draw_layer(self.cross_section_width / 2, layer.y_coordinate, self.cross_section_width, layer._height)
+            self.graph.add_plot(layer.rect)
         for plot in list:
             self.graph.remove_plot(plot)
             self.graph._clear_buffer()
@@ -118,7 +119,7 @@ class CS_Rectangle_View(BoxLayout):
         
     '''
     the method create_graph create the graph, where you can add 
-    the rectangles. the method should be called only once at the beginning
+    the layers. the method should be called only once at the beginning
     '''
     def create_graph(self):
         self.graph = Graph(
@@ -127,11 +128,11 @@ class CS_Rectangle_View(BoxLayout):
                         xmin=0, xmax=self.cross_section_width, ymin=0, ymax=self.cross_section_height)
     
     '''
-    the method draw_rect was developed to get the points of the rectangle
+    the method draw_layer was developed to get the points of the rectangle
     the while_loop was create to make the rectangle set a grid.
     '''
     @staticmethod
-    def draw_rect(x_coordinate, y_coordinate, width, height):
+    def draw_layer(x_coordinate, y_coordinate, width, height):
         points = [(x_coordinate - width / 2., y_coordinate - height / 2.), (x_coordinate + width / 2., y_coordinate - height / 2.), (x_coordinate + width / 2., y_coordinate + height / 2.), (x_coordinate - width / 2., y_coordinate + height / 2.), (x_coordinate - width / 2., y_coordinate - height / 2.)]
         i = 0
         delta = 1000.
@@ -152,18 +153,18 @@ class CS_Rectangle_View(BoxLayout):
     def on_touch_move(self, touch):
         y_coordinate = (touch.y / self.graph.height) / (1 / self.cross_section_height)
         x_coordinate = (touch.x / self.graph.width) / (1 / self.cross_section_width)
-        for rectangle in self.rectangles:
+        for rectangle in self.layers:
             if rectangle.focus and rectangle.mouse_within(x_coordinate, y_coordinate):
                 if y_coordinate > rectangle._height / 2 and y_coordinate < self.cross_section_height - rectangle._height / 2 :
-                        rectangle.rect.points = self.draw_rect(self.cross_section_width / 2, y_coordinate, self.cross_section_width, rectangle._height)
+                        rectangle.rect.points = self.draw_layer(self.cross_section_width / 2, y_coordinate, self.cross_section_width, rectangle._height)
                         rectangle.set_y_coordinate(y_coordinate)
                         return
                 elif y_coordinate < rectangle._height / 2:
-                        rectangle.rect.points = self.draw_rect(self.cross_section_width / 2, rectangle._height / 2, self.cross_section_width, rectangle._height)
+                        rectangle.rect.points = self.draw_layer(self.cross_section_width / 2, rectangle._height / 2, self.cross_section_width, rectangle._height)
                         rectangle.set_y_coordinate(rectangle._height / 2)
                         return
                 elif y_coordinate > self.cross_section_height - rectangle._height / 2:
-                        rectangle.rect.points = self.draw_rect(self.cross_section_width / 2, self.cross_section_height - rectangle._height / 2, self.cross_section_width, rectangle._height)
+                        rectangle.rect.points = self.draw_layer(self.cross_section_width / 2, self.cross_section_height - rectangle._height / 2, self.cross_section_width, rectangle._height)
                         rectangle.set_y_coordinate(self.cross_section_height - rectangle._height / 2)
                         return
         
@@ -177,7 +178,7 @@ class CS_Rectangle_View(BoxLayout):
         x_coordinate = (touch.x / self.graph.width) / (1 / self.cross_section_width)
         changed = False
         one_is_already_focus=False
-        for rectangle in self.rectangles:
+        for rectangle in self.layers:
             if rectangle.mouse_within(x_coordinate, y_coordinate):
                 if rectangle.focus == False and one_is_already_focus==False:
                     rectangle.focus = True
@@ -195,7 +196,7 @@ class CS_Rectangle_View(BoxLayout):
     # not yet so relevant. maybe we have time, we can finished it
     '''
     def collide(self,x,y,_width,_height):
-        for rectangle in self.rectangles:
+        for rectangle in self.layers:
             if not rectangle.equals(x, y, _width, _height):
                 #Case:1
                 if y+_height/2>rectangle.y_coordinate-rectangle._height/2 and y+_height/2<rectangle.y_coordinate-rectangle._height/2:
@@ -213,16 +214,16 @@ class CS_Rectangle_View(BoxLayout):
     '''
     def add_layer(self, value):
         height = self.cross_section_height * value
-        self.rectangles.append(Layer(self.cross_section_width / 2, self.cross_section_height - height / 2., height, self.cross_section_width, [next(colorcycler), next(colorcycler), next(colorcycler), 1]))
+        self.layers.append(Layer_Rectangle(self.cross_section_width / 2, self.cross_section_height - height / 2., height, self.cross_section_width, [next(colorcycler), next(colorcycler), next(colorcycler), 1]))
         self.update_all_graph
     
     '''
     the method delete_layer was developed to delete layer from the cross section
     '''
     def delete_layer(self):
-        for rectangle in self.rectangles:
+        for rectangle in self.layers:
             if rectangle.focus:
-                self.rectangles.remove(rectangle)
+                self.layers.remove(rectangle)
         self.update_all_graph
     
     def update_layer_information(self,name,price,density,stiffness,strength,percent):
@@ -235,7 +236,7 @@ class CS_Rectangle_View(BoxLayout):
     the method set_percent change the percent shape of the selected rectangle
     ''' 
     def set_percent(self, value):
-        for rectangle in self.rectangles:
+        for rectangle in self.layers:
             if rectangle.focus:
                 rectangle.set_height(self.cross_section_height * value)
                 self.update_all_graph
@@ -243,10 +244,10 @@ class CS_Rectangle_View(BoxLayout):
     
     '''
     the method set_height change the height of the cross section shape
-    and update the rectangles
+    and update the layers
     '''
     def set_height(self, value):
-        for rectangle in self.rectangles:
+        for rectangle in self.layers:
             rectangle.set_y_coordinate(rectangle.y_coordinate / self.cross_section_height * value)
             rectangle.set_height(rectangle._height / self.cross_section_height * value)
         self.cross_section_height = value
@@ -255,12 +256,12 @@ class CS_Rectangle_View(BoxLayout):
     
     '''
     the method set_width change the width of the cross section shape
-    and update the rectangles
+    and update the layers
     '''
     def set_width(self, value):
         self.cross_section_width = value
         self.graph.xmax = self.cross_section_width
-        for rectangle in self.rectangles:
+        for rectangle in self.layers:
             rectangle.set_width(value)
         self.update_all_graph
     
@@ -275,5 +276,4 @@ class CS_Rectangle_View(BoxLayout):
     return all layers 
     '''
     def get_layers(self):
-        return self.rectangles
-    
+        return self.layers

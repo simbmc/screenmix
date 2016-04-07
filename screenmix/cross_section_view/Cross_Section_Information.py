@@ -48,20 +48,20 @@ class Cross_Section_Information(BoxLayout):
         #adding_material_area to manage the height-area
         self.height_value=Label(text='height: 0.5 m',size_hint_x=None, width=100)
         slider_height=Slider(min=0.1, max=0.5, value=0.5)
-        slider_height.bind(value=self.set_height_value)
+        slider_height.bind(value=self.set_height)
         self.scale_area.add_widget(self.height_value)
         self.scale_area.add_widget(slider_height)
         #adding_material_area to manage the width-area
         self.width_value=Label(text='width: 0.25 m',size_hint_x=None, width=100)
         slider_width=Slider(min=0.1, max=0.5, value=0.25)
-        slider_width.bind(value=self.set_width_value)
+        slider_width.bind(value=self.set_width)
         self.scale_area.add_widget(self.width_value)
         self.scale_area.add_widget(slider_width)
         self.add_widget(self.scale_area)
     
     '''
     the method create_add_delete_area create the area where you can 
-    add new material and delete material from the cs_view
+    add new materials and delete materials from the cs_view
     '''
     def create_add_delete_area(self):
         self.btn_area=BoxLayout(spacing=10, orientation='horizontal')
@@ -75,7 +75,7 @@ class Cross_Section_Information(BoxLayout):
     
     '''
     the method create_material_information create the area where you can 
-    see the information about the selected material
+    see the information about the selected materials
     '''
     def create_material_information(self):
         self.material_area=GridLayout(cols=1)
@@ -123,7 +123,7 @@ class Cross_Section_Information(BoxLayout):
     
     '''
     the method create_add_layer_information_area create the area where you can 
-    add new material
+    add new materials
     '''
     def create_add_layer_information_area(self):
         self.create_material_options()
@@ -140,7 +140,7 @@ class Cross_Section_Information(BoxLayout):
     
     '''
     the method create_material_options create the popup where you can 
-    select the material for the new layer
+    select the materials for the new layer
     '''
     def create_material_options(self):
         layout=GridLayout(cols=3)
@@ -153,12 +153,12 @@ class Cross_Section_Information(BoxLayout):
         layout.add_widget(btn_material_A)
         layout.add_widget(btn_material_B)
         layout.add_widget(btn_material_C)
-        self.popup=Popup(title='material',content=layout,size=(20, 20))
+        self.popup=Popup(title='materials',content=layout,size=(20, 20))
     
         
     '''
     the method create_confirm_cancel_area create the area where you can 
-    confirm your creation of the new material or cancel the creation
+    confirm your creation of the new materials or cancel the creation
     '''
     def create_confirm_cancel_area(self):
         self.confirm_cancel_area=BoxLayout(spacing=10)
@@ -203,14 +203,14 @@ class Cross_Section_Information(BoxLayout):
     
     '''
     the method cancel_adding would be must call when the user wouldn't 
-    add a new material
+    add a new materials
     '''
     def cancel_adding(self,button):
         self.finished_adding()
     
     '''
     the method delete_layer was developed to delete a existing
-    material
+    materials
     '''
     def delete_layer(self, button):
         self.cross_section.delete_layer()
@@ -237,7 +237,6 @@ class Cross_Section_Information(BoxLayout):
         self.cross_section_strength.text=str(strength)
     
     def select_material(self, Button):
-        print('Hier')
         self.popup.dismiss()
         self.material_option.text=Button.text
     
@@ -246,17 +245,17 @@ class Cross_Section_Information(BoxLayout):
     #################################################################################################
     
     '''
-    the method set_height_value change the height of the cs_view
+    the method set_height change the height of the cs_view
     '''
-    def set_height_value(self, instance, value):
+    def set_height(self, instance, value):
         self.cross_section.set_height(value)
         value=int(value*100)
         self.height_value.text='height: 0.'+str(value)+' m'
     
     '''
-    the method set_width_value change the width of the cs_view
+    the method set_width change the width of the cs_view
     '''
-    def set_width_value(self, instance, value):
+    def set_width(self, instance, value):
         self.cross_section.set_width(value)
         value=int(value*100)
         print(value)
@@ -264,8 +263,8 @@ class Cross_Section_Information(BoxLayout):
     
     '''
     the method set_percent change the percentage share 
-    of the material. 
-    Attention: this method must be call when the material already exist
+    of the materials. 
+    Attention: this method must be call when the materials already exist
     '''
     def set_percent(self, instance, value):
         self.cross_section.set_percent(value)
@@ -273,8 +272,8 @@ class Cross_Section_Information(BoxLayout):
     
     '''
     the method set_percenet_while_creating change the percentage share 
-    of the material. Attention: this method must be call 
-    when the material isn't exist
+    of the materials. Attention: this method must be call 
+    when the materials isn't exist
     '''
     def set_percenet_while_creating(self,instance,value):
         self.material_percent_while_creating.text='percent: '+str(int(value*100))+' %'
