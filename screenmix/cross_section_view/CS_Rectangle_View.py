@@ -105,10 +105,9 @@ class CS_Rectangle_View(BoxLayout, AView):
         for layer in self.layers:
             if layer.focus:
                 layer.rect = MeshLinePlot(color=[1, 0, 0, 1])
-                print(layer.y_coordinate)
             else:
                 layer.rect = MeshLinePlot(color=layer.colors)
-                layer.rect.points = self.draw_layer(self.cross_section_width / 2, layer.y_coordinate, self.cross_section_width, layer._height)
+            layer.rect.points = self.draw_layer(self.cross_section_width / 2, layer.y_coordinate, self.cross_section_width, layer._height)
             self.graph.add_plot(layer.rect)
         for plot in list:
             self.graph.remove_plot(plot)
