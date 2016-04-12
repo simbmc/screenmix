@@ -10,14 +10,19 @@ from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 
 
-class NumPad(Popup):
+class NumPad(GridLayout):
     #Construktor
     def __init__(self, **kwargs):
         super(NumPad, self).__init__(**kwargs)
         self.create_numfield()
-        self.content=self.layout
-        self.title='Numpad'
+        self.cols=1
+        self.add_widget(self.layout)
+        self._parent=None
     
+    '''
+    the method create_numfield create the gui
+    of the numpad
+    '''
     def create_numfield(self):
         self.textinput=Label(text='')
         self.layout=GridLayout(cols=1)
@@ -42,22 +47,40 @@ class NumPad(Popup):
         cur.add_widget(self.textinput)
         self.layout.add_widget(cur)
         self.layout.add_widget(self.numfield)
-        
+    
+    '''
+    the method appending appends the choosen digit at the end.
+    the method is called when the user use the keyboard
+    '''
     def appending(self,button): 
         self.textinput.text+=button.text
-
+    
+    '''
+    the method delete delete the digit at the end.
+    the method is called when the press the button '<<'
+    '''
     def delete(self,button):
         self.textinput.text=self.textinput.text[:-1]
     
+    '''
+    the method reset_text reset the text of the label
+    the method must be called from the developer when
+    the text must be deleted
+    '''
     def reset_text(self):
         self.textinput.text=''
     
-    def finished(self,button):
-        self.dismiss()
+    '''
+    the method sign_in_parent to set the parent of 
+    the object. the parent must have the method finished_numpad
+    '''
+    def sign_in_parent(self, parent):
+        self._parent=parent
     
-class NumPadApp(App):
-    def build(self):
-        return NumPad()
-
-if __name__ == '__main__':
-    NumPadApp().run()
+    '''
+    the method finished close the popup when the user
+    is finished and press the button 'finished'
+    '''
+    def finished(self,button):
+        self._parent.finished_numpad()
+    

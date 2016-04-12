@@ -10,6 +10,7 @@ from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout 
 from itertools import cycle
 from cross_section_view.AView import AView
+from apptools.type_registry.tests.dummies import Concrete
 colors = [0.8, 0.3, 0.5, 0.2, 0.1, 0.7, 0.1]
 colorcycler = cycle(colors)
 
@@ -74,10 +75,19 @@ class Layer_Rectangle:
     def get_material_informations(self):
         return [self.material.name, self.material.price, self.material.density, self.material.stiffness, self.material.strength]
 
+    '''
+    return the weight of the layer
+    '''
+    def get_weight(self):
+        volume=self._height*self._width
+        weight=self.material.density*volume
+        return weight
     
-    
- 
-
+    '''
+    return the strain of the layer
+    '''
+    def get_strain(self):
+        return self.material.strength/self.material.stiffness
     
 '''
 the class CS_Rectangle_View was developed to show the the cross section,
@@ -182,7 +192,8 @@ class CS_Rectangle_View(BoxLayout, AView):
                 if rectangle.focus == False and one_is_already_focus==False:
                     rectangle.focus = True
                     one_is_already_focus=True
-                    self.cross_section.set_layer_information('Test','Test','Test','Test','Test',rectangle._height/self.cross_section_height)
+                    cur_info=rectangle.get_material_informations()
+                    self.cross_section.set_layer_information(cur_info[0],cur_info[1],cur_info[2],cur_info[3],cur_info[4],rectangle._height/self.cross_section_height)
                     changed = True
             else:
                 if rectangle.focus == True:
@@ -211,10 +222,14 @@ class CS_Rectangle_View(BoxLayout, AView):
     '''
     the method add_layer was developed to add new layer at the cross section
     '''
-    def add_layer(self, value):
+    def add_layer(self, value,material):
         height = self.cross_section_height * value
-        self.layers.append(Layer_Rectangle(self.cross_section_width / 2, self.cross_section_height - height / 2., height, self.cross_section_width, [next(colorcycler), next(colorcycler), next(colorcycler), 1]))
+        cur=Layer_Rectangle(self.cross_section_width / 2, self.cross_section_height - height / 2., height, self.cross_section_width, [next(colorcycler), next(colorcycler), next(colorcycler), 1])
+        cur.set_material(material)
+        self.layers.append(cur)
         self.update_all_graph
+        self.update_cross_section_information()
+        
     
     '''
     the method delete_layer was developed to delete layer from the cross section
@@ -224,9 +239,26 @@ class CS_Rectangle_View(BoxLayout, AView):
             if rectangle.focus:
                 self.layers.remove(rectangle)
         self.update_all_graph
+        self.update_cross_section_information()
     
+    '''
+    the method update_layer_information update the layer information of 
+    the view_information
+    '''
     def update_layer_information(self,name,price,density,stiffness,strength,percent):
         self.cross_section.set_layer_information(name,price,density,stiffness,strength,percent)
+    
+    '''
+    the method update_cross_section_information update the cross section information of 
+    the view_information
+    '''
+    def update_cross_section_information(self):
+        self.cross_section.calculate_weight_price()
+        self.cross_section.calculate_strength()
+        self.cross_section.set_cross_section_information()
+    
+    
+        
     
     #################################################################################################
     #                                Setter && Getter                                               #
@@ -239,6 +271,7 @@ class CS_Rectangle_View(BoxLayout, AView):
             if rectangle.focus:
                 rectangle.set_height(self.cross_section_height * value)
                 self.update_all_graph
+                self.update_cross_section_information()
                 return
     
     '''
@@ -252,6 +285,7 @@ class CS_Rectangle_View(BoxLayout, AView):
         self.cross_section_height = value
         self.graph.ymax = self.cross_section_height
         self.update_all_graph
+        self.update_cross_section_information()
     
     '''
     the method set_width change the width of the cross section shape
@@ -263,6 +297,7 @@ class CS_Rectangle_View(BoxLayout, AView):
         for rectangle in self.layers:
             rectangle.set_width(value)
         self.update_all_graph
+        self.update_cross_section_information()
     
     '''
     the method set_cross_section was developed to say the view, 
@@ -276,3 +311,4 @@ class CS_Rectangle_View(BoxLayout, AView):
     '''
     def get_layers(self):
         return self.layers
+    

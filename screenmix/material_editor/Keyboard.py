@@ -14,15 +14,16 @@ The class Keyboard was developed to give the user the possibility
 to write words with a keyboard. 
 the keyboard-object is a popup
 '''
-class Keyboard(Popup):
+class Keyboard(GridLayout):
     #Constructor
     def __init__(self, **kwargs):
         super(Keyboard, self).__init__(**kwargs)
         self.alphabet_small='qwertzuiopasdfghjkl_.yxcvbnm'
         self.create_small_keyboard()
-        self.content=self.layout
-        self.title='Keyboard'
-    
+        self.cols=1
+        self.add_widget(self.layout)
+        self._parent=None
+        
     '''
     the method create_small_keyboard create the
     gui of the keyboard
@@ -39,7 +40,7 @@ class Keyboard(Popup):
         btn_delete=Button(text='<<')
         btn_delete.bind(on_press=self.delete)
         btn_finished=Button(text='ok')
-        btn_finished.bind(on_press=self.close_popup)
+        btn_finished.bind(on_press=self.finished)
         self.small_keyboard.add_widget(btn_delete)
         self.small_keyboard.add_widget(btn_finished)
         self.layout.add_widget(self.small_keyboard)
@@ -56,12 +57,13 @@ class Keyboard(Popup):
     '''
     def delete(self,button):
         self.textinput.text=self.textinput.text[:-1]
+    
     '''
-    the method close_popup close the popup when the user
+    the method finished close the popup when the user
     is finished and press the button 'ok'
     '''
-    def close_popup(self,button):
-        self.dismiss()
+    def finished(self,button):
+        self._parent.finished_keyboard()
     
     '''
     the method reset_text reset the text of the label
@@ -71,9 +73,10 @@ class Keyboard(Popup):
     def reset_text(self):
         self.textinput.text=''
     
-class NumPadApp(App):
-    def build(self):
-        return Keyboard()
-
-if __name__ == '__main__':
-    NumPadApp().run()
+    '''
+    the method sign_in_parent to set the parent of 
+    the object. the parent must have the method finished_keyboard
+    '''
+    def sign_in_parent(self, parent):
+        self._parent=parent
+        

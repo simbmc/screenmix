@@ -3,30 +3,28 @@ Created on 10.03.2016
 
 @author: mkennert
 '''
-'''
-the class Cross_Section_Information was developed to show 
-the information of the cs_view
-'''
-
-from cgitb import text
-
+from material_editor.Material_Creater import Material_Creater
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
-from kivy.uix.dropdown import DropDown
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.uix.slider import Slider
-from kivy.uix.widget import Widget
-from numpy import spacing
-
-
+from materials.Steel import Steel
+from materials.Carbon_Fiber import Carbon_Fiber
+from materials.Concrete import Concrete
+from materials.Glass_Fiber import Glass_Fiber
+'''
+the class Cross_Section_Information was developed to show 
+the information of the cs_view
+'''
 class Cross_Section_Information(BoxLayout):
     
     #Constructor
     def __init__(self, **kwargs):
         super(Cross_Section_Information, self).__init__(**kwargs)
+        self.all_materials=[Steel(),Carbon_Fiber(),Concrete(),Glass_Fiber()]
         self.orientation='vertical'
         self.create_scale_area()
         self.create_cross_section_area()
@@ -34,6 +32,7 @@ class Cross_Section_Information(BoxLayout):
         self.create_material_information()
         self.create_add_layer_information_area()
         self.create_confirm_cancel_area()
+        
     
     ########################################################################################################
     # The following part of code create only the graphical user interface                                  #
@@ -94,7 +93,7 @@ class Cross_Section_Information(BoxLayout):
         label_layout.add_widget(self.material_density)
         label_layout.add_widget(Label(text='stiffness:'))
         label_layout.add_widget(self.material_stiffness)
-        label_layout.add_widget(Label(text='strength:'))
+        label_layout.add_widget(Label(text='tensile strength:'))
         label_layout.add_widget(self.material_strength)
         label_layout.add_widget(Label(text='percent:'))
         label_layout.add_widget(self.material_percent)
@@ -113,11 +112,11 @@ class Cross_Section_Information(BoxLayout):
         self.cross_section_weight=Label(text='-')
         self.cross_section_strength=Label(text='-')
         self.cross_section_area=GridLayout(cols=2)
-        self.cross_section_area.add_widget(Label(text='price:'))
+        self.cross_section_area.add_widget(Label(text='price [Euro/m]:'))
         self.cross_section_area.add_widget(self.cross_section_price)
-        self.cross_section_area.add_widget(Label(text='weight:'))
+        self.cross_section_area.add_widget(Label(text='weight [kg]:'))
         self.cross_section_area.add_widget(self.cross_section_weight)
-        self.cross_section_area.add_widget(Label(text='strength:'))
+        self.cross_section_area.add_widget(Label(text='tensile strength [MPa]:'))
         self.cross_section_area.add_widget(self.cross_section_strength)
         self.add_widget(self.cross_section_area)
     
@@ -129,7 +128,7 @@ class Cross_Section_Information(BoxLayout):
         self.create_material_options()
         self.adding_material_area=GridLayout(cols=2)
         self.adding_material_area.add_widget(Label(text='Material:'))
-        self.material_option=Button(text='Material')
+        self.material_option=Button(text='steel')
         self.material_option.bind(on_release=self.popup.open)
         self.adding_material_area.add_widget(self.material_option)
         self.material_percent_while_creating=Label(text='percent: 10%')
@@ -143,25 +142,25 @@ class Cross_Section_Information(BoxLayout):
     select the materials for the new layer
     '''
     def create_material_options(self):
-        layout=GridLayout(cols=3)
-        btn_material_A=Button(text='Material A')
-        btn_material_A.bind(on_press=self.select_material)
-        btn_material_B=Button(text='Material B')
-        btn_material_B.bind(on_press=self.select_material)
-        btn_material_C=Button(text='Material C')
-        btn_material_C.bind(on_press=self.select_material)
-        layout.add_widget(btn_material_A)
-        layout.add_widget(btn_material_B)
-        layout.add_widget(btn_material_C)
-        self.popup=Popup(title='materials',content=layout,size=(20, 20))
+        self.layout_materials=GridLayout(cols=3)
+        self.material_editor=Material_Creater()
+        self.material_editor.sign_in_parent(self)
+        self.popup_material_editor=Popup(title='editor',content=self.material_editor)
+        for i in range(0,len(self.all_materials)):
+            btn_material_A=Button(text=self.all_materials[i].name)
+            btn_material_A.bind(on_press=self.select_material)
+            self.layout_materials.add_widget(btn_material_A)
+        self.btn_material_editor=Button(text='create material')
+        self.btn_material_editor.bind(on_press=self.popup_material_editor.open)
+        self.layout_materials.add_widget(self.btn_material_editor)
+        self.popup=Popup(title='materials',content=self.layout_materials)
     
-        
     '''
     the method create_confirm_cancel_area create the area where you can 
     confirm your creation of the new materials or cancel the creation
     '''
     def create_confirm_cancel_area(self):
-        self.confirm_cancel_area=BoxLayout(spacing=10)
+        self.confirm_cancel_area=BoxLayout()
         confirm_btn=Button(text='confirm')
         confirm_btn.bind(on_press=self.add_layer)
         cancel_btn=Button(text='cancel')
@@ -199,8 +198,11 @@ class Cross_Section_Information(BoxLayout):
     '''
     def add_layer(self,button):
         self.finished_adding()
-        self.cross_section.add_layer(self.slider_layer_percent.value)
-    
+        for i in range(0,len(self.all_materials)):
+            if self.all_materials[i].name==self.material_option.text:
+                self.cross_section.add_layer(self.slider_layer_percent.value,self.all_materials[i])
+                return
+        print('hier')
     '''
     the method cancel_adding would be must call when the user wouldn't 
     add a new materials
@@ -236,6 +238,32 @@ class Cross_Section_Information(BoxLayout):
         self.cross_section_weight.text=str(weight)
         self.cross_section_strength.text=str(strength)
     
+    '''
+    the method cancel_edit_material cancel the editing of the material
+    and reset the values of the material_editor
+    '''
+    def cancel_edit_material(self):
+        self.popup_material_editor.dismiss()
+        self.material_editor.reset_editor()
+        
+    '''
+    the method update_materials update the view of the materials. 
+    its make sure that the create material button is the last component 
+    of the gridlayout
+    '''
+    def update_materials(self):
+        self.layout_materials.remove_widget(self.btn_material_editor)
+        btn_material_A=Button(text=self.all_materials[-1].name)
+        btn_material_A.bind(on_press=self.select_material)
+        self.layout_materials.add_widget(btn_material_A)
+        self.layout_materials.add_widget(self.btn_material_editor)
+    
+    
+    '''
+    the method will be called when the user selected a material
+    the popup will be closed and the button text change to the material
+    name
+    '''
     def select_material(self, Button):
         self.popup.dismiss()
         self.material_option.text=Button.text
@@ -258,7 +286,6 @@ class Cross_Section_Information(BoxLayout):
     def set_width(self, instance, value):
         self.cross_section.set_width(value)
         value=int(value*100)
-        print(value)
         self.width_value.text='width: 0.'+str(value)+' m'
     
     '''
