@@ -12,6 +12,8 @@ class AMaterial(object):
         self.density=float(density)
         self.stiffness=float(stiffness)
         self.strength=float(strength)
+
+    
     
     
     

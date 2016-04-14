@@ -228,6 +228,7 @@ class CS_Rectangle_View(BoxLayout, AView):
         cur.set_material(material)
         self.layers.append(cur)
         self.update_all_graph
+        self.cross_section.calculate_strength()
         self.update_cross_section_information()
         
     
@@ -239,6 +240,7 @@ class CS_Rectangle_View(BoxLayout, AView):
             if rectangle.focus:
                 self.layers.remove(rectangle)
         self.update_all_graph
+        self.cross_section.calculate_strength()
         self.update_cross_section_information()
     
     '''
@@ -254,7 +256,6 @@ class CS_Rectangle_View(BoxLayout, AView):
     '''
     def update_cross_section_information(self):
         self.cross_section.calculate_weight_price()
-        self.cross_section.calculate_strength()
         self.cross_section.set_cross_section_information()
     
     
@@ -271,6 +272,7 @@ class CS_Rectangle_View(BoxLayout, AView):
             if rectangle.focus:
                 rectangle.set_height(self.cross_section_height * value)
                 self.update_all_graph
+                self.cross_section.calculate_strength() 
                 self.update_cross_section_information()
                 return
     
@@ -279,10 +281,10 @@ class CS_Rectangle_View(BoxLayout, AView):
     and update the layers
     '''
     def set_height(self, value):
+        self.cross_section_height = value
         for rectangle in self.layers:
             rectangle.set_y_coordinate(rectangle.y_coordinate / self.cross_section_height * value)
             rectangle.set_height(rectangle._height / self.cross_section_height * value)
-        self.cross_section_height = value
         self.graph.ymax = self.cross_section_height
         self.update_all_graph
         self.update_cross_section_information()
