@@ -42,7 +42,13 @@ class Cross_Section(GridLayout):
         self.calculate_weight_price()
         self.calculate_strength()
         self.set_cross_section_information()
-        
+    
+    '''
+    the method set_cross_section was developed to say the view, 
+    which cross section should it use
+    '''
+    def set_ack_right(self,ack_right):
+        self.ack_right=ack_right
     
     '''
     the method add_layer add new materials in the view
