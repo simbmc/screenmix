@@ -115,8 +115,6 @@ class Ack_Left(GridLayout):
         self.graph.xmax = points[-1][0] * 1.2
         self.graph.ymax = points[-1][1] * 1.2
 
-        print 'percentage', percent_of_layers
-
         return points
 
     # not finished yet
