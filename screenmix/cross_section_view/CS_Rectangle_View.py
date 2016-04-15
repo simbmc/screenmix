@@ -92,19 +92,24 @@ class CS_Rectangle_View(BoxLayout, AView):
     def on_touch_move(self, touch):
         x_coordinate = (touch.x / self.graph.width) / (1 / self.cross_section_width)
         y_coordinate = (touch.y / self.graph.height) / (1./ self.cross_section_height)
-        for rectangle in self.layers:
-            if rectangle.focus and rectangle.mouse_within_just_x_coordinate(x_coordinate):
-                if y_coordinate > rectangle._height / 2 and y_coordinate < self.cross_section_height - rectangle._height / 2 :
-                        rectangle.rect.points = self.draw_layer(self.cross_section_width / 2, y_coordinate, self.cross_section_width, rectangle._height)
-                        rectangle.set_y_coordinate(y_coordinate)
+        for layer in self.layers:
+            if layer.focus and layer.mouse_within_just_x_coordinate(x_coordinate):
+                #case:1 the layer don't collide with the border of the cross section
+                if y_coordinate > layer._height / 2 and y_coordinate < self.cross_section_height - layer._height / 2 :
+                        layer.rect.points = self.draw_layer(self.cross_section_width / 2, y_coordinate, self.cross_section_width, layer._height)
+                        layer.set_y_coordinate(y_coordinate)
                         return
-                elif y_coordinate < rectangle._height / 2:
-                        rectangle.rect.points = self.draw_layer(self.cross_section_width / 2, rectangle._height / 2, self.cross_section_width, rectangle._height)
-                        rectangle.set_y_coordinate(rectangle._height / 2)
+                #case:2 the layer collide with the bottom border of the cross section
+                #       the user can't move the layer down
+                elif y_coordinate < layer._height / 2:
+                        layer.rect.points = self.draw_layer(self.cross_section_width / 2, layer._height / 2, self.cross_section_width, layer._height)
+                        layer.set_y_coordinate(layer._height / 2)
                         return
-                elif y_coordinate > self.cross_section_height - rectangle._height / 2:
-                        rectangle.rect.points = self.draw_layer(self.cross_section_width / 2, self.cross_section_height - rectangle._height / 2, self.cross_section_width, rectangle._height)
-                        rectangle.set_y_coordinate(self.cross_section_height - rectangle._height / 2)
+                #case:3 the layer collide with the top border of the cross section
+                #       the user can't move the layer up
+                elif y_coordinate > self.cross_section_height - layer._height / 2:
+                        layer.rect.points = self.draw_layer(self.cross_section_width / 2, self.cross_section_height - layer._height / 2, self.cross_section_width, layer._height)
+                        layer.set_y_coordinate(self.cross_section_height - layer._height / 2)
                         return
         
     '''
@@ -133,6 +138,7 @@ class CS_Rectangle_View(BoxLayout, AView):
                 if rectangle.focus == True:
                     rectangle.focus = False
                     changed = True
+        #update just when something has change
         if changed:
             self.update_all_graph
     

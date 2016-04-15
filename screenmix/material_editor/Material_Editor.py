@@ -37,7 +37,8 @@ class Material_Editor(ScrollView):
         btn.bind(on_press=self.edit_material)
         self.material_layout.add_widget(btn)
         self.add_widget(self.material_layout)
-        
+    
+    
     def show_material_information(self,button):
         pass
     

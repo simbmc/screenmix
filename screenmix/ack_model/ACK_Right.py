@@ -34,7 +34,7 @@ class Ack_Right(GridLayout):
         self.add_widget(self.graph)
     
     def create_option_layout(self):
-        content_height=100
+        content_height=30
         content=GridLayout(cols=2,row_force_default=True, row_default_height=content_height, size_hint_y=None, height=content_height)
         slider_value=0.02
         self.strain=Label(text='strain: '+str(slider_value))
@@ -111,7 +111,7 @@ class Ack_Right(GridLayout):
             if self.max_stress<cur_value:
                 self.max_stress=cur_value
         self.graph.xmax=self.max_stress
-        self.graphx_ticks_major=self.max_stress/10.
+        self.graph.x_ticks_major=self.max_stress/2.
         
 class CSIApp(App):
     def build(self):

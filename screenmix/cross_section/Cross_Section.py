@@ -117,7 +117,8 @@ class Cross_Section(GridLayout):
             weight+=cur
             price+=cur*layer.material.price
             percent_of_layers+=layer._height/self.cross_section_height
-        #(1-percent_of_layers)=>Matrix
+        #if the percent_of_layers is not 1 there is a matrix
+        #with concrete as material
         weight+=(1-percent_of_layers)*self.cross_section_width*self.concrete_density
         price+=(1-percent_of_layers)*self.cross_section_height*self.cross_section_width*self.concrete_price
         self.weight=weight
@@ -134,14 +135,18 @@ class Cross_Section(GridLayout):
         #max strain is necessary for other calculations
         self.max_of_maxstrain=0
         percent_of_layers=0.
-        #find the minimum max_strain
+        #find the minimum max_strain and the maximum max_strain
         for layer in self.view.layers:
             percent_of_layers+=layer._height/self.cross_section_height
             cur_strain=layer.get_strain()
+            #proof whether the cur_strain is smaller as the min
             if cur_strain<self.min_of_maxstrain:
                 self.min_of_maxstrain=cur_strain
+            #proof whether the cur_strain is bigger as the max
             if cur_strain>self.max_of_maxstrain:
                 self.max_of_maxstrain=cur_strain
+        #if the percent_of_layers is not 1 there is a matrix
+        #with concrete as material
         if 1.-percent_of_layers>0:
             cur_value=self.concrete_strength/self.concrete_stiffness
             if self.min_of_maxstrain>cur_value:
