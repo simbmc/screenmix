@@ -25,6 +25,12 @@ class Layer_Rectangle:
         else: 
             return False
     
+    def mouse_within_just_x_coordinate(self, x_value):
+        if x_value > self.x_coordinate / 10. and x_value < self._width:
+            return True
+        else :
+            return False
+    
     '''
     checked wheter the layers are the same
     '''    

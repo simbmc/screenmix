@@ -28,25 +28,25 @@ class Ack_Right(GridLayout):
     '''
     def create_graph(self):
         self.graph = Graph(
-                        x_ticks_major=0.1, y_ticks_major=0.1,
+                        x_ticks_major=0.0001, y_ticks_major=0.1,
                         y_grid_label=True, x_grid_label=True,
-                        xmin=0.0, xmax=self.cross_section.cross_section_width, ymin=0, ymax=self.cross_section.cross_section_height)
+                        xmin=0.0, xmax=0.0005, ymin=0, ymax=self.cross_section.cross_section_height)
         self.add_widget(self.graph)
     
     def create_option_layout(self):
-        content_height=10
-        content=GridLayout(cols=2,row_force_default=True, row_default_height=content_height, size_hint_y=None, height=25)
+        content_height=100
+        content=GridLayout(cols=2,row_force_default=True, row_default_height=content_height, size_hint_y=None, height=content_height)
         slider_value=0.02
         self.strain=Label(text='strain: '+str(slider_value))
-        slider=Slider(min=0, max=0.1,value=slider_value)
-        slider.bind(value=self.setStrain)
+        self.slider=Slider(min=0.00001, max=0.1,value=slider_value)
+        self.slider.bind(value=self.setStrain)
         content.add_widget(self.strain)
-        content.add_widget(slider)
+        content.add_widget(self.slider)
         self.add_widget(content)
     
     def setStrain(self,instance,value):
-        value=int(value*100000)
-        self.strain.text='strain: 0.'+str(value)
+        self.strain.text='strain: '+str(value)
+        self.update()
     
     '''
     the method set_cross_section was developed to say the view, 
@@ -56,9 +56,68 @@ class Ack_Right(GridLayout):
         self.cross_section=cross_section
         self.create_gui()
     
+    '''
+    the method draw_layer was developed to get the points of the rectangle
+    the while_loop was create to make the rectangle set a grid.
+    '''
+    @staticmethod
+    def draw_layer(x_coordinate, y_coordinate, width, height):
+        #points = [(x_coordinate - width / 2., y_coordinate - height / 2.), (x_coordinate + width / 2., y_coordinate - height / 2.), (x_coordinate + width / 2., y_coordinate + height / 2.), (x_coordinate - width / 2., y_coordinate + height / 2.), (x_coordinate - width / 2., y_coordinate - height / 2.)]
+        points = [(0, y_coordinate - height / 2.), (width, y_coordinate - height / 2.), (width, y_coordinate + height / 2.), (0, y_coordinate + height / 2.), (0, y_coordinate - height / 2.)]
+        
+        i = 0
+        delta = 1000.
+        distance = width / delta
+        while i < delta:
+            points.append((distance, y_coordinate - height / 2.))
+            points.append((distance, y_coordinate - height / 2. + height))
+            distance += width / delta
+            points.append((distance, y_coordinate - height / 2. + height))
+            points.append((distance, y_coordinate - height / 2. + height))
+            i += 1
+        return points
+    
+    '''
+    update the layerinformation of layers
+    '''
+    def update(self):
+        self.find_max_stress()
+        self.graph.ymax=self.cross_section.cross_section_height
+        list = []
+        for plot in self.graph.plots:
+            list.append(plot)
+        #draw the free places of the cross section
+        free_places=self.cross_section.view.get_free_places()
+        for layer in free_places:
+            self.rect=MeshLinePlot(color=[1, 1, 0, 1])
+            height=layer[1]-layer[0]
+            self.rect.points=self.draw_layer(0, layer[1]-height/2., self.cross_section.calculate_strain_of_concrete()*self.slider.value, height)
+            self.graph.add_plot(self.rect)
+        #draw the layers
+        for layer in self.cross_section.view.layers:
+            layer.rect = MeshLinePlot(color=layer.colors)
+            layer.rect.points = self.draw_layer(0, layer.y_coordinate, layer.get_strain()*self.slider.value, layer._height)
+            self.graph.add_plot(layer.rect)
+        #delete the old plots
+        for plot in list:
+            self.graph.remove_plot(plot)
+            self.graph._clear_buffer()
+        return self.graph
+    
+    def find_max_stress(self):
+        self.max_stress=self.cross_section.calculate_strain_of_concrete()*self.slider.value
+        for layer in self.cross_section.view.layers:
+            cur_value=layer.get_strain()*self.slider.value
+            if self.max_stress<cur_value:
+                self.max_stress=cur_value
+        self.graph.xmax=self.max_stress
+        self.graphx_ticks_major=self.max_stress/10.
+        
 class CSIApp(App):
     def build(self):
         ack=Ack_Right()
+        cs=Cross_Section()
+        ack.set_cross_section(cs)
         return ack
 
 if __name__ == '__main__':

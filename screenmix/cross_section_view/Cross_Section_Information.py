@@ -202,7 +202,6 @@ class Cross_Section_Information(BoxLayout):
             if self.all_materials[i].name==self.material_option.text:
                 self.cross_section.add_layer(self.slider_layer_percent.value,self.all_materials[i])
                 return
-        print('hier')
     '''
     the method cancel_adding would be must call when the user wouldn't 
     add a new materials
@@ -227,7 +226,6 @@ class Cross_Section_Information(BoxLayout):
         self.material_density.text=str(density)
         self.material_stiffness.text=str(stiffness)
         self.material_strength.text=str(strength)
-        print('percent: '+str(percent))
         self.percent_value.value=percent
     
     '''

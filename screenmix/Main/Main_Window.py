@@ -8,9 +8,10 @@ from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.popup import Popup
 from kivy.uix.scrollview import ScrollView
-from kivy.uix.widget import Widget
+
+from ack_model.ACK import Ack
 from cross_section.Cross_Section import Cross_Section
-from ack_model.ACK_Left import Ack_Left
+
 
 class MainWindow(GridLayout):
     #Constructor
@@ -45,15 +46,11 @@ class MainWindow(GridLayout):
         ack_view=Button(text='ack',size_hint_y=None, height=40)
         ack_view.bind(on_press=self.show_ack_view)
         layout.add_widget(ack_view)
-        #for demonstration
-        '''
-        for i in range(20):
-            btn = Button(text=str(i), size_hint_y=None, height=40)
-            layout.add_widget(btn)
-        '''
-        #Here you can add more menu-parts
-        #Attention: it's necessary that the button have the follow 
-        #properties: size_hint_y=None, height=40
+        ##################################################################
+        #Here you can add more menu-parts                                #
+        #Attention: it's necessary that the button have the follow       #
+        #properties: size_hint_y=None, height=40                         #
+        ##################################################################
         self.root = ScrollView()
         self.root.add_widget(layout)
     
@@ -87,7 +84,8 @@ class MainWindow(GridLayout):
     create the ask_view
     '''
     def create_ack_view(self):
-        self.ack_view=Ack_Left()
+        self.ack_view=Ack()
+        self.cross_section.set_ack(self.ack_view)
         #sign in of the cross section
         self.ack_view.set_cross_section(self.cross_section)
     
@@ -97,14 +95,17 @@ class MainWindow(GridLayout):
     #the content to the showed component                                        #
     #############################################################################
     def show_ack_view(self,button):
+        self.ack_view.update()
         self.remove_widget(self.content)
         self.add_widget(self.ack_view)
         self.content=self.ack_view
+        self.popup.dismiss()
     
     def show_cross_section_view(self,button):
         self.remove_widget(self.content)
         self.add_widget(self.cross_section)
         self.content=self.cross_section
+        self.popup.dismiss()
     
 class CSIApp(App):
     def build(self):

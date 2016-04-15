@@ -24,7 +24,6 @@ class Cross_Section(GridLayout):
     #Constructor
     def __init__(self, **kwargs):
         super(Cross_Section, self).__init__(**kwargs)
-        self.min_of_maxstrain=10000000.
         self.cross_section_height = 0.5
         self.cross_section_width = 0.25
         self.all_materials=[Steel(),Carbon_Fiber(),Glass_Fiber()]
@@ -47,21 +46,24 @@ class Cross_Section(GridLayout):
     the method set_cross_section was developed to say the view, 
     which cross section should it use
     '''
-    def set_ack_right(self,ack_right):
-        self.ack_right=ack_right
+    def set_ack(self,ack):
+        self.ack=ack
     
     '''
     the method add_layer add new materials in the view
     '''
     def add_layer(self,percent,material):
         self.view.add_layer(percent,material)
+        self.ack_update()
         
-    
+    def ack_update(self):
+        self.ack.update()
     '''
     the method delete_layer delete the selected materials
     '''
     def delete_layer(self):
         self.view.delete_layer()
+        self.ack_update()
         
     '''
     the method set_layer_information update the layer
@@ -88,6 +90,7 @@ class Cross_Section(GridLayout):
     def set_height(self,value):
         self.view.set_height(value)
         self.cross_section_height=value
+        self.ack_update()
     
     '''
     the method set_width change the width of the view
@@ -95,12 +98,14 @@ class Cross_Section(GridLayout):
     def set_width(self,value):
         self.view.set_width(value)
         self.cross_section_width=value
-    
+        self.ack_update()
+        
     '''
     the method set_percent change the percentage share of the selected materials
     '''
     def set_percent(self, value):
         self.view.set_percent(value)
+        self.ack_update()
     
     '''
     calculate the weight and the price of the cross section
@@ -125,6 +130,9 @@ class Cross_Section(GridLayout):
     def calculate_strength(self):
         strength=0.
         #cur supremum
+        self.min_of_maxstrain=10000000.
+        #max strain is necessary for other calculations
+        self.max_of_maxstrain=0
         percent_of_layers=0.
         #find the minimum max_strain
         for layer in self.view.layers:
@@ -132,10 +140,14 @@ class Cross_Section(GridLayout):
             cur_strain=layer.get_strain()
             if cur_strain<self.min_of_maxstrain:
                 self.min_of_maxstrain=cur_strain
+            if cur_strain>self.max_of_maxstrain:
+                self.max_of_maxstrain=cur_strain
         if 1.-percent_of_layers>0:
             cur_value=self.concrete_strength/self.concrete_stiffness
             if self.min_of_maxstrain>cur_value:
                 self.min_of_maxstrain=cur_value
+            if self.max_of_maxstrain<cur_value:
+                self.max_of_maxstrain=cur_value
         #calculate the strength
         for layer in self.view.layers:
             strength+=self.min_of_maxstrain*layer.material.stiffness*layer._height/self.cross_section_height
@@ -143,3 +155,5 @@ class Cross_Section(GridLayout):
             strength+=self.min_of_maxstrain*(1.-percent_of_layers)*self.concrete_stiffness
         self.strength=strength
         
+    def calculate_strain_of_concrete(self):
+       return self.concrete_strength/self.concrete_stiffness
