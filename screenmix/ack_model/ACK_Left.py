@@ -10,7 +10,7 @@ from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.slider import Slider
-
+import numpy as np
 from cross_section_view.CS_Rectangle_View import colorcycler
 from kivy.garden.graph import Graph, MeshLinePlot
 from cross_section.Cross_Section import Cross_Section
@@ -33,7 +33,6 @@ class Ack_Left(GridLayout):
 
     def create_graph(self):
         self.graph = Graph(xlabel='strain', ylabel='stress',
-                           x_ticks_major=0.0001, y_ticks_major=5,
                            y_grid_label=True, x_grid_label=True,
                            xmin=0.0, xmax=0.01, ymin=0, ymax=30)
         self.add_widget(self.graph)
@@ -114,6 +113,10 @@ class Ack_Left(GridLayout):
         # setting the maximum of the graph
         self.graph.xmax = points[-1][0] * 1.2
         self.graph.ymax = points[-1][1] * 1.2
+        self.graph.x_ticks_major = np.round(
+            self.graph.xmax / 6., decimals=int(-np.log10(self.graph.xmax / 6)) + 1)
+        self.graph.y_ticks_major = np.round(
+            self.graph.ymax / 6., decimals=int(-np.log10(self.graph.ymax / 6)) + 1)
 
         return points
 
