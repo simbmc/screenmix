@@ -34,17 +34,18 @@ class CS_Rectangle_View(BoxLayout, AView):
         self.percent_change = False
         self.layers = []
         self.create_graph()
-        self.add_widget(self.update_all_graph)
+#         self.add_widget(self.update_all_graph)
 
     '''
     the method update_all_graph update the graph. the method should be called, when
     something has changed
     '''
-    @property
+
     def update_all_graph(self):
-        list = []
+        #         list = []
         for plot in self.graph.plots:
-            list.append(plot)
+            #             list.append(plot)
+            self.graph.remove_plot(plot)
         for layer in self.layers:
             y = layer.y_coordinate
             h = layer._height
@@ -55,12 +56,11 @@ class CS_Rectangle_View(BoxLayout, AView):
                 layer.rect.color = [255, 255, 255]
 
             self.graph.add_plot(layer.rect)
-        for plot in list:
-            self.graph.remove_plot(plot)
-            self.graph._clear_buffer()
-        if len(list) == 0:
-            self.graph._clear_buffer()
-        return self.graph
+#         for plot in list:
+#             self.graph.remove_plot(plot)
+#             self.graph._clear_buffer()
+#         if len(list) == 0:
+#             self.graph._clear_buffer()
 
     '''
     the method create_graph create the graph, where you can add 
@@ -72,6 +72,7 @@ class CS_Rectangle_View(BoxLayout, AView):
             x_ticks_major=0.05, y_ticks_major=0.05,
             y_grid_label=True, x_grid_label=True, padding=5,
             xmin=0, xmax=self.cross_section_width, ymin=0, ymax=self.cross_section_height)
+        self.add_widget(self.graph)
 
     '''
     the method draw_layer was developed to get the points of the rectangle
@@ -138,17 +139,18 @@ class CS_Rectangle_View(BoxLayout, AView):
     '''
 
     def on_touch_down(self, touch):
-        x_coordinate = (touch.x / self.graph.width) / \
-            (1 / self.cross_section_width)
-        y_coordinate = (touch.y / self.graph.height) / \
-            (1. / self.cross_section_height)
+        x0, y0 = self.graph._plot_area.pos  # position of the lowerleft
+        graph_w, graph_h = self.graph._plot_area.size  # graph size
+        x_coordinate = (touch.x - x0) / graph_w * self.cross_section_width
+        y_coordinate = (touch.y - y0) / graph_h * self.cross_section_height
+
         changed = False
         one_is_already_focus = False
         for rectangle in self.layers:
             if rectangle.mouse_within(x_coordinate, y_coordinate):
                 if rectangle.focus == True and self.percent_change:
                     self.percent_change = False
-                    self.update_all_graph
+                    self.update_all_graph()
                     return
                 if rectangle.focus == False and one_is_already_focus == False:
                     rectangle.focus = True
@@ -163,7 +165,7 @@ class CS_Rectangle_View(BoxLayout, AView):
                     changed = True
         # update just when something has change
         if changed:
-            self.update_all_graph
+            self.update_all_graph()
 
     # not yet so relevant. maybe we have time, we can finished it
     '''
@@ -191,7 +193,7 @@ class CS_Rectangle_View(BoxLayout, AView):
                               self.cross_section_width, next(colorcycler), value)
         cur.set_material(material)
         self.layers.append(cur)
-        self.update_all_graph
+        self.update_all_graph()
         self.cross_section.calculate_strength()
         self.update_cross_section_information()
 
@@ -203,7 +205,7 @@ class CS_Rectangle_View(BoxLayout, AView):
         for rectangle in self.layers:
             if rectangle.focus:
                 self.layers.remove(rectangle)
-        self.update_all_graph
+        self.update_all_graph()
         self.cross_section.calculate_strength()
         self.update_cross_section_information()
 
@@ -274,7 +276,7 @@ class CS_Rectangle_View(BoxLayout, AView):
             if rectangle.focus:
                 rectangle.set_height(self.cross_section_height * value)
                 rectangle.set_percentage(value)
-                self.update_all_graph
+                self.update_all_graph()
                 self.cross_section.calculate_strength()
                 self.update_cross_section_information()
                 return
@@ -292,7 +294,7 @@ class CS_Rectangle_View(BoxLayout, AView):
                 rectangle._height / self.cross_section_height * value)
         self.graph.ymax = self.cross_section_height
         self.cross_section_height = value
-        self.update_all_graph
+        self.update_all_graph()
         self.update_cross_section_information()
 
     '''
@@ -305,7 +307,7 @@ class CS_Rectangle_View(BoxLayout, AView):
         self.graph.xmax = self.cross_section_width
         for rectangle in self.layers:
             rectangle.set_width(value)
-        self.update_all_graph
+        self.update_all_graph()
         self.update_cross_section_information()
 
     '''

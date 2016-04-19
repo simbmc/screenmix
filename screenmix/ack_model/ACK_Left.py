@@ -11,9 +11,9 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.slider import Slider
 import numpy as np
-from cross_section_view.CS_Rectangle_View import colorcycler
 from kivy.garden.graph import Graph, MeshLinePlot
 from cross_section.Cross_Section import Cross_Section
+import random
 
 
 class Ack_Left(GridLayout):
@@ -60,7 +60,7 @@ class Ack_Left(GridLayout):
 
     def plot(self, button):
         self.plot = MeshLinePlot(
-            color=[next(colorcycler), next(colorcycler), next(colorcycler), 1])
+            color=[random.random(), random.random(), random.random(), 1])
         self.plot.points = self.calculate_points()
         self.graph.add_plot(self.plot)
 
