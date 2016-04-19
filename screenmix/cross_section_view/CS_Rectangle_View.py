@@ -46,11 +46,9 @@ class CS_Rectangle_View(BoxLayout, AView):
         for plot in self.graph.plots:
             list.append(plot)
         for layer in self.layers:
-            x = layer.x_coordinate
             y = layer.y_coordinate
-            w = self.cross_section_width
             h = layer._height
-            layer.rect = FilledRect(xrange=[x - w / 2., x + w / 2.],
+            layer.rect = FilledRect(xrange=[0., self.cross_section_width],
                                     yrange=[y - h / 2., y + h / 2.],
                                     color=layer.colors)
             if layer.focus:
