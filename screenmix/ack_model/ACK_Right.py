@@ -96,14 +96,22 @@ class Ack_Right(GridLayout):
         # draw the free places of the cross section
         free_places = self.cross_section.view.get_free_places()
         for layer in free_places:
-            self.rect = MeshLinePlot(color=[1, 1, 0, 1])
-            height = layer[1] - layer[0]
-            self.rect.points = self.draw_layer(
-                0, layer[1] - height / 2., self.cross_section.calculate_strain_of_concrete() * self.slider.value, height)
+            #             self.rect = MeshLinePlot(color=[1, 1, 0, 1])
+            #             height = layer[1] - layer[0]
+            #             self.rect.points = self.draw_layer(
+            # 0, layer[1] - height / 2.,
+            # self.cross_section.calculate_strain_of_concrete() *
+            # self.slider.value, height)
+            self.rect = FilledRect(xrange=[0, self.cross_section.calculate_strain_of_concrete() * self.slider.value],
+                                   yrange=[layer[0], layer[1]],
+                                   color=[255, 255, 255])
             self.graph.add_plot(self.rect)
         # draw the layers
         for layer in self.cross_section.view.layers:
-            layer.rect = MeshLinePlot(color=layer.colors)
+            layer.rect = FilledRect(xrange=[0, layer.get_strain() * self.slider.value],
+                                    yrange=[
+                                        layer.y_coordinate - layer._height / 2., layer.y_coordinate + layer._height / 2.],
+                                    color=layer.colors)
             layer.rect.points = self.draw_layer(
                 0, layer.y_coordinate, layer.get_strain() * self.slider.value, layer._height)
             self.graph.add_plot(layer.rect)

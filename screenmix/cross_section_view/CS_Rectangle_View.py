@@ -42,10 +42,9 @@ class CS_Rectangle_View(BoxLayout, AView):
     '''
 
     def update_all_graph(self):
-        #         list = []
+        list = []
         for plot in self.graph.plots:
-            #             list.append(plot)
-            self.graph.remove_plot(plot)
+            list.append(plot)
         for layer in self.layers:
             y = layer.y_coordinate
             h = layer._height
@@ -56,11 +55,11 @@ class CS_Rectangle_View(BoxLayout, AView):
                 layer.rect.color = [255, 255, 255]
 
             self.graph.add_plot(layer.rect)
-#         for plot in list:
-#             self.graph.remove_plot(plot)
-#             self.graph._clear_buffer()
-#         if len(list) == 0:
-#             self.graph._clear_buffer()
+        for plot in list:
+            self.graph.remove_plot(plot)
+            self.graph._clear_buffer()
+        if len(list) == 0:
+            self.graph._clear_buffer()
 
     '''
     the method create_graph create the graph, where you can add 
@@ -292,8 +291,8 @@ class CS_Rectangle_View(BoxLayout, AView):
                 rectangle.y_coordinate / self.cross_section_height * value)
             rectangle.set_height(
                 rectangle._height / self.cross_section_height * value)
-        self.graph.ymax = self.cross_section_height
         self.cross_section_height = value
+        self.graph.ymax = self.cross_section_height
         self.update_all_graph()
         self.update_cross_section_information()
 

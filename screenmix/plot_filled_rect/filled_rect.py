@@ -17,7 +17,7 @@ class FilledRect(Plot):
     '''
     draw a filled rectangular for given color and geometric parameters
     '''
-    _image = ObjectProperty(None)
+    _image = ObjectProperty()
     xrange = ListProperty([0, 100])
     yrange = ListProperty([0, 100])
     color = ListProperty([255, 255, 255])
@@ -28,7 +28,7 @@ class FilledRect(Plot):
             color=self.ask_draw, xrange=self.ask_draw, yrange=self.ask_draw)
 
     def create_drawings(self):
-        self._image = Rectangle()
+        self._image = Rectangle(size=[0., 0.])
         return [self._image]
 
     def draw(self, *args):
