@@ -112,8 +112,6 @@ class Ack_Right(GridLayout):
                                     yrange=[
                                         layer.y_coordinate - layer._height / 2., layer.y_coordinate + layer._height / 2.],
                                     color=layer.colors)
-            layer.rect.points = self.draw_layer(
-                0, layer.y_coordinate, layer.get_strain() * self.slider.value, layer._height)
             self.graph.add_plot(layer.rect)
         # delete the old plots
         for plot in list:
