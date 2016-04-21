@@ -27,7 +27,7 @@ class Ack_Right(GridLayout):
     the method create_graph create the graph
     '''
     def create_graph(self):
-        self.graph = Graph(
+        self.graph = Graph(xlabel='stress [MPa]', ylabel='height [m]',
                         x_ticks_major=0.0001, y_ticks_major=0.1,
                         y_grid_label=True, x_grid_label=True,
                         xmin=0.0, xmax=0.0005, ymin=0, ymax=self.cross_section.cross_section_height)
@@ -91,12 +91,12 @@ class Ack_Right(GridLayout):
         for layer in free_places:
             self.rect=MeshLinePlot(color=[1, 1, 0, 1])
             height=layer[1]-layer[0]
-            self.rect.points=self.draw_layer(0, layer[1]-height/2., self.cross_section.calculate_strain_of_concrete()*self.slider.value, height)
+            self.rect.points=self.draw_layer(0, layer[1]-height/2., self.cross_section.concrete_stiffness*self.slider.value, height)
             self.graph.add_plot(self.rect)
         #draw the layers
         for layer in self.cross_section.view.layers:
             layer.rect = MeshLinePlot(color=layer.colors)
-            layer.rect.points = self.draw_layer(0, layer.y_coordinate, layer.get_strain()*self.slider.value, layer._height)
+            layer.rect.points = self.draw_layer(0, layer.y_coordinate, layer.material.stiffness*self.slider.value, layer._height)
             self.graph.add_plot(layer.rect)
         #delete the old plots
         for plot in list:
@@ -105,13 +105,13 @@ class Ack_Right(GridLayout):
         return self.graph
     
     def find_max_stress(self):
-        self.max_stress=self.cross_section.calculate_strain_of_concrete()*self.slider.value
+        self.max_stress=self.cross_section.concrete_stiffness*self.slider.value
         for layer in self.cross_section.view.layers:
-            cur_value=layer.get_strain()*self.slider.value
+            cur_value=layer.material.stiffness*self.slider.value
             if self.max_stress<cur_value:
                 self.max_stress=cur_value
         self.graph.xmax=self.max_stress
-        self.graph.x_ticks_major=self.max_stress/2.
+        self.graph.x_ticks_major=int(self.max_stress/5.)
         
 class CSIApp(App):
     def build(self):
