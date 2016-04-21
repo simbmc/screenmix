@@ -16,6 +16,7 @@ from materials.Carbon_Fiber import Carbon_Fiber
 from materials.Concrete import Concrete
 from materials.Glass_Fiber import Glass_Fiber
 from materials.Steel import Steel
+from material_editor.materiallist import MaterialList
 
 '''
 the cross_Section was developed to undock the cs_information from the view
@@ -26,7 +27,7 @@ class Cross_Section(GridLayout):
         super(Cross_Section, self).__init__(**kwargs)
         self.cross_section_height = 0.5
         self.cross_section_width = 0.25
-        self.all_materials=[Steel(),Carbon_Fiber(),Glass_Fiber()]
+        self.all_materials=MaterialList()
         self.view=CS_Rectangle_View()
         self.concrete_density=2300.
         self.concrete_price=0.065
@@ -112,6 +113,8 @@ class Cross_Section(GridLayout):
     '''
     def calculate_weight_price(self):
         weight=price=percent_of_layers=0.
+        #go trough all layers and
+        #get the weight of them
         for layer in self.view.layers:
             cur=layer.get_weight()
             weight+=cur

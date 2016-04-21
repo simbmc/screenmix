@@ -25,17 +25,17 @@ class Layer_Rectangle:
     '''
 
     def mouse_within(self, x_value, y_value):
-        if y_value < self.y_coordinate + self._height / 2. and y_value > self.y_coordinate - self._height / 4. and x_value > self.x_coordinate / 10. and x_value < self._width:
+        if y_value < self.y_coordinate + self._height / 2. and y_value > self.y_coordinate - self._height / 2. and x_value > 0. and x_value < self._width:
             return True
         else:
             return False
-    
+
     def mouse_within_just_x_coordinate(self, x_value):
-        if x_value > self.x_coordinate / 10. and x_value < self._width:
+        if x_value > 0. and x_value < self._width:
             return True
-        else :
+        else:
             return False
-    
+
     '''
     checked wheter the layers are the same
     '''

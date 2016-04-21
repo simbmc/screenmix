@@ -24,19 +24,22 @@ class Cross_Section_Information(BoxLayout):
     #Constructor
     def __init__(self, **kwargs):
         super(Cross_Section_Information, self).__init__(**kwargs)
-        self.all_materials=[Steel(),Carbon_Fiber(),Concrete(),Glass_Fiber()]
         self.orientation='vertical'
+        
+        
+    
+    ########################################################################################################
+    # The following part of code create only the graphical user interface                                  #
+    ########################################################################################################
+    
+    #not finished yet
+    def create_gui(self):
         self.create_scale_area()
         self.create_cross_section_area()
         self.create_add_delete_area()
         self.create_material_information()
         self.create_add_layer_information_area()
         self.create_confirm_cancel_area()
-        
-    
-    ########################################################################################################
-    # The following part of code create only the graphical user interface                                  #
-    ########################################################################################################
     
     '''
     the method create_scale_area create the area where you can 
@@ -146,8 +149,8 @@ class Cross_Section_Information(BoxLayout):
         self.material_editor=Material_Creater()
         self.material_editor.sign_in_parent(self)
         self.popup_material_editor=Popup(title='editor',content=self.material_editor)
-        for i in range(0,len(self.all_materials)):
-            btn_material_A=Button(text=self.all_materials[i].name)
+        for i in range(0,self.all_materials.get_length()):
+            btn_material_A=Button(text=self.all_materials.all_materials[i].name)
             btn_material_A.bind(on_press=self.select_material)
             self.layout_materials.add_widget(btn_material_A)
         self.btn_material_editor=Button(text='create material')
@@ -198,9 +201,9 @@ class Cross_Section_Information(BoxLayout):
     '''
     def add_layer(self,button):
         self.finished_adding()
-        for i in range(0,len(self.all_materials)):
-            if self.all_materials[i].name==self.material_option.text:
-                self.cross_section.add_layer(self.slider_layer_percent.value,self.all_materials[i])
+        for i in range(0,self.all_materials.get_length()):
+            if self.all_materials.all_materials[i].name==self.material_option.text:
+                self.cross_section.add_layer(self.slider_layer_percent.value,self.all_materials.all_materials[i])
                 return
     '''
     the method cancel_adding would be must call when the user wouldn't 
@@ -249,13 +252,18 @@ class Cross_Section_Information(BoxLayout):
     its make sure that the create material button is the last component 
     of the gridlayout
     '''
-    def update_materials(self):
+    def update(self):
         self.layout_materials.remove_widget(self.btn_material_editor)
-        btn_material_A=Button(text=self.all_materials[-1].name)
+        btn_material_A=Button(text=self.all_materials.all_materials[-1].name)
         btn_material_A.bind(on_press=self.select_material)
         self.layout_materials.add_widget(btn_material_A)
         self.layout_materials.add_widget(self.btn_material_editor)
     
+    
+    
+    #################################################################################################
+    #                                Setter && Getter                                               #
+    #################################################################################################
     
     '''
     the method will be called when the user selected a material
@@ -265,11 +273,7 @@ class Cross_Section_Information(BoxLayout):
     def select_material(self, Button):
         self.popup.dismiss()
         self.material_option.text=Button.text
-    
-    #################################################################################################
-    #                                Setter && Getter                                               #
-    #################################################################################################
-    
+        
     '''
     the method set_height change the height of the cs_view
     '''
@@ -309,3 +313,6 @@ class Cross_Section_Information(BoxLayout):
     '''
     def set_cross_section(self,cross_section):
         self.cross_section=cross_section
+        self.all_materials=self.cross_section.all_materials
+        self.all_materials.add_listener(self)
+        self.create_gui()

@@ -14,50 +14,130 @@ from materials.Carbon_Fiber import Carbon_Fiber
 from materials.Concrete import Concrete
 from materials.Glass_Fiber import Glass_Fiber
 from materials.Steel import Steel
+from cross_section.Cross_Section import Cross_Section
+from kivy.uix.popup import Popup
+from material_editor.Material_Creater import Material_Creater
 
 
 class Material_Editor(ScrollView):
     #Constructor
     def __init__(self, **kwargs):
         super(Material_Editor, self).__init__(**kwargs)
-        self.all_materials=[Steel(),Carbon_Fiber(),Concrete(),Glass_Fiber()]
-        self.create_gui()
         
     '''
     the method create gui create the gui of 
     the material_editor and create the popups
     '''
     def create_gui(self):
-        self.material_layout=GridLayout(cols=1)
-        for i in self.all_materials:
+        self.create_material_information()
+        self.material_layout=GridLayout(cols=1,spacing=2, size_hint_y=None)
+        # Make sure the height is such that there is something to scroll.
+        self.material_layout.bind(minimum_height=self.material_layout.setter('height'))
+        for i in self.all_materials.all_materials:
             btn=Button(text=i.name,size_hint_y=None, height=40)
             btn.bind(on_press=self.show_material_information)
             self.material_layout.add_widget(btn)
-        btn=Button(text='create material',size_hint_y=None, height=40)
-        btn.bind(on_press=self.edit_material)
-        self.material_layout.add_widget(btn)
+        #just for demonstration
+        '''
+        for i in range(0,20):
+            btn=Button(text=str(i),size_hint_y=None, height=40)
+            self.material_layout.add_widget(btn)
+        '''
+        self.btn_material_editor=Button(text='create material',size_hint_y=None, height=40)
+        self.btn_material_editor.bind(on_press=self.create_material)
+        self.material_layout.add_widget(self.btn_material_editor)
         self.add_widget(self.material_layout)
     
+    '''
+    create the popups: 
+    popup_info to show the material information
+    popup_create to create new material
+    '''
+    def create_popups(self):
+        creater=Material_Creater()
+        creater.sign_in_parent(self)
+        self.popup_info=Popup(title='material',content=self.content)
+        self.popup_create=Popup(title='create new material', content=creater)
+        
+    '''
+    create the gui which is necessary for the show of the 
+    material-information
+    '''
+    def create_material_information(self):
+        self.name=Label()
+        self.price=Label()
+        self.density=Label()
+        self.stiffness=Label()
+        self.strenght=Label()
+        self.content=GridLayout(cols=2)
+        self.content.add_widget(Label(text='name:'))
+        self.content.add_widget(self.name)
+        self.content.add_widget(Label(text='price[Euro/kg]:'))
+        self.content.add_widget(self.price)
+        self.content.add_widget(Label(text='density[kg/m^3]:'))
+        self.content.add_widget(self.density)
+        self.content.add_widget(Label(text='stiffness[MPa]:'))
+        self.content.add_widget(self.stiffness)
+        self.content.add_widget(Label(text='strength[MPa]:'))
+        self.content.add_widget(self.strenght)
+        btn_back=Button(text='back')
+        btn_back.bind(on_press=self.cancel_show)
+        self.content.add_widget(btn_back)
+        self.create_popups()
     
+    #not finished yet
     def show_material_information(self,button):
-        pass
+        for i in range(0,self.cross_section.all_materials.get_length()):
+            if self.all_materials.all_materials[i].name==button.text:
+                self.name.text=self.all_materials.all_materials[i].name
+                self.price.text=str(self.all_materials.all_materials[i].price)
+                self.density.text=str(self.all_materials.all_materials[i].density)
+                self.stiffness.text=str(self.all_materials.all_materials[i].stiffness)
+                self.strenght.text=str(self.all_materials.all_materials[i].strength)
+                self.popup_info.open()
     
-    def edit_material(self,button):
-        pass
-    
-    def cancel(self,button):
-        pass
+    #not finished yet
+    def cancel_show(self,button):
+        self.popup_info.dismiss()
+        
+    #not finished yet
+    def create_material(self,button):
+        self.popup_create.open()
     
     '''
-    the method sign_in_parent to set the parent of 
-    the object. the parent must have the method update_materials
+    the method update_materials update the view of the materials. 
+    its make sure that the create material button is the last component 
+    of the gridlayout
     '''
-    def sign_in_parent(self, parent):
-        self._parent=parent
+    def update(self):
+        print('here')
+        self.material_layout.remove_widget(self.btn_material_editor)
+        btn_material_A=Button(text=self.all_materials.all_materials[-1].name,size_hint_y=None, height=40)
+        btn_material_A.bind(on_press=self.show_material_information)
+        self.material_layout.add_widget(btn_material_A)
+        self.material_layout.add_widget(self.btn_material_editor)
+        print('material-editor:'+str(self.all_materials))
+        
+    #not finished yet
+    def cancel_edit_material(self):
+        self.popup_create.dismiss()
     
+    '''
+    the method set_cross_section was developed to say the view, 
+    which cross section should it use
+    '''
+    def set_cross_section(self,cross_section):
+        self.cross_section=cross_section
+        self.all_materials=self.cross_section.all_materials
+        self.all_materials.add_listener(self)
+        self.create_gui()
+        
 class EditorApp(App):
     def build(self):
-        return Material_Editor()
+        me=Material_Editor()
+        cs=Cross_Section()
+        me.set_cross_section(cs)
+        return me
 
 if __name__ == '__main__':
     EditorApp().run()
