@@ -16,6 +16,8 @@ class Ack(GridLayout):
     def create_gui(self):
         self.ack_left=Ack_Left()
         self.ack_right=Ack_Right()
+        self.ack_left.set_ack_right(self.ack_right)
+        self.ack_right.set_ack_left(self.ack_left)
         self.ack_left.set_cross_section(self.cross_section)
         self.ack_right.set_cross_section(self.cross_section)
         self.add_widget(self.ack_left)

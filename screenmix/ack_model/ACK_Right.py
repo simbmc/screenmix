@@ -44,24 +44,32 @@ class Ack_Right(GridLayout):
         slider_value = 0.02
         self.strain = Label(text='strain: ' + str(slider_value))
         self.slider = Slider(min=0.00001, max=0.1, value=slider_value)
-        self.slider.bind(value=self.setStrain)
+        self.slider.bind(value=self.update_strainLabel)
         content.add_widget(self.strain)
         content.add_widget(self.slider)
         self.add_widget(content)
 
-    def setStrain(self, instance, value):
+    def update_strainLabel(self, instance, value):
         self.strain.text = 'strain: ' + str(value)
         self.update()
-
+    
+    def setStrain(self, value):
+        self.slider.max=value
+    
     '''
     the method set_cross_section was developed to say the view, 
     which cross section should it use
     '''
-
     def set_cross_section(self, cross_section):
         self.cross_section = cross_section
         self.create_gui()
-
+    
+    '''
+    ack_left sign in by ack right
+    '''
+    def set_ack_left(self, ack_left):
+        self.ack_left=ack_left
+    
     '''
     the method draw_layer was developed to get the points of the rectangle
     the while_loop was create to make the rectangle set a grid.
@@ -136,7 +144,6 @@ class Ack_Right(GridLayout):
         self.graph.x_ticks_major=int(self.max_stress/5.)
         
 class CSIApp(App):
-
     def build(self):
         ack = Ack_Right()
         cs = Cross_Section()

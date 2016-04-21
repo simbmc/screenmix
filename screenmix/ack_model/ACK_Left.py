@@ -13,6 +13,7 @@ import numpy as np
 from kivy.garden.graph import Graph, MeshLinePlot
 from cross_section.Cross_Section import Cross_Section
 import random
+from plot_filled_rect.filled_rect import FilledRect
 
 
 class Ack_Left(GridLayout):
@@ -113,11 +114,12 @@ class Ack_Left(GridLayout):
         # setting the maximum of the graph
         self.graph.xmax = points[-1][0] * 1.2
         self.graph.ymax = points[-1][1] * 1.2
+        self.ack_right.setStrain(points[-1][0])
         self.graph.x_ticks_major = np.round(
             self.graph.xmax / 6., decimals=int(-np.log10(self.graph.xmax / 6)) + 1)
         self.graph.y_ticks_major = np.round(
             self.graph.ymax / 6., decimals=int(-np.log10(self.graph.ymax / 6)) + 1)
-
+        self.createFocusPoint()
         return points
 
     # not finished yet
@@ -133,8 +135,23 @@ class Ack_Left(GridLayout):
 
     def set_cross_section(self, cross_section):
         self.cross_section = cross_section
-
-
+    
+    '''
+    ack_left sign in by ack left
+    '''
+    def set_ack_right(self, ack_right):
+        self.ack_right=ack_right
+    
+    def set_FocusPosition(self):
+        pass
+    
+    def createFocusPoint(self):
+        delta=50.
+        self.focus=FilledRect(xrange=[0.,self.graph.xmax/delta ],
+                                    yrange=[0,self.graph.ymax/delta],
+                                    color=[255,0,0])
+        self.graph.add_plot(self.focus)
+        
 class CSIApp(App):
 
     def build(self):

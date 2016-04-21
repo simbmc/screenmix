@@ -19,13 +19,13 @@ class MaterialList:
     def add_Material(self, material):
         self.all_materials.append(material)
         self.update()
-    
+        
     '''
     update all listeners when a new material was added
     '''
     def update(self):
         for listener in self.listeners:
-            listener.update
+            listener.update()
     
     def add_listener(self,listener):
         self.listeners.append(listener)

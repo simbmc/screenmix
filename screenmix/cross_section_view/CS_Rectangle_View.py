@@ -53,7 +53,6 @@ class CS_Rectangle_View(BoxLayout, AView):
                                     color=layer.colors)
             if layer.focus:
                 layer.rect.color = [255, 255, 255]
-
             self.graph.add_plot(layer.rect)
         for plot in list:
             self.graph.remove_plot(plot)
@@ -142,7 +141,6 @@ class CS_Rectangle_View(BoxLayout, AView):
         graph_w, graph_h = self.graph._plot_area.size  # graph size
         x_coordinate = (touch.x - x0) / graph_w * self.cross_section_width
         y_coordinate = (touch.y - y0) / graph_h * self.cross_section_height
-
         changed = False
         one_is_already_focus = False
         for rectangle in self.layers:
