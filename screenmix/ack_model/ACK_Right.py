@@ -63,28 +63,6 @@ class Ack_Right(GridLayout):
         self.create_gui()
 
     '''
-    the method draw_layer was developed to get the points of the rectangle
-    the while_loop was create to make the rectangle set a grid.
-    '''
-    @staticmethod
-    def draw_layer(x_coordinate, y_coordinate, width, height):
-        #points = [(x_coordinate - width / 2., y_coordinate - height / 2.), (x_coordinate + width / 2., y_coordinate - height / 2.), (x_coordinate + width / 2., y_coordinate + height / 2.), (x_coordinate - width / 2., y_coordinate + height / 2.), (x_coordinate - width / 2., y_coordinate - height / 2.)]
-        points = [(0, y_coordinate - height / 2.), (width, y_coordinate - height / 2.), (width,
-                                                                                         y_coordinate + height / 2.), (0, y_coordinate + height / 2.), (0, y_coordinate - height / 2.)]
-
-        i = 0
-        delta = 1000.
-        distance = width / delta
-        while i < delta:
-            points.append((distance, y_coordinate - height / 2.))
-            points.append((distance, y_coordinate - height / 2. + height))
-            distance += width / delta
-            points.append((distance, y_coordinate - height / 2. + height))
-            points.append((distance, y_coordinate - height / 2. + height))
-            i += 1
-        return points
-
-    '''
     update the layerinformation of layers
     '''
 
@@ -97,12 +75,6 @@ class Ack_Right(GridLayout):
         # draw the free places of the cross section
         free_places = self.cross_section.view.get_free_places()
         for layer in free_places:
-            #             self.rect = MeshLinePlot(color=[1, 1, 0, 1])
-            #             height = layer[1] - layer[0]
-            #             self.rect.points = self.draw_layer(
-            # 0, layer[1] - height / 2.,
-            # self.cross_section.calculate_strain_of_concrete() *
-            # self.slider.value, height)
             self.rect = FilledRect(xrange=[0, self.cross_section.calculate_strain_of_concrete() * self.slider.value],
                                    yrange=[layer[0], layer[1]],
                                    color=[255, 255, 255])
