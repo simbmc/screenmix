@@ -1,6 +1,5 @@
 '''
 Created on 12.04.2016
-
 @author: mkennert
 '''
 from itertools import cycle
@@ -42,7 +41,8 @@ class Ack_Left(GridLayout):
     '''
 
     def create_option_layout(self):
-        self.option_layout = GridLayout(cols=2)
+        content_height=30
+        self.option_layout = GridLayout(cols=2,row_force_default=True, row_default_height=content_height, size_hint_y=None, height=content_height)
 #         self.option_layout.add_widget(Label(text='bond [N/mm]:'))
 #         self.bond_slider = Slider()
 #         self.option_layout.add_widget(self.bond_slider)

@@ -30,10 +30,11 @@ class Ack_Right(GridLayout):
     '''
 
     def create_graph(self):
-        self.graph = Graph(
-            x_ticks_major=0.0001, y_ticks_major=0.1,
-            y_grid_label=True, x_grid_label=True,
-            xmin=0.0, xmax=0.0005, ymin=0, ymax=self.cross_section.cross_section_height)
+        self.graph = Graph(xlabel='stress [MPa]', ylabel='height [m]',
+                           x_ticks_major=0.0001, y_ticks_major=0.1,
+                           y_grid_label=True, x_grid_label=True,
+                           xmin=0.0, xmax=0.0005, ymin=0, ymax=self.cross_section.cross_section_height)
+
         self.add_widget(self.graph)
 
     def create_option_layout(self):
@@ -120,14 +121,16 @@ class Ack_Right(GridLayout):
         return self.graph
 
     def find_max_stress(self):
-        self.max_stress = self.cross_section.calculate_strain_of_concrete(
-        ) * self.slider.value
+        # ask Li for that
+        self.max_stress = self.cross_section.concrete_stiffness * \
+            self.slider.value
+
         for layer in self.cross_section.view.layers:
-            cur_value = layer.get_strain() * self.slider.value
+            cur_value = layer.material.stiffness * self.slider.value
             if self.max_stress < cur_value:
                 self.max_stress = cur_value
         self.graph.xmax = self.max_stress
-        self.graph.x_ticks_major = self.max_stress / 2.
+        self.graph.x_ticks_major = int(self.max_stress / 5.)
 
 
 class CSIApp(App):

@@ -11,6 +11,8 @@ from kivy.uix.scrollview import ScrollView
 
 from ack_model.ACK import Ack
 from cross_section.Cross_Section import Cross_Section
+from material_editor.materiallist import MaterialList
+from material_editor.Material_Editor import Material_Editor
 
 
 class MainWindow(GridLayout):
@@ -30,6 +32,7 @@ class MainWindow(GridLayout):
     def create_componets(self):
         self.create_cross_section_view()
         self.create_ack_view()
+        self.create_material_editor()
     
     '''
     create the list_view. here you can add more menu-options for the app
@@ -46,6 +49,10 @@ class MainWindow(GridLayout):
         ack_view=Button(text='ack',size_hint_y=None, height=40)
         ack_view.bind(on_press=self.show_ack_view)
         layout.add_widget(ack_view)
+        #material-editor
+        me=Button(text='material editor',size_hint_y=None, height=40)
+        me.bind(on_press=self.show_material_editor)
+        layout.add_widget(me)
         ##################################################################
         #Here you can add more menu-parts                                #
         #Attention: it's necessary that the button have the follow       #
@@ -86,9 +93,17 @@ class MainWindow(GridLayout):
     def create_ack_view(self):
         self.ack_view=Ack()
         self.cross_section.set_ack(self.ack_view)
-        #sign in of the cross section
+        #sign in by the cross section
         self.ack_view.set_cross_section(self.cross_section)
     
+    '''
+    create the material-editor
+    '''
+    def create_material_editor(self):
+        self.material_editor=Material_Editor()
+        #sign in by the cross section
+        self.material_editor.set_cross_section(self.cross_section)
+        
     #############################################################################
     #Attention:When you want write a new show-method than you must make sure    #
     #that actually component is remove from the widget and set                  #
@@ -105,6 +120,12 @@ class MainWindow(GridLayout):
         self.remove_widget(self.content)
         self.add_widget(self.cross_section)
         self.content=self.cross_section
+        self.popup.dismiss()
+    
+    def show_material_editor(self, button):
+        self.remove_widget(self.content)
+        self.add_widget(self.material_editor)
+        self.content=self.material_editor
         self.popup.dismiss()
     
 class CSIApp(App):
