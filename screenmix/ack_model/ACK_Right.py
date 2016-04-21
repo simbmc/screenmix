@@ -11,7 +11,7 @@ from kivy.uix.slider import Slider
 from cross_section.Cross_Section import Cross_Section
 from cross_section_view.CS_Rectangle_View import colorcycler
 from kivy.garden.graph import Graph, MeshLinePlot
-from plot_filled_rect.filled_rect import FilledRect
+from plot.filled_rect import FilledRect
 
 
 class Ack_Right(GridLayout):

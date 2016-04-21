@@ -8,8 +8,6 @@ from kivy.properties import ListProperty, ObjectProperty
 from kivy.graphics import Rectangle
 from kivy.graphics.texture import Texture
 from math import log10
-import numpy as np
-import array
 
 
 class FilledRect(Plot):
