@@ -33,8 +33,10 @@ class FilledRect(Plot):
         super(FilledRect, self).draw(*args)
 
         self._texture = Texture.create(size=(1, 1), colorfmt='rgba')
+#         self._texture.blit_buffer(
+#             bytearray(self.color), colorfmt='rgb', bufferfmt='ubyte')
         self._texture.blit_buffer(
-            bytearray(self.color), colorfmt='rgb', bufferfmt='ubyte')
+            b''.join(map(chr, self.color)), colorfmt='rgb', bufferfmt='ubyte')
 
         image = self._image
         image.texture = self._texture
