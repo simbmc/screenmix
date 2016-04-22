@@ -32,9 +32,11 @@ class FilledEllipse(Plot):
     def draw(self, *args):
         super(FilledEllipse, self).draw(*args)
 
-        self._texture = Texture.create(size=(1, 1), colorfmt='rgba')
+        self._texture = Texture.create(size=(1, 1), colorfmt='rgb')
+#         self._texture.blit_buffer(
+#             bytearray(self.color), colorfmt='rgb', bufferfmt='ubyte')
         self._texture.blit_buffer(
-            bytearray(self.color), colorfmt='rgb', bufferfmt='ubyte')
+            b''.join(map(chr, self.color)), colorfmt='rgb', bufferfmt='ubyte')
         image = self._image
         image.texture = self._texture
 
@@ -54,7 +56,7 @@ class FilledEllipse(Plot):
         w = tr[0] - bl[0]
         h = tr[1] - bl[1]
         image.size = (w, h)
-    
+
 if __name__ == '__main__':
     from kivy.uix.boxlayout import BoxLayout
     from kivy.app import App
