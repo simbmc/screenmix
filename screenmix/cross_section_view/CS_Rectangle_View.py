@@ -11,7 +11,7 @@ from kivy.uix.boxlayout import BoxLayout
 from itertools import cycle
 from cross_section_view.AView import AView
 from cross_section_view.Layer_Rectangle import Layer_Rectangle
-from plot_filled_rect.filled_rect import FilledRect
+from plot.filled_rect import FilledRect
 colors = [[255, 102, 102], [255, 255, 102], [140, 255, 102], [102, 255, 217],
           [102, 102, 255], [255, 102, 102], [179, 179, 179], [102, 71, 133]]
 colorcycler = cycle(colors)
