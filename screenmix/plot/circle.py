@@ -35,8 +35,6 @@ class Circle(Plot):
         super(Circle, self).draw(*args)
 
         self._texture = Texture.create(size=(1, 1), colorfmt='rgba')
-#         self._texture.blit_buffer(
-#             bytearray(self.color), colorfmt='rgb', bufferfmt='ubyte')
         self._texture.blit_buffer(
             b''.join(map(chr, self.color)), colorfmt='rgb', bufferfmt='ubyte')
 
