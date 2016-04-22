@@ -5,13 +5,9 @@ Created on 12.04.2016
 from itertools import cycle
 import random
 
-from kivy.app import App
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
-from kivy.uix.label import Label
-from kivy.uix.slider import Slider
 
-from cross_section.Cross_Section import Cross_Section
 from kivy.garden.graph import Graph, MeshLinePlot
 import numpy as np
 from plot.filled_ellipse import FilledEllipse
@@ -30,6 +26,7 @@ class Ack_Left(GridLayout):
         self.createFocusPoint()
         self.secondpoint=None
         self.thirdpoint=None
+        self.hasGraphs=False
 
     '''
     the method create_graph create the graph

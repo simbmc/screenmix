@@ -3,13 +3,10 @@ Created on 14.04.2016
 
 @author: mkennert
 '''
-from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.slider import Slider
 
-from cross_section.Cross_Section import Cross_Section
-from cross_section_view.CS_Rectangle_View import colorcycler
 from kivy.garden.graph import Graph, MeshLinePlot
 from plot.filled_rect import FilledRect
 

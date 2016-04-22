@@ -7,16 +7,11 @@ from kivy.app import App
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
-from kivy.uix.scrollview import ScrollView
-from kivy.uix.slider import Slider
-
-from materials.Carbon_Fiber import Carbon_Fiber
-from materials.Concrete import Concrete
-from materials.Glass_Fiber import Glass_Fiber
-from materials.Steel import Steel
-from cross_section.Cross_Section import Cross_Section
 from kivy.uix.popup import Popup
-from material_editor.Material_Creater import Material_Creater
+from kivy.uix.scrollview import ScrollView
+
+from cross_section.cs import Cross_Section
+from material_editor.creater import Material_Creater
 
 
 class Material_Editor(ScrollView):
@@ -132,12 +127,3 @@ class Material_Editor(ScrollView):
         self.all_materials.add_listener(self)
         self.create_gui()
         
-class EditorApp(App):
-    def build(self):
-        me=Material_Editor()
-        cs=Cross_Section()
-        me.set_cross_section(cs)
-        return me
-
-if __name__ == '__main__':
-    EditorApp().run()

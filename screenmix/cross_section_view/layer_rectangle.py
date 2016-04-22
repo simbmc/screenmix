@@ -8,16 +8,14 @@ Created on 14.04.2016
 class Layer_Rectangle:
     # Constructor
 
-    def __init__(self, x_coordinate, y_coordinate, height, width, colors, percentage):
+    def __init__(self, x_coordinate, y_coordinate, height, width, colors, percent):
         self.x_coordinate = x_coordinate
         self.y_coordinate = y_coordinate
         self._height = height
         self._width = width
-        self.rect = None
         self.colors = colors
         self.focus = False
-        self.material = None
-        self.percentage = percentage
+        self.percentage = percent
 
     '''
     check if the mouse is in the rectangle

@@ -3,11 +3,9 @@ Created on 07.04.2016
 
 @author: mkennert
 '''
-from kivy.app import App
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
-from kivy.uix.popup import Popup
 
 '''
 The class Keyboard was developed to give the user the possibility

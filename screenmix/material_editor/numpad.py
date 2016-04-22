@@ -3,17 +3,15 @@ Created on 01.03.2016
 
 @author: mkennert
 '''
-from kivy.app import App
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
-from kivy.uix.popup import Popup
 
 
-class NumPad(GridLayout):
+class Numpad(GridLayout):
     #Construktor
     def __init__(self, **kwargs):
-        super(NumPad, self).__init__(**kwargs)
+        super(Numpad, self).__init__(**kwargs)
         self.create_numfield()
         self.cols=1
         self.add_widget(self.layout)

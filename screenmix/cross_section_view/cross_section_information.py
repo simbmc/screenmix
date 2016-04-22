@@ -3,18 +3,13 @@ Created on 10.03.2016
 
 @author: mkennert
 '''
-from material_editor.Material_Creater import Material_Creater
-from kivy.app import App
+from material_editor.creater import Material_Creater
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.uix.slider import Slider
-from materials.Steel import Steel
-from materials.Carbon_Fiber import Carbon_Fiber
-from materials.Concrete import Concrete
-from materials.Glass_Fiber import Glass_Fiber
 '''
 the class Cross_Section_Information was developed to show 
 the information of the cs_view

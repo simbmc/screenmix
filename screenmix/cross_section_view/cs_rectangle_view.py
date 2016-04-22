@@ -9,8 +9,8 @@ from kivy.garden.graph import Graph, MeshLinePlot
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from itertools import cycle
-from cross_section_view.AView import AView
-from cross_section_view.Layer_Rectangle import Layer_Rectangle
+from cross_section_view.aview import AView
+from cross_section_view.layer_rectangle import Layer_Rectangle
 from plot.filled_rect import FilledRect
 colors = [[255, 102, 102], [255, 255, 102], [140, 255, 102], [102, 255, 217],
           [102, 102, 255], [255, 102, 102], [179, 179, 179], [102, 71, 133]]
@@ -240,17 +240,17 @@ class CS_Rectangle_View(BoxLayout, AView):
                 # layer_exist is a switch to proofs whether
                 # a layer exist over the runnning index or not
                 layer_exist = False
-                min = self.cross_section_height
+                min_value = self.cross_section_height
                 for layer in self.layers:
-                    if layer.y_coordinate >= cur_y and layer.y_coordinate < min:
+                    if layer.y_coordinate >= cur_y and layer.y_coordinate < min_value:
                         layer_exist = True
-                        min = layer.y_coordinate - layer._height / 2.
-                        next = layer.y_coordinate + layer._height / 2.
+                        min_value = layer.y_coordinate - layer._height / 2.
+                        nextMinValue = layer.y_coordinate + layer._height / 2.
                         # if the running index is equals the min, means that there's no
                         # area
-                        if not cur_y == min:
+                        if not cur_y == min_value:
                             self.free_places.append((cur_y, min))
-                        cur_y = next
+                        cur_y = nextMinValue
                 # if no layer exist over the running index then that's the last
                 # area which is free.
                 if not layer_exist:

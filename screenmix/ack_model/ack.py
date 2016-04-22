@@ -4,8 +4,8 @@ Created on 15.04.2016
 @author: mkennert
 '''
 from kivy.uix.gridlayout import GridLayout
-from ack_model.ACK_Left import Ack_Left
-from ack_model.ACK_Right import Ack_Right
+from ack_model.ack_left import Ack_Left
+from ack_model.ack_right import Ack_Right
 
 class Ack(GridLayout):
     #Constructor

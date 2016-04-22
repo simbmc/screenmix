@@ -3,14 +3,12 @@ Created on 01.04.2016
 
 @author: mkennert
 '''
-from itertools import cycle
-import math
 
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout 
 from numpy.random.mtrand import np
 
-from cross_section_view.AView import AView
+from cross_section_view.aview import AView
 from kivy.garden.graph import Graph, MeshLinePlot 
 
 
@@ -29,7 +27,7 @@ class CS_Circle_View(AView, BoxLayout):
     '''
     @property    
     def update_all_graph(self):
-        list = []
+        #list = []
         '''
         for plot in self.graph.plots:
             list.append(plot)

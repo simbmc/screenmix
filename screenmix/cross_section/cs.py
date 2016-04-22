@@ -5,17 +5,9 @@ Created on 15.03.2016
 '''
 
 
-from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
-from kivy.uix.widget import Widget
-
-from cross_section_view import AView
-from cross_section_view.CS_Rectangle_View import CS_Rectangle_View
-from cross_section_view.Cross_Section_Information import Cross_Section_Information
-from materials.Carbon_Fiber import Carbon_Fiber
-from materials.Concrete import Concrete
-from materials.Glass_Fiber import Glass_Fiber
-from materials.Steel import Steel
+from cross_section_view.cs_rectangle_view import CS_Rectangle_View
+from cross_section_view.cross_section_information import Cross_Section_Information
 from material_editor.materiallist import MaterialList
 
 '''

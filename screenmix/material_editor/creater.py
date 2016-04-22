@@ -3,15 +3,14 @@ Created on 04.04.2016
 
 @author: mkennert
 '''
-from kivy.app import App
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 
-from material_editor.Keyboard import Keyboard
-from material_editor.NumPad import NumPad
-from materials.Own_Material import Own_Material
+from material_editor.keyboard import Keyboard
+from material_editor.numpad import Numpad
+from materials.own_material import Own_Material
 
 
 class Material_Creater(GridLayout):
@@ -74,7 +73,7 @@ class Material_Creater(GridLayout):
     and sign in by the keyboard and numpad 
     '''
     def create_popups(self):
-        self.numpad=NumPad()
+        self.numpad=Numpad()
         self.keyboard=Keyboard()
         self.popup_keyboard=Popup(title='name:',content=self.keyboard)
         self.popup_numpad=Popup(title='numpad', content=self.numpad)

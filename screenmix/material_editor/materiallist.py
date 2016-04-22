@@ -3,10 +3,10 @@ Created on 18.04.2016
 
 @author: mkennert
 '''
-from materials.Steel import Steel
-from materials.Carbon_Fiber import Carbon_Fiber
-from materials.Concrete import Concrete
-from materials.Glass_Fiber import Glass_Fiber
+from materials.steel import Steel
+from materials.carbon_fiber import Carbon_Fiber
+from materials.concrete import Concrete
+from materials.glass_fiber import Glass_Fiber
 
 '''
 

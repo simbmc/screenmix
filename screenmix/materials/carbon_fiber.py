@@ -3,7 +3,7 @@ Created on 04.04.2016
 
 @author: mkennert
 '''
-from materials.AMaterial import AMaterial
+from materials.amaterial import AMaterial
 
 class Carbon_Fiber(AMaterial):
     def __init__(self):

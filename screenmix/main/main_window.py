@@ -9,10 +9,9 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.popup import Popup
 from kivy.uix.scrollview import ScrollView
 
-from ack_model.ACK import Ack
-from cross_section.Cross_Section import Cross_Section
-from material_editor.materiallist import MaterialList
-from material_editor.Material_Editor import Material_Editor
+from ack_model.ack import Ack
+from cross_section.cs import Cross_Section
+from material_editor.editor import Material_Editor
 
 
 class MainWindow(GridLayout):
@@ -41,7 +40,7 @@ class MainWindow(GridLayout):
         layout = GridLayout(cols=1, spacing=10, size_hint_y=None)
         # Make sure the height is such that there is something to scroll.
         layout.bind(minimum_height=layout.setter('height'))
-        #Cross_Section
+        #cross_section
         cross_section=Button(text='cross section',size_hint_y=None, height=40)
         cross_section.bind(on_press=self.show_cross_section_view)
         layout.add_widget(cross_section)

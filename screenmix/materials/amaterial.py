@@ -3,7 +3,6 @@ Created on 16.03.2016
 
 @author: mkennert
 '''
-from abc import abstractmethod
 class AMaterial(object):
     #Constructor
     def __init__(self, name, price, density,stiffness, strength):
