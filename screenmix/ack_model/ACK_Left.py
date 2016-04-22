@@ -3,17 +3,18 @@ Created on 12.04.2016
 @author: mkennert
 '''
 from itertools import cycle
+import random
 
 from kivy.app import App
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.slider import Slider
-import numpy as np
-from kivy.garden.graph import Graph, MeshLinePlot
+
 from cross_section.Cross_Section import Cross_Section
-import random
-from plot_filled_rect.filled_rect import FilledRect
+from kivy.garden.graph import Graph, MeshLinePlot
+import numpy as np
+from plot.filled_ellipse import FilledEllipse
 
 
 class Ack_Left(GridLayout):
@@ -26,6 +27,9 @@ class Ack_Left(GridLayout):
         self.cols = 1
         self.create_graph()
         self.create_option_layout()
+        self.createFocusPoint()
+        self.secondpoint=None
+        self.thirdpoint=None
 
     '''
     the method create_graph create the graph
@@ -74,7 +78,6 @@ class Ack_Left(GridLayout):
         points = [(0, 0)]
         points.append(
             (self.cross_section.min_of_maxstrain, self.cross_section.strength))
-
         if self.cross_section.view.layers:
             # calculate the second points
             # calculate the stiffness of the reinforcement layers according to
@@ -98,7 +101,7 @@ class Ack_Left(GridLayout):
                 (percent_of_layers * E_r)
             eps_r_avg = (eps_r_max + eps_r_min) / 2.
             points.append((eps_r_avg, self.cross_section.strength))
-
+            self.secondpoint=points[2]
             # calculate the third points
             # the maximum reinforcement strain
             max_strain_r = 1e8
@@ -110,7 +113,7 @@ class Ack_Left(GridLayout):
             # maximum composite strain
             max_strain_c = eps_r_avg + (max_strain_r - eps_r_max)
             points.append((max_strain_c, max_strangth_c))
-
+            self.thirdpoint=points[-1]
         # setting the maximum of the graph
         self.graph.xmax = points[-1][0] * 1.2
         self.graph.ymax = points[-1][1] * 1.2
@@ -119,14 +122,15 @@ class Ack_Left(GridLayout):
             self.graph.xmax / 6., decimals=int(-np.log10(self.graph.xmax / 6)) + 1)
         self.graph.y_ticks_major = np.round(
             self.graph.ymax / 6., decimals=int(-np.log10(self.graph.ymax / 6)) + 1)
-        self.createFocusPoint()
+        self.set_FocusSize()
         return points
 
     # not finished yet
     def clear(self, button):
         for plot in self.graph.plots:
-            self.graph.remove_plot(plot)
-            self.graph._clear_buffer()
+            if not plot==self.focus:
+                self.graph.remove_plot(plot)
+                self.graph._clear_buffer()
 
     '''
     the method set_cross_section was developed to say the view, 
@@ -142,23 +146,41 @@ class Ack_Left(GridLayout):
     def set_ack_right(self, ack_right):
         self.ack_right=ack_right
     
-    def set_FocusPosition(self):
-        pass
+    def set_FocusPosition(self, value):
+        eps_x=self.graph.xmax/self.delta
+        eps_y=self.graph.ymax/self.delta
+        self.focus.xrange=[value-eps_x,value+eps_x]
+        #calculation when the value is smaller then
+        #the x-coordinate of the first point
+        if value<=self.cross_section.min_of_maxstrain:
+            #f(x)=mx => m=y1-0/x1-0
+            m=self.cross_section.strength/self.cross_section.min_of_maxstrain
+            self.focus.yrange=[value*m-eps_y,value*m+eps_y]
+        #calculation when the value is between the  second and the third point
+        elif value>self.secondpoint[0]:
+            #f(x)=mx => m=y3-y2/x3-x2
+            m=(self.thirdpoint[1]-self.secondpoint[1])/(self.thirdpoint[0]-self.secondpoint[0])
+            #set the circle in the middle of the line
+            #it's dependent from the self.graph.ymax
+            if self.graph.ymax<70:
+                self.focus.yrange=[value*m,value*m+2*eps_y]
+            elif self.graph.ymax<100:
+                self.focus.yrange=[value*m-eps_y*0.5,value*m+eps_y*1.5]
+            else:
+                self.focus.yrange=[value*m-eps_y,value*m+eps_y]
+        #calculation when the value is between the first- and secondpoint
+        else:
+            #m=0 => independet from the x-value
+            b=self.cross_section.strength
+            self.focus.yrange=[-eps_y+b,+eps_y+b]
+            
+    def set_FocusSize(self):
+        self.focus.xrange = [0, self.graph.xmax/self.delta]
+        self.focus.yrange = [0, self.graph.ymax/self.delta]
     
     def createFocusPoint(self):
-        delta=50.
-        self.focus=FilledRect(xrange=[0.,self.graph.xmax/delta ],
-                                    yrange=[0,self.graph.ymax/delta],
-                                    color=[255,0,0])
+        self.delta=50.
+        self.focus=FilledEllipse(color=[255,0,0])
+        self.focus.xrange = [0,0]
+        self.focus.yrange = [0,0]
         self.graph.add_plot(self.focus)
-        
-class CSIApp(App):
-
-    def build(self):
-        ack = Ack_Left()
-        cs = Cross_Section()
-        ack.set_cross_section(cs)
-        return ack
-
-if __name__ == '__main__':
-    CSIApp().run()

@@ -83,7 +83,7 @@ if __name__ == '__main__':
                 xmin=0,
                 ymin=0)
 
-            plot = Circle(color=[255, 255, 255])
+            plot = Circle(color=[255, 0, 0])
             plot.pos = [50, 50]
             plot.r = 1
             graph2.add_plot(plot)
@@ -97,10 +97,10 @@ if __name__ == '__main__':
             return b
 
         def update_color(self, *args):
-            self.circle.color = [random.randint(0, 255) for r in xrange(3)]
+            self.circle.color = [random.randint(0, 255) for r in xrange(100)]
 
         def update_pos(self, *args):
             self.circle.pos = [100. * random.random() for r in xrange(2)]
-            self.circle.r = 50. * random.random()
+            self.circle.r = 100. * random.random()
 
     TestApp().run()

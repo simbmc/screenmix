@@ -54,6 +54,7 @@ class CS_Rectangle_View(BoxLayout, AView):
             if layer.focus:
                 layer.rect.color = [255, 255, 255]
             self.graph.add_plot(layer.rect)
+        #delete the old plots
         for plot in list:
             self.graph.remove_plot(plot)
             self.graph._clear_buffer()

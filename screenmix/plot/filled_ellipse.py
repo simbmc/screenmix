@@ -35,7 +35,6 @@ class FilledEllipse(Plot):
         self._texture = Texture.create(size=(1, 1), colorfmt='rgba')
         self._texture.blit_buffer(
             bytearray(self.color), colorfmt='rgb', bufferfmt='ubyte')
-
         image = self._image
         image.texture = self._texture
 
@@ -47,7 +46,6 @@ class FilledEllipse(Plot):
         size = params['size']
         ratiox = (size[2] - size[0]) / float(funcx(params['xmax']) - xmin)
         ratioy = (size[3] - size[1]) / float(funcy(params['ymax']) - ymin)
-
         bl = (funcx(self.xrange[0]) - xmin) * ratiox + \
             size[0], (funcy(self.yrange[0]) - ymin) * ratioy + size[1]
         tr = (funcx(self.xrange[1]) - xmin) * ratiox + \
@@ -56,7 +54,7 @@ class FilledEllipse(Plot):
         w = tr[0] - bl[0]
         h = tr[1] - bl[1]
         image.size = (w, h)
-
+    
 if __name__ == '__main__':
     from kivy.uix.boxlayout import BoxLayout
     from kivy.app import App
