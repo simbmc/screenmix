@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 '''
 Created on 11.04.2016
 
@@ -67,7 +68,7 @@ class Material_Editor(ScrollView):
         self.content=GridLayout(cols=2)
         self.content.add_widget(Label(text='name:'))
         self.content.add_widget(self.name)
-        self.content.add_widget(Label(text='price[Euro/kg]:'))
+        self.content.add_widget(Label(text='price[euro/kg]:'))
         self.content.add_widget(self.price)
         self.content.add_widget(Label(text='density[kg/m^3]:'))
         self.content.add_widget(self.density)

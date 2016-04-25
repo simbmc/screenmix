@@ -31,13 +31,13 @@ class Material_Creater(GridLayout):
         self.create_buttons()
         self.add_widget(Label(text='name: '))
         self.add_widget(self.name_btn)
-        self.add_widget(Label(text='price: '))
+        self.add_widget(Label(text='price[euro/kg]:'))
         self.add_widget(self.price_btn)
-        self.add_widget(Label(text='density: '))
+        self.add_widget(Label(text='density[kg/m^3]:'))
         self.add_widget(self.density_btn)
-        self.add_widget(Label(text='stiffness: '))
+        self.add_widget(Label(text='stiffness[MPa]:'))
         self.add_widget(self.stiffness_btn)
-        self.add_widget(Label(text='strength: '))
+        self.add_widget(Label(text='strength[MPa]:'))
         self.add_widget(self.strength_btn)
         self.add_widget(self.cancel_btn)
         self.add_widget(self.create_btn)
@@ -67,19 +67,6 @@ class Material_Creater(GridLayout):
         self.cancel_btn=Button(text='cancel')
         self.cancel_btn.bind(on_press=self.cancel)
         
-        
-    '''
-    the method create_popups create the popups 
-    and sign in by the keyboard and numpad 
-    '''
-    def create_popups(self):
-        self.numpad=Numpad()
-        self.keyboard=Keyboard()
-        self.popup_keyboard=Popup(title='name:',content=self.keyboard)
-        self.popup_numpad=Popup(title='numpad', content=self.numpad)
-        self.numpad.sign_in_parent(self)
-        self.keyboard.sign_in_parent(self)
-    
     '''
     the method use_keyword open the keyboard_popup for the user
     '''
@@ -94,6 +81,19 @@ class Material_Creater(GridLayout):
         self.focus_btn=button
         self.numpad.textinput.text=button.text
         self.popup_numpad.open()
+        
+    '''
+    the method create_popups create the popups 
+    and sign in by the keyboard and numpad 
+    '''
+    def create_popups(self):
+        self.numpad=Numpad()
+        self.keyboard=Keyboard()
+        self.popup_keyboard=Popup(title='name:',content=self.keyboard)
+        self.popup_numpad=Popup(title='numpad', content=self.numpad)
+        self.numpad.sign_in_parent(self)
+        self.keyboard.sign_in_parent(self)
+    
     
     '''
     the method finished_keyboard close the keyboard_popup
