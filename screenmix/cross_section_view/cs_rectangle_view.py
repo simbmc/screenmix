@@ -249,7 +249,7 @@ class CS_Rectangle_View(BoxLayout, AView):
                         # if the running index is equals the min, means that there's no
                         # area
                         if not cur_y == min_value:
-                            self.free_places.append((cur_y, min))
+                            self.free_places.append((cur_y, min_value))
                         cur_y = nextMinValue
                 # if no layer exist over the running index then that's the last
                 # area which is free.

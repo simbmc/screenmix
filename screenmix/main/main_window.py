@@ -9,10 +9,9 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.popup import Popup
 from kivy.uix.scrollview import ScrollView
 
-from ack_model.ACK import Ack
-from cross_section.Cross_Section import Cross_Section
-from material_editor.materiallist import MaterialList
-from material_editor.Material_Editor import Material_Editor
+from ack_model.ack import Ack
+from cross_section.cs import Cross_Section
+from material_editor.editor import Material_Editor
 from kivy.core.window import Window
 Window.size = (1280, 720)
 
