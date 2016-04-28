@@ -31,7 +31,7 @@ class FilledRect(Plot):
     def draw(self, *args):
         super(FilledRect, self).draw(*args)
 
-        self._texture = Texture.create(size=(1, 1), colorfmt='rgba')
+        self._texture = Texture.create(size=(1, 1), colorfmt='rgb')
         self._texture.blit_buffer(
             b''.join(map(chr, self.color)), colorfmt='rgb', bufferfmt='ubyte')
 
