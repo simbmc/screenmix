@@ -12,7 +12,6 @@ from kivy.garden.graph import Graph, MeshLinePlot
 import numpy as np
 from plot.filled_ellipse import FilledEllipse
 
-
 class Ack_Left(GridLayout):
     colors = [0.8, 0.3, 0.5, 0.2, 0.1, 0.7, 0.1]
     colorcycler = cycle(colors)
@@ -24,10 +23,8 @@ class Ack_Left(GridLayout):
         self.create_graph()
         self.create_option_layout()
         self.createFocusPoint()
-        self.secondpoint=None
-        self.thirdpoint=None
-        self.hasGraphs=False
-
+        self.cur_plot=None
+        
     '''
     the method create_graph create the graph
     '''
@@ -64,6 +61,7 @@ class Ack_Left(GridLayout):
         self.plot = MeshLinePlot(
             color=[random.random(), random.random(), random.random(), 1])
         self.plot.points = self.calculate_points()
+        self.cur_plot=self.plot
         self.graph.add_plot(self.plot)
 
     '''
@@ -114,20 +112,19 @@ class Ack_Left(GridLayout):
         # setting the maximum of the graph
         self.graph.xmax = points[-1][0] * 1.2
         self.graph.ymax = points[-1][1] * 1.2
-        self.ack_right.setStrain(points[-1][0])
+        self.ack.setMaxStrain(points[-1][0])
         self.graph.x_ticks_major = np.round(
             self.graph.xmax / 6., decimals=int(-np.log10(self.graph.xmax / 6)) + 1)
         self.graph.y_ticks_major = np.round(
             self.graph.ymax / 6., decimals=int(-np.log10(self.graph.ymax / 6)) + 1)
-        self.set_FocusSize()
         return points
 
     # not finished yet
     def clear(self, button):
         for plot in self.graph.plots:
-            if not plot==self.focus:
+            if not plot==self.focus and not plot==self.cur_plot:
                 self.graph.remove_plot(plot)
-                self.graph._clear_buffer()
+        self.graph._clear_buffer()
 
     '''
     the method set_cross_section was developed to say the view, 
@@ -143,9 +140,24 @@ class Ack_Left(GridLayout):
     def set_ack_right(self, ack_right):
         self.ack_right=ack_right
     
+    '''
+    set the ack
+    '''
+    def set_ack(self,ack):
+        self.ack=ack
+    
+    '''
+    set the position of the focuspoint.
+    the point is dependet from the strainvalue 
+    of ack_right
+    '''
     def set_FocusPosition(self, value):
+        print('value: '+str(value))
+        print('cs_maxstrain: '+str(self.cross_section.min_of_maxstrain))
         eps_x=self.graph.xmax/self.delta
         eps_y=self.graph.ymax/self.delta
+        print('x'+str(eps_x))
+        print('y'+str(eps_y))
         self.focus.xrange=[value-eps_x,value+eps_x]
         #calculation when the value is smaller then
         #the x-coordinate of the first point
@@ -153,6 +165,7 @@ class Ack_Left(GridLayout):
             #f(x)=mx => m=y1-0/x1-0
             m=self.cross_section.strength/self.cross_section.min_of_maxstrain
             self.focus.yrange=[value*m-eps_y,value*m+eps_y]
+            print(self.focus.yrange)
         #calculation when the value is between the  second and the third point
         elif value>self.secondpoint[0]:
             #f(x)=mx => m=y3-y2/x3-x2
@@ -171,10 +184,9 @@ class Ack_Left(GridLayout):
             b=self.cross_section.strength
             self.focus.yrange=[-eps_y+b,+eps_y+b]
             
-    def set_FocusSize(self):
-        self.focus.xrange = [0, self.graph.xmax/self.delta]
-        self.focus.yrange = [0, self.graph.ymax/self.delta]
-    
+    '''
+    create the focus point of the graph
+    '''
     def createFocusPoint(self):
         self.delta=50.
         self.focus=FilledEllipse(color=[255,0,0])

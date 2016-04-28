@@ -13,7 +13,7 @@ from ack_model.ack import Ack
 from cross_section.cs import Cross_Section
 from material_editor.editor import Material_Editor
 from kivy.core.window import Window
-Window.size = (1280, 720)
+Window.size = (720, 500)
 
 
 class MainWindow(GridLayout):
@@ -140,7 +140,6 @@ class MainWindow(GridLayout):
         self.add_widget(self.material_editor)
         self.content = self.material_editor
         self.popup.dismiss()
-
 
 class CSIApp(App):
 

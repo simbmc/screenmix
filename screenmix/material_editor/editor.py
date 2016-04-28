@@ -4,14 +4,12 @@ Created on 11.04.2016
 
 @author: mkennert
 '''
-from kivy.app import App
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.uix.scrollview import ScrollView
 
-from cross_section.cs import Cross_Section
 from material_editor.creater import Material_Creater
 
 
@@ -81,7 +79,9 @@ class Material_Editor(ScrollView):
         self.content.add_widget(btn_back)
         self.create_popups()
     
-    #not finished yet
+    '''
+    set the labeltext with the materialproperties
+    '''
     def show_material_information(self,button):
         for i in range(0,self.cross_section.all_materials.get_length()):
             if self.all_materials.all_materials[i].name==button.text:
@@ -92,11 +92,16 @@ class Material_Editor(ScrollView):
                 self.strenght.text=str(self.all_materials.all_materials[i].strength)
                 self.popup_info.open()
     
-    #not finished yet
+    '''
+    close the popup, which shows the information from
+    the choosen material
+    '''
     def cancel_show(self,button):
         self.popup_info.dismiss()
         
-    #not finished yet
+    '''
+    open the popup, which has the creator as content
+    '''
     def create_material(self,button):
         self.popup_create.open()
     
@@ -114,7 +119,12 @@ class Material_Editor(ScrollView):
         self.material_layout.add_widget(self.btn_material_editor)
         print('material-editor:'+str(self.all_materials))
         
-    #not finished yet
+    '''
+    cancel the create-process. this method 
+    is necessary, because editor is the parent 
+    of the creator and creator call the method cancel_edit_material
+    from the parent
+    '''
     def cancel_edit_material(self):
         self.popup_create.dismiss()
     

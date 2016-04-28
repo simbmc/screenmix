@@ -21,7 +21,10 @@ class Ack_Right(GridLayout):
     def __init__(self, **kwargs):
         super(Ack_Right, self).__init__(**kwargs)
         self.cols = 1
-
+    
+    '''
+    create the gui of the ack_right
+    '''
     def create_gui(self):
         self.create_graph()
         self.create_option_layout()
@@ -37,27 +40,28 @@ class Ack_Right(GridLayout):
                            y_grid_label=True, x_grid_label=True,
                            xmin=0.0, xmax=0.0005, ymin=0, ymax=self.cross_section.cross_section_height)
         self.add_widget(self.graph)
-
+    
+    '''
+    create the gui-part, where you can add plots and delete them
+    '''
     def create_option_layout(self):
         content_height = 30
         content = GridLayout(cols=2, row_force_default=True,
                              row_default_height=content_height, size_hint_y=None, height=content_height)
-        slider_value = 0.02
-        self.strain = Label(text='strain: ' + str(slider_value))
-        self.slider = Slider(min=0.0000000001, max=0.1, value=slider_value)
-        self.slider.bind(value=self.update_strainLabel)
+        self.strain = Label(text='strain: ')
         content.add_widget(self.strain)
-        content.add_widget(self.slider)
         self.add_widget(content)
-
+    
+    '''
+    update the strainlabel with the current 
+    value of the slider
+    '''
     def update_strainLabel(self, instance, value):
         self.strain.text = 'strain: ' + str(value)
-        self.ack_left.set_FocusPosition(value)
         self.update()
-
-    def setStrain(self, value):
-        self.slider.max = value
-
+    
+    
+    
     '''
     the method set_cross_section was developed to say the view, 
     which cross section should it use
@@ -93,7 +97,7 @@ class Ack_Right(GridLayout):
             list.append(plot)
         # draw the free places of the cross section
         concrete_stress = self.cross_section.concrete_stiffness * \
-            self.slider.value * (self.slider.value <= eps1)
+            self.ack.getCurrentStrain() * (self.ack.getCurrentStrain() <= eps1)
         max_stress = concrete_stress
         free_places = self.cross_section.view.get_free_places()
         for layer in free_places:
@@ -101,16 +105,16 @@ class Ack_Right(GridLayout):
                                    yrange=[layer[0], layer[1]],
                                    color=[255, 255, 255])
             self.graph.add_plot(self.rect)
-
+        
         # draw the stress of the reinforcing layers
         for layer in self.cross_section.view.layers:
-            if self.slider.value <= eps1:
-                layer_stress = layer.material.stiffness * self.slider.value
-            elif self.slider.value <= eps2:
+            if self.ack.getCurrentStrain() <= eps1:
+                layer_stress = layer.material.stiffness * self.ack.getCurrentStrain()
+            elif self.ack.getCurrentStrain() <= eps2:
                 layer_stress = layer.material.stiffness * eps1
             else:
                 layer_stress = layer.material.stiffness * eps1 + \
-                    layer.material.stiffness * (self.slider.value - eps2)
+                    layer.material.stiffness * (self.ack.getCurrentStrain() - eps2)
             max_stress = max(max_stress, layer_stress)
             layer.rect = FilledRect(xrange=[0, layer_stress],
                                     yrange=[
@@ -119,22 +123,29 @@ class Ack_Right(GridLayout):
             self.graph.add_plot(layer.rect)
 
         # change the x-aixs limit
-        self.graph.xmax = max_stress
-        self.graph.x_ticks_major = int(max_stress / 5.)
-
+        #self.graph.xmax = max_stress
+        #self.graph.x_ticks_major = int(max_stress / 5.)
+        self.find_max_stress()
         # delete the old plots
         for plot in list:
             self.graph.remove_plot(plot)
             self.graph._clear_buffer()
         return self.graph
-
+    
     def find_max_stress(self):
         self.max_stress = self.cross_section.concrete_stiffness * \
-            self.slider.value
+            self.ack.getMaxStrain()
         if self.cross_section.view.layers:
             for layer in self.cross_section.view.layers:
-                cur_value = layer.material.stiffness * self.slider.value
+                cur_value = layer.material.stiffness * self.ack.getMaxStrain()
                 if self.max_stress < cur_value:
                     self.max_stress = cur_value
         self.graph.xmax = self.max_stress
         self.graph.x_ticks_major = int(self.max_stress / 5.)
+        #self.ack.setMaxStrain(self.max_stress)
+    
+    '''
+    set the ack
+    '''
+    def setAck(self,ack):
+        self.ack=ack
