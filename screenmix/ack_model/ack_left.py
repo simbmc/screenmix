@@ -11,6 +11,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.garden.graph import Graph, MeshLinePlot
 import numpy as np
 from plot.filled_ellipse import FilledEllipse
+from designClass.design import Design
 
 class Ack_Left(GridLayout):
     colors = [0.8, 0.3, 0.5, 0.2, 0.1, 0.7, 0.1]
@@ -20,6 +21,8 @@ class Ack_Left(GridLayout):
     def __init__(self, **kwargs):
         super(Ack_Left, self).__init__(**kwargs)
         self.cols = 1
+        self.allPlots=[]
+        self.btnSize=Design.btnSize
         self.create_graph()
         self.create_option_layout()
         self.createFocusPoint()
@@ -40,8 +43,7 @@ class Ack_Left(GridLayout):
     '''
 
     def create_option_layout(self):
-        content_height=30
-        self.option_layout = GridLayout(cols=2,row_force_default=True, row_default_height=content_height, size_hint_y=None, height=content_height)
+        self.option_layout = GridLayout(cols=2,row_force_default=True, row_default_height=self.btnSize, size_hint_y=None, height=self.btnSize)
 #         self.option_layout.add_widget(Label(text='bond [N/mm]:'))
 #         self.bond_slider = Slider()
 #         self.option_layout.add_widget(self.bond_slider)
@@ -152,12 +154,8 @@ class Ack_Left(GridLayout):
     of ack_right
     '''
     def set_FocusPosition(self, value):
-        print('value: '+str(value))
-        print('cs_maxstrain: '+str(self.cross_section.min_of_maxstrain))
         eps_x=self.graph.xmax/self.delta
         eps_y=self.graph.ymax/self.delta
-        print('x'+str(eps_x))
-        print('y'+str(eps_y))
         self.focus.xrange=[value-eps_x,value+eps_x]
         #calculation when the value is smaller then
         #the x-coordinate of the first point
@@ -165,7 +163,6 @@ class Ack_Left(GridLayout):
             #f(x)=mx => m=y1-0/x1-0
             m=self.cross_section.strength/self.cross_section.min_of_maxstrain
             self.focus.yrange=[value*m-eps_y,value*m+eps_y]
-            print(self.focus.yrange)
         #calculation when the value is between the  second and the third point
         elif value>self.secondpoint[0]:
             #f(x)=mx => m=y3-y2/x3-x2
@@ -193,3 +190,19 @@ class Ack_Left(GridLayout):
         self.focus.xrange = [0,0]
         self.focus.yrange = [0,0]
         self.graph.add_plot(self.focus)
+    
+    def plot_update(self):
+        self.plot = MeshLinePlot(
+            color=Design.focusColor)
+        if not self.cur_plot==None:
+            self.cur_plot.color=[random.random(), random.random(), random.random(), 1]
+        self.plot.points = self.calculate_points()
+        self.cur_plot=self.plot
+        self.allPlots.append(self.plot)
+        self.graph.add_plot(self.plot)
+        
+    '''
+    update the ack_left side
+    '''
+    def update(self):
+        self.plot_update()

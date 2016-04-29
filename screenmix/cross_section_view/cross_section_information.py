@@ -10,6 +10,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.uix.slider import Slider
+from designClass.design import Design
 '''
 the class Cross_Section_Information was developed to show 
 the information of the cs_view
@@ -20,6 +21,7 @@ class Cross_Section_Information(BoxLayout):
     def __init__(self, **kwargs):
         super(Cross_Section_Information, self).__init__(**kwargs)
         self.orientation='vertical'
+        self.btnSize=Design.btnSize
         
         
     
@@ -61,10 +63,10 @@ class Cross_Section_Information(BoxLayout):
     add new materials and delete materials from the cs_view
     '''
     def create_add_delete_area(self):
-        self.btn_area=BoxLayout(spacing=10, orientation='horizontal')
-        add_btn=Button(text='add layer')
+        self.btn_area=BoxLayout(orientation='horizontal')
+        add_btn=Button(text='add layer',size_hint_y=None, height=self.btnSize)
         add_btn.bind(on_press=self.show_add_layer_area)
-        delete_btn=Button(text='delete layer')
+        delete_btn=Button(text='delete layer',size_hint_y=None, height=self.btnSize)
         delete_btn.bind(on_press=self.delete_layer)
         self.btn_area.add_widget(add_btn)
         self.btn_area.add_widget(delete_btn)
@@ -126,7 +128,7 @@ class Cross_Section_Information(BoxLayout):
         self.create_material_options()
         self.adding_material_area=GridLayout(cols=2)
         self.adding_material_area.add_widget(Label(text='Material:'))
-        self.material_option=Button(text='steel')
+        self.material_option=Button(text='steel',size_hint_y=None, height=self.btnSize)
         self.material_option.bind(on_release=self.popup.open)
         self.adding_material_area.add_widget(self.material_option)
         self.material_percent_while_creating=Label(text='percent: 10%')
@@ -159,9 +161,9 @@ class Cross_Section_Information(BoxLayout):
     '''
     def create_confirm_cancel_area(self):
         self.confirm_cancel_area=BoxLayout()
-        confirm_btn=Button(text='confirm')
+        confirm_btn=Button(text='confirm',size_hint_y=None, height=self.btnSize)
         confirm_btn.bind(on_press=self.add_layer)
-        cancel_btn=Button(text='cancel')
+        cancel_btn=Button(text='cancel',size_hint_y=None, height=self.btnSize)
         cancel_btn.bind(on_press=self.cancel_adding)
         self.confirm_cancel_area.add_widget(confirm_btn)
         self.confirm_cancel_area.add_widget(cancel_btn)

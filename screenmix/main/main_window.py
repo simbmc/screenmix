@@ -13,6 +13,7 @@ from ack_model.ack import Ack
 from cross_section.cs import Cross_Section
 from material_editor.editor import Material_Editor
 from kivy.core.window import Window
+from designClass.design import Design
 Window.size = (720, 500)
 
 
@@ -22,6 +23,7 @@ class MainWindow(GridLayout):
     def __init__(self, **kwargs):
         super(MainWindow, self).__init__(**kwargs)
         self.cols = 1
+        self.btnSize=Design.btnSize
         self.create_popup()
         self.create_menu_bar()
         self.create_componets()
@@ -47,15 +49,15 @@ class MainWindow(GridLayout):
         layout.bind(minimum_height=layout.setter('height'))
         # Cross_Section
         cross_section = Button(
-            text='cross section', size_hint_y=None, height=40)
+            text='cross section', size_hint_y=None, height=self.btnSize)
         cross_section.bind(on_press=self.show_cross_section_view)
         layout.add_widget(cross_section)
         # ack-view
-        ack_view = Button(text='ack', size_hint_y=None, height=40)
+        ack_view = Button(text='ack', size_hint_y=None, height=self.btnSize)
         ack_view.bind(on_press=self.show_ack_view)
         layout.add_widget(ack_view)
         # material-editor
-        me = Button(text='material editor', size_hint_y=None, height=40)
+        me = Button(text='material editor', size_hint_y=None, height=self.btnSize)
         me.bind(on_press=self.show_material_editor)
         layout.add_widget(me)
         ##################################################################
@@ -73,7 +75,7 @@ class MainWindow(GridLayout):
     def create_popup(self):
         self.create_list_view()
         self.popup = Popup(title='Menu', content=self.root, size_hint=(None, None), size=(
-            250, self.height * 2), pos_hint=({'x': 0, 'top': 1}), pos=(0, 0))
+            300, 400), pos_hint=({'x': 0, 'top': 1}), pos=(0, 0))
 
     '''
     create the menu bar where you can select the 
@@ -81,11 +83,10 @@ class MainWindow(GridLayout):
     '''
 
     def create_menu_bar(self):
-        bar_height = 25
         bar = GridLayout(cols=3, row_force_default=True,
-                         row_default_height=bar_height, size_hint_y=None, height=25)
+                         row_default_height=self.btnSize, size_hint_y=None, height=self.btnSize)
         menu_button = Button(
-            text='menu', size_hint_y=None, height=bar_height, size_hint_x=None, width=100)
+            text='menu', size_hint_y=None, height=self.btnSize, size_hint_x=None, width=100)
         menu_button.bind(on_press=self.popup.open)
         bar.add_widget(menu_button)
         self.add_widget(bar)
@@ -142,7 +143,6 @@ class MainWindow(GridLayout):
         self.popup.dismiss()
 
 class CSIApp(App):
-
     def build(self):
         return MainWindow()
 

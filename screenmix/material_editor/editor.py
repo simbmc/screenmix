@@ -11,13 +11,14 @@ from kivy.uix.popup import Popup
 from kivy.uix.scrollview import ScrollView
 
 from material_editor.creater import Material_Creater
+from designClass.design import Design
 
 
 class Material_Editor(ScrollView):
     #Constructor
     def __init__(self, **kwargs):
         super(Material_Editor, self).__init__(**kwargs)
-        
+        self.btnSize=Design.btnSize
     '''
     the method create gui create the gui of 
     the material_editor and create the popups
@@ -28,16 +29,10 @@ class Material_Editor(ScrollView):
         # Make sure the height is such that there is something to scroll.
         self.material_layout.bind(minimum_height=self.material_layout.setter('height'))
         for i in self.all_materials.all_materials:
-            btn=Button(text=i.name,size_hint_y=None, height=40)
+            btn=Button(text=i.name,size_hint_y=None, height=self.btnSize)
             btn.bind(on_press=self.show_material_information)
             self.material_layout.add_widget(btn)
-        #just for demonstration
-        '''
-        for i in range(0,20):
-            btn=Button(text=str(i),size_hint_y=None, height=40)
-            self.material_layout.add_widget(btn)
-        '''
-        self.btn_material_editor=Button(text='create material',size_hint_y=None, height=40)
+        self.btn_material_editor=Button(text='create material',size_hint_y=None, height=self.btnSize)
         self.btn_material_editor.bind(on_press=self.create_material)
         self.material_layout.add_widget(self.btn_material_editor)
         self.add_widget(self.material_layout)
@@ -74,7 +69,7 @@ class Material_Editor(ScrollView):
         self.content.add_widget(self.stiffness)
         self.content.add_widget(Label(text='strength[MPa]:'))
         self.content.add_widget(self.strenght)
-        btn_back=Button(text='back')
+        btn_back=Button(text='back',size_hint_y=None,height=self.btnSize)
         btn_back.bind(on_press=self.cancel_show)
         self.content.add_widget(btn_back)
         self.create_popups()
@@ -111,13 +106,11 @@ class Material_Editor(ScrollView):
     of the gridlayout
     '''
     def update(self):
-        print('here')
         self.material_layout.remove_widget(self.btn_material_editor)
         btn_material_A=Button(text=self.all_materials.all_materials[-1].name,size_hint_y=None, height=40)
         btn_material_A.bind(on_press=self.show_material_information)
         self.material_layout.add_widget(btn_material_A)
         self.material_layout.add_widget(self.btn_material_editor)
-        print('material-editor:'+str(self.all_materials))
         
     '''
     cancel the create-process. this method 

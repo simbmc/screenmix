@@ -16,7 +16,9 @@ class Layer_Rectangle:
         self.colors = colors
         self.focus = False
         self.percentage = percent
-
+        self.filledRectCs=None
+        self.filledRectAck=None
+        
     '''
     check if the mouse is in the rectangle
     return true, if the mouse is within, otherwise return false
@@ -27,13 +29,15 @@ class Layer_Rectangle:
             return True
         else:
             return False
-
+    
+    
     def mouse_within_just_x_coordinate(self, x_value):
         if x_value > 0. and x_value < self._width:
             return True
         else:
             return False
-
+    
+       
     '''
     checked wheter the layers are the same
     '''
@@ -47,7 +51,6 @@ class Layer_Rectangle:
     '''
     the method set_height change the height of the small_keyboard-rectangle
     '''
-
     def set_height(self, value):
         self._height = value
 
@@ -101,3 +104,22 @@ class Layer_Rectangle:
 
     def get_strain(self):
         return self.material.strength / self.material.stiffness
+    
+    '''
+    set the filledRectCs
+    '''
+    def setFilledRectCs(self, filledRect):
+        self.filledRectCs=filledRect
+    
+    '''
+    set the filledRectAck
+    '''
+    def setFilledRectAck(self, filledRect):
+        self.filledRectAck=filledRect
+    
+    '''
+    set the yrange
+    '''
+    def setYRange(self,values):
+        self.filledRectAck.yrange=values
+        self.filledRectCs.yrange=values

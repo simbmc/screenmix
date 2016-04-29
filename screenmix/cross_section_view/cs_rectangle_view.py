@@ -12,6 +12,7 @@ from itertools import cycle
 from cross_section_view.aview import AView
 from cross_section_view.layer_rectangle import Layer_Rectangle
 from plot.filled_rect import FilledRect
+from designClass.design import Design
 colors = [[255, 102, 102], [255, 255, 102], [140, 255, 102], [102, 255, 217],
           [102, 102, 255], [255, 102, 102], [179, 179, 179], [102, 71, 133]]
 colorcycler = cycle(colors)
@@ -40,7 +41,7 @@ class CS_Rectangle_View(BoxLayout, AView):
     the method update_all_graph update the graph. the method should be called, when
     something has changed
     '''
-
+    '''
     def update_all_graph(self):
         list = []
         for plot in self.graph.plots:
@@ -52,7 +53,7 @@ class CS_Rectangle_View(BoxLayout, AView):
                                     yrange=[y - h / 2., y + h / 2.],
                                     color=layer.colors)
             if layer.focus:
-                layer.rect.color = [255, 255, 255]
+                layer.rect.color = Design.focusColor
             self.graph.add_plot(layer.rect)
         #delete the old plots
         for plot in list:
@@ -60,7 +61,21 @@ class CS_Rectangle_View(BoxLayout, AView):
             self.graph._clear_buffer()
         if len(list) == 0:
             self.graph._clear_buffer()
-
+    '''
+    
+    def update_all_graph(self):
+        for layer in self.layers:
+            y = layer.y_coordinate
+            h = layer._height
+            layer.filledRectCs.xrange =[0., self.cross_section_width]
+            layer.filledRectCs.yrange=[y - h / 2., y + h / 2.]
+            if layer.focus:
+                layer.filledRectCs.color = Design.focusColor
+            else:
+                layer.filledRectCs.color=layer.colors
+        if len(self.layers) == 0:
+            self.graph._clear_buffer()
+            
     '''
     the method create_graph create the graph, where you can add 
     the layers. the method should be called only once at the beginning
@@ -112,21 +127,21 @@ class CS_Rectangle_View(BoxLayout, AView):
                 # case:1 the layer don't collide with the border of the cross
                 # section
                 if y_coordinate > layer._height / 2 and y_coordinate < self.cross_section_height - layer._height / 2:
-                    layer.rect.yrange = [
-                        y_coordinate - layer._height / 2., y_coordinate + layer._height / 2.]
+                    layer.setYRange([
+                        y_coordinate - layer._height / 2., y_coordinate + layer._height / 2.])
                     layer.set_y_coordinate(y_coordinate)
                     return
                 # case:2 the layer collide with the bottom border of the cross section
                 #       the user can't move the layer down
                 elif y_coordinate < layer._height / 2:
-                    layer.rect.yrange = [0., layer._height]
+                    layer.setYRange([0., layer._height])
                     layer.set_y_coordinate(layer._height / 2)
                     return
                 # case:3 the layer collide with the top border of the cross section
                 #       the user can't move the layer up
                 elif y_coordinate > self.cross_section_height - layer._height / 2:
-                    layer.rect.yrange = [
-                        self.cross_section_height - layer._height, self.cross_section_height]
+                    layer.setYRange([
+                        self.cross_section_height - layer._height, self.cross_section_height])
                     layer.set_y_coordinate(
                         self.cross_section_height - layer._height / 2)
                     return
@@ -190,6 +205,17 @@ class CS_Rectangle_View(BoxLayout, AView):
         cur = Layer_Rectangle(self.cross_section_width / 2, self.cross_section_height - height / 2., height,
                               self.cross_section_width, next(colorcycler), value)
         cur.set_material(material)
+        y = cur.y_coordinate
+        h = cur._height
+        filledRectCs = FilledRect(xrange=[0., self.cross_section_width],
+                                    yrange=[y - h / 2., y + h / 2.],
+                                    color=cur.colors)
+        filledRectAck=FilledRect(xrange=[0.,1e-3],
+                                 yrange=[y - h / 2., y + h / 2.],
+                                 color=cur.colors)
+        self.graph.add_plot(filledRectCs)
+        cur.setFilledRectCs(filledRectCs)
+        cur.setFilledRectAck(filledRectAck)
         self.layers.append(cur)
         self.update_all_graph()
         self.cross_section.calculate_strength()
@@ -200,9 +226,11 @@ class CS_Rectangle_View(BoxLayout, AView):
     '''
 
     def delete_layer(self):
-        for rectangle in self.layers:
-            if rectangle.focus:
-                self.layers.remove(rectangle)
+        for layer in self.layers:
+            if layer.focus:
+                layer.filledRectCs.yrange=[0,0]
+                layer.filledRectAck.yrange=[0,0]
+                self.layers.remove(layer)
         self.update_all_graph()
         self.cross_section.calculate_strength()
         self.update_cross_section_information()
@@ -262,7 +290,7 @@ class CS_Rectangle_View(BoxLayout, AView):
         return self.free_places
 
     ##########################################################################
-    #                                Setter && Getter                                               #
+    #                                Setter && Getter                        #
     ##########################################################################
     '''
     the method set_percent change the percent shape of the selected rectangle
@@ -285,15 +313,15 @@ class CS_Rectangle_View(BoxLayout, AView):
     '''
 
     def set_height(self, value):
-        for rectangle in self.layers:
-            rectangle.set_y_coordinate(
-                rectangle.y_coordinate / self.cross_section_height * value)
-            rectangle.set_height(
-                rectangle._height / self.cross_section_height * value)
-        self.cross_section_height = value
-        self.graph.ymax = self.cross_section_height
+        for layer in self.layers:
+            layer.set_y_coordinate(
+                layer.y_coordinate / self.cross_section_height * value)
+            layer.set_height(
+                layer._height / self.cross_section_height * value)
         self.update_all_graph()
+        self.cross_section_height = value
         self.update_cross_section_information()
+        self.graph.ymax = self.cross_section_height
 
     '''
     the method set_width change the width of the cross section shape

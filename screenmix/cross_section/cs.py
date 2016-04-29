@@ -47,16 +47,12 @@ class Cross_Section(GridLayout):
     '''
     def add_layer(self,percent,material):
         self.view.add_layer(percent,material)
-        self.ack_update()
         
-    def ack_update(self):
-        self.ack.update()
     '''
     the method delete_layer delete the selected materials
     '''
     def delete_layer(self):
         self.view.delete_layer()
-        self.ack_update()
         
     '''
     the method set_layer_information update the layer
@@ -83,7 +79,6 @@ class Cross_Section(GridLayout):
     def set_height(self,value):
         self.view.set_height(value)
         self.cross_section_height=value
-        self.ack_update()
     
     '''
     the method set_width change the width of the view
@@ -91,14 +86,12 @@ class Cross_Section(GridLayout):
     def set_width(self,value):
         self.view.set_width(value)
         self.cross_section_width=value
-        self.ack_update()
         
     '''
     the method set_percent change the percentage share of the selected materials
     '''
     def set_percent(self, value):
         self.view.set_percent(value)
-        self.ack_update()
     
     '''
     calculate the weight and the price of the cross section
@@ -154,6 +147,9 @@ class Cross_Section(GridLayout):
         if 1.-percent_of_layers>0:
             strength+=self.min_of_maxstrain*(1.-percent_of_layers)*self.concrete_stiffness
         self.strength=strength
-        
+    
+    '''
+    calculate the strain of concrete
+    '''
     def calculate_strain_of_concrete(self):
-       return self.concrete_strength/self.concrete_stiffness
+        return self.concrete_strength/self.concrete_stiffness

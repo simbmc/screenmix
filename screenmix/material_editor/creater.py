@@ -11,6 +11,7 @@ from kivy.uix.popup import Popup
 from material_editor.keyboard import Keyboard
 from material_editor.numpad import Numpad
 from materials.own_material import Own_Material
+from designClass.design import Design
 
 
 class Material_Creater(GridLayout):
@@ -18,6 +19,7 @@ class Material_Creater(GridLayout):
     def __init__(self, **kwargs):
         super(Material_Creater, self).__init__(**kwargs)
         self.cols=2
+        self.btnSize=Design.btnSize
         self.create_gui()
         self._parent=None
         self.focus_btn=None
@@ -47,24 +49,24 @@ class Material_Creater(GridLayout):
     '''
     def create_buttons(self):
         #materialname
-        self.name_btn=Button(text='name')
+        self.name_btn=Button(text='name',size_hint_y=None, height=self.btnSize)
         self.name_btn.bind(on_press=self.use_keyboard)
         #materialprice
-        self.price_btn=Button(text='0.0')
+        self.price_btn=Button(text='1.0',size_hint_y=None, height=self.btnSize)
         self.price_btn.bind(on_press=self.use_numpad)
         #materialdensity
-        self.density_btn=Button(text='0.0')
+        self.density_btn=Button(text='1.0',size_hint_y=None, height=self.btnSize)
         self.density_btn.bind(on_press=self.use_numpad)
         #materialstiffness
-        self.stiffness_btn=Button(text='0.0')
+        self.stiffness_btn=Button(text='1.0',size_hint_y=None, height=self.btnSize)
         self.stiffness_btn.bind(on_press=self.use_numpad)
         #materialstrength
-        self.strength_btn=Button(text='0.0')
+        self.strength_btn=Button(text='1.0',size_hint_y=None, height=self.btnSize)
         self.strength_btn.bind(on_press=self.use_numpad)
         #create material and cancel 
-        self.create_btn=Button(text='create')
+        self.create_btn=Button(text='create',size_hint_y=None, height=self.btnSize)
         self.create_btn.bind(on_press=self.create_material)
-        self.cancel_btn=Button(text='cancel')
+        self.cancel_btn=Button(text='cancel',size_hint_y=None, height=self.btnSize)
         self.cancel_btn.bind(on_press=self.cancel)
         
     '''
