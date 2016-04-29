@@ -34,7 +34,7 @@ class Circle(Plot):
     def draw(self, *args):
         super(Circle, self).draw(*args)
 
-        self._texture = Texture.create(size=(1, 1), colorfmt='rgba')
+        self._texture = Texture.create(size=(1, 1), colorfmt='rgb')
         self._texture.blit_buffer(
             b''.join(map(chr, self.color)), colorfmt='rgb', bufferfmt='ubyte')
 
