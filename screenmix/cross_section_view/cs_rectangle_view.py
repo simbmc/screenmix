@@ -210,7 +210,7 @@ class CS_Rectangle_View(BoxLayout, AView):
         filledRectCs = FilledRect(xrange=[0., self.cross_section_width],
                                     yrange=[y - h / 2., y + h / 2.],
                                     color=cur.colors)
-        filledRectAck=FilledRect(xrange=[0.,1e-3],
+        filledRectAck=FilledRect(xrange=[0.,0.],
                                  yrange=[y - h / 2., y + h / 2.],
                                  color=cur.colors)
         self.graph.add_plot(filledRectCs)
@@ -318,10 +318,10 @@ class CS_Rectangle_View(BoxLayout, AView):
                 layer.y_coordinate / self.cross_section_height * value)
             layer.set_height(
                 layer._height / self.cross_section_height * value)
-        self.update_all_graph()
+            self.update_all_graph()
         self.cross_section_height = value
-        self.update_cross_section_information()
         self.graph.ymax = self.cross_section_height
+        self.update_cross_section_information()
 
     '''
     the method set_width change the width of the cross section shape
