@@ -113,6 +113,9 @@ class Ack_Right(GridLayout):
     def update(self):
         self.graph.ymax=self.cross_section.cross_section_height
         self.find_max_stress()
+        for plot in self.graph.plots:
+            self.graph.remove_plot(plot)
+            self.graph._clear_buffer()
         self.concreteLayers=[]
         free_places = self.cross_section.view.get_free_places()
         for layer in free_places:

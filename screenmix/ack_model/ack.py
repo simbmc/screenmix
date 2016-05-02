@@ -69,7 +69,7 @@ class Ack(GridLayout):
     '''
     def update_strain(self,instance,value):
         self.strain.text='strain: '+str('%.2E' % Decimal(str(value)))
-        self.ack_right.update()
+        self.ack_right.update_plots()
         self.ack_left.set_FocusPosition(value)
     
 

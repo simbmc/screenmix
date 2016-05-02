@@ -123,11 +123,13 @@ class MainWindow(GridLayout):
     #that actually component is remove from the widget and set                  #
     #the content to the showed component                                        #
     ##########################################################################
+    
     def show_ack_view(self, button):
         self.ack_view.update()
         self.remove_widget(self.content)
         self.add_widget(self.ack_view)
         self.content = self.ack_view
+        self.ack_view.update()
         self.popup.dismiss()
 
     def show_cross_section_view(self, button):
