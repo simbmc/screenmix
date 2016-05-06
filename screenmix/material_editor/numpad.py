@@ -80,5 +80,6 @@ class Numpad(GridLayout):
     is finished and press the button 'finished'
     '''
     def finished(self,button):
-        self._parent.finished_numpad()
+        if len(self.textinput.text)>0:
+            self._parent.finished_numpad()
     
