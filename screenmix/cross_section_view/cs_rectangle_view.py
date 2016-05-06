@@ -159,22 +159,22 @@ class CS_Rectangle_View(BoxLayout, AView):
         y_coordinate = (touch.y - y0) / graph_h * self.cross_section_height
         changed = False
         one_is_already_focus = False
-        for rectangle in self.layers:
-            if rectangle.mouse_within(x_coordinate, y_coordinate):
-                if rectangle.focus == True and self.percent_change:
+        for layer in self.layers:
+            if layer.mouse_within(x_coordinate, y_coordinate):
+                if layer.focus == True and self.percent_change:
                     self.percent_change = False
                     self.update_all_graph()
                     return
-                if rectangle.focus == False and one_is_already_focus == False:
-                    rectangle.focus = True
+                if layer.focus == False and one_is_already_focus == False:
+                    layer.focus = True
                     one_is_already_focus = True
-                    cur_info = rectangle.get_material_informations()
+                    cur_info = layer.get_material_informations()
                     self.cross_section.set_layer_information(cur_info[0], cur_info[1], cur_info[
-                                                             2], cur_info[3], cur_info[4], rectangle._height / self.cross_section_height)
+                                                             2], cur_info[3], cur_info[4], layer._height / self.cross_section_height)
                     changed = True
             else:
-                if rectangle.focus == True:
-                    rectangle.focus = False
+                if layer.focus == True:
+                    layer.focus = False
                     changed = True
         # update just when something has change
         if changed:

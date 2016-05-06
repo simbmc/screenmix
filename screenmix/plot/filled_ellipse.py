@@ -24,7 +24,7 @@ class FilledEllipse(Plot):
         super(FilledEllipse, self).__init__(**kwargs)
         self.bind(
             color=self.ask_draw, xrange=self.ask_draw, yrange=self.ask_draw)
-
+        
     def create_drawings(self):
         self._image = Ellipse(size=[0., 0.])
         return [self._image]
@@ -54,6 +54,7 @@ class FilledEllipse(Plot):
         w = tr[0] - bl[0]
         h = tr[1] - bl[1]
         image.size = (w, h)
+    
 
 if __name__ == '__main__':
     from kivy.uix.boxlayout import BoxLayout

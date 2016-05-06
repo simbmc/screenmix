@@ -45,6 +45,7 @@ class CS_Circle_View(AView, BoxLayout):
         if len(list)==0:
             self.graph._clear_buffer()
         '''
+        self.draw_circle()
         self.rect = MeshLinePlot(color=[1, 0, 0, 1])
         self.rect.points=self.draw_layer(self.cross_section_radius)
         self.graph.add_plot(self.rect)

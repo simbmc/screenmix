@@ -7,7 +7,6 @@ Created on 14.04.2016
 
 class Layer_Rectangle:
     # Constructor
-
     def __init__(self, x_coordinate, y_coordinate, height, width, colors, percent):
         self.x_coordinate = x_coordinate
         self.y_coordinate = y_coordinate
@@ -57,35 +56,30 @@ class Layer_Rectangle:
     '''
     the method to change the percentage
     '''
-
     def set_percentage(self, value):
         self.percentage = value
 
     '''
     the method set_width change the width of the small_keyboard-rectangle
     '''
-
     def set_width(self, value):
         self._width = value
 
     '''
     the method set_y_coordinate change the y_coordinate of the small_keyboard-rectangle
     '''
-
     def set_y_coordinate(self, value):
         self.y_coordinate = value
 
     '''
     the method set_material was developed to set the small_keyboard the materials
     '''
-
     def set_material(self, material):
         self.material = material
 
     '''
     return the materials information
     '''
-
     def get_material_informations(self):
         return [self.material.name, self.material.price, self.material.density, self.material.stiffness, self.material.strength]
 
@@ -101,7 +95,6 @@ class Layer_Rectangle:
     '''
     return the strain of the layer
     '''
-
     def get_strain(self):
         return self.material.strength / self.material.stiffness
     
