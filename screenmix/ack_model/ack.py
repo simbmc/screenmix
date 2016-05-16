@@ -19,6 +19,9 @@ class Ack(GridLayout):
         super(Ack, self).__init__(**kwargs)
         self.cols=1
     
+    '''
+    create the gui
+    '''
     def create_gui(self):
         self.strainSlider=Slider(min=1e-10, max=0.1,value=1e-5)
         self.content_ack=GridLayout(cols=2)
@@ -72,9 +75,14 @@ class Ack(GridLayout):
         self.ack_right.update_plots()
         self.ack_left.set_FocusPosition(value)
     
-
+    '''
+    return the current strain
+    '''
     def getCurrentStrain(self):
         return self.strainSlider.value
     
+    '''
+    return the max strain
+    '''
     def getMaxStrain(self):
         return self.strainSlider.max

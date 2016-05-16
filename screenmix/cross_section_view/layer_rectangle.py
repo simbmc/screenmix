@@ -3,9 +3,10 @@ Created on 14.04.2016
 
 @author: mkennert
 '''
+from cross_section_view.aLayer import ALayer
 
 
-class Layer_Rectangle:
+class Layer_Rectangle(ALayer):
     # Constructor
     def __init__(self, x_coordinate, y_coordinate, height, width, colors, percent):
         self.x_coordinate = x_coordinate
@@ -29,7 +30,12 @@ class Layer_Rectangle:
         else:
             return False
     
-    
+    '''
+    check if the mouse is in the rectangle
+    return true, if the mouse is within, otherwise return false
+    Attention: it checks only the x_coordinate. this method
+    was developed to make the the movement of the layer faster
+    '''
     def mouse_within_just_x_coordinate(self, x_value):
         if x_value > 0. and x_value < self._width:
             return True
@@ -53,11 +59,6 @@ class Layer_Rectangle:
     def set_height(self, value):
         self._height = value
 
-    '''
-    the method to change the percentage
-    '''
-    def set_percentage(self, value):
-        self.percentage = value
 
     '''
     the method set_width change the width of the small_keyboard-rectangle
@@ -65,23 +66,6 @@ class Layer_Rectangle:
     def set_width(self, value):
         self._width = value
 
-    '''
-    the method set_y_coordinate change the y_coordinate of the small_keyboard-rectangle
-    '''
-    def set_y_coordinate(self, value):
-        self.y_coordinate = value
-
-    '''
-    the method set_material was developed to set the small_keyboard the materials
-    '''
-    def set_material(self, material):
-        self.material = material
-
-    '''
-    return the materials information
-    '''
-    def get_material_informations(self):
-        return [self.material.name, self.material.price, self.material.density, self.material.stiffness, self.material.strength]
 
     '''
     return the weight of the layer
@@ -92,11 +76,6 @@ class Layer_Rectangle:
         weight = self.material.density * volume
         return weight
 
-    '''
-    return the strain of the layer
-    '''
-    def get_strain(self):
-        return self.material.strength / self.material.stiffness
     
     '''
     set the filledRectCs

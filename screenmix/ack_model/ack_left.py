@@ -14,8 +14,6 @@ from plot.filled_ellipse import FilledEllipse
 from designClass.design import Design
 
 class Ack_Left(GridLayout):
-    colors = [0.8, 0.3, 0.5, 0.2, 0.1, 0.7, 0.1]
-    colorcycler = cycle(colors)
     # Constructor
 
     def __init__(self, **kwargs):
@@ -31,7 +29,6 @@ class Ack_Left(GridLayout):
     '''
     the method create_graph create the graph
     '''
-
     def create_graph(self):
         self.graph = Graph(xlabel='strain', ylabel='stress',
                            y_grid_label=True, x_grid_label=True,
@@ -41,7 +38,6 @@ class Ack_Left(GridLayout):
     '''
     the method create_option_layout create gui-part without the graph
     '''
-
     def create_option_layout(self):
         self.option_layout = GridLayout(cols=2,row_force_default=True, row_default_height=self.btnSize, size_hint_y=None, height=self.btnSize)
 #         self.option_layout.add_widget(Label(text='bond [N/mm]:'))
@@ -58,16 +54,16 @@ class Ack_Left(GridLayout):
     '''
     the method plot plots a curve
     '''
-
     def plot(self, button):
         self.plot = MeshLinePlot(
             color=[random.random(), random.random(), random.random(), 1])
-        self.plot.points = self.calculate_points()
+        self.plot._points = self.calculate_points()
         self.cur_plot=self.plot
         self.graph.add_plot(self.plot)
+        print(self.graph.plots)
 
     '''
-    the method alculate_points calculate the points for 
+    the method alculate_points calculate the _points for 
     the graphh 
     '''
 
@@ -76,7 +72,7 @@ class Ack_Left(GridLayout):
         points.append(
             (self.cross_section.min_of_maxstrain, self.cross_section.strength))
         if self.cross_section.view.layers:
-            # calculate the second points
+            # calculate the second _points
             # calculate the stiffness of the reinforcement layers according to
             # mixture rule
             percent_of_layers = 0.  # the sum of the percentage of the reinforcement layers
@@ -99,7 +95,7 @@ class Ack_Left(GridLayout):
             eps_r_avg = (eps_r_max + eps_r_min) / 2.
             points.append((eps_r_avg, self.cross_section.strength))
             self.secondpoint=points[2]
-            # calculate the third points
+            # calculate the third _points
             # the maximum reinforcement strain
             max_strain_r = 1e8
             for layer in self.cross_section.view.layers:
@@ -121,12 +117,16 @@ class Ack_Left(GridLayout):
             self.graph.ymax / 6., decimals=int(-np.log10(self.graph.ymax / 6)) + 1)
         return points
 
-    # not finished yet
+    '''
+    delete all plot, except the focus plot
+    '''
     def clear(self, button):
-        for plot in self.graph.plots:
-            if not plot==self.focus and not plot==self.cur_plot:
-                self.graph.remove_plot(plot)
-        self.graph._clear_buffer()
+        print('clear')
+        while len(self.graph.plots)>1:
+            for plot in self.graph.plots:
+                if not plot==self.focus and not plot==self.cur_plot:
+                    self.graph.remove_plot(plot)
+                    self.graph._clear_buffer()
 
     '''
     the method set_cross_section was developed to say the view, 
@@ -191,15 +191,18 @@ class Ack_Left(GridLayout):
         self.focus.yrange = [0,0]
         self.graph.add_plot(self.focus)
     
+    '''
+    update the plots
+    '''
     def plot_update(self):
-        self.plot = MeshLinePlot(
-            color=Design.focusColor)
         if not self.cur_plot==None:
             self.cur_plot.color=[random.random(), random.random(), random.random(), 1]
-        self.plot.points = self.calculate_points()
-        self.cur_plot=self.plot
-        self.allPlots.append(self.plot)
-        self.graph.add_plot(self.plot)
+        plot = MeshLinePlot(color=Design.focusColor)
+        plot.points = self.calculate_points()
+        print('points: '+str(plot.points))
+        self.cur_plot=plot
+        self.allPlots.append(plot)
+        self.graph.add_plot(plot)
         
     '''
     update the ack_left side

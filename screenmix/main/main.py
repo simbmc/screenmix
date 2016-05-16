@@ -4,36 +4,38 @@ Created on 14.04.2016
 @author: mkennert
 '''
 from kivy.app import App
+from kivy.core.window import Window
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.popup import Popup
 from kivy.uix.scrollview import ScrollView
 
 from ack_model.ack import Ack
-from cross_section.cs import Cross_Section
-from material_editor.editor import Material_Editor
-from kivy.core.window import Window
+from cross_section.crossSection import CrossSection
 from designClass.design import Design
-Window.size = (720, 500)
+from material_editor.editor import Material_Editor
+
+
+Window.size = (900, 600)
 
 
 class MainWindow(GridLayout):
     # Constructor
-
     def __init__(self, **kwargs):
         super(MainWindow, self).__init__(**kwargs)
         self.cols = 1
         self.btnSize=Design.btnSize
+        self.allCrossSections=CrossSection()
+        self.cross_section = self.allCrossSections.getCSRectangle()
+        #Cross Section is the default view
+        self.content = self.allCrossSections
         self.create_popup()
         self.create_menu_bar()
         self.create_componets()
-        # Cross Section is the default view
-        self.content = self.cross_section
 
     '''
     create all components of the Scrollview root
     '''
-
     def create_componets(self):
         self.create_cross_section_view()
         self.create_ack_view()
@@ -42,12 +44,11 @@ class MainWindow(GridLayout):
     '''
     create the list_view. here you can add more menu-options for the app
     '''
-
     def create_list_view(self):
         layout = GridLayout(cols=1, spacing=10, size_hint_y=None)
         # Make sure the height is such that there is something to scroll.
         layout.bind(minimum_height=layout.setter('height'))
-        # Cross_Section
+        # CrossSectionRectangle
         cross_section = Button(
             text='cross section', size_hint_y=None, height=self.btnSize)
         cross_section.bind(on_press=self.show_cross_section_view)
@@ -71,7 +72,6 @@ class MainWindow(GridLayout):
     '''
     create the popup with the menu options
     '''
-
     def create_popup(self):
         self.create_list_view()
         self.popup = Popup(title='Menu', content=self.root, size_hint=(None, None), size=(
@@ -81,7 +81,6 @@ class MainWindow(GridLayout):
     create the menu bar where you can select the 
     menu button to show the menu
     '''
-
     def create_menu_bar(self):
         bar = GridLayout(cols=3, row_force_default=True,
                          row_default_height=self.btnSize, size_hint_y=None, height=self.btnSize)
@@ -94,15 +93,12 @@ class MainWindow(GridLayout):
     '''
     create the cross section
     '''
-
     def create_cross_section_view(self):
-        self.cross_section = Cross_Section()
-        self.add_widget(self.cross_section)
+        self.add_widget(self.allCrossSections)
 
     '''
     create the ask_view
     '''
-
     def create_ack_view(self):
         self.ack_view = Ack()
         self.cross_section.set_ack(self.ack_view)
@@ -112,18 +108,20 @@ class MainWindow(GridLayout):
     '''
     create the material-editor
     '''
-
     def create_material_editor(self):
         self.material_editor = Material_Editor()
         # sign in by the cross section
-        self.material_editor.set_cross_section(self.cross_section)
+        self.material_editor.set_cross_section(self.allCrossSections)
 
-    ##########################################################################
+    #############################################################################
     #Attention:When you want write a new show-method than you must make sure    #
     #that actually component is remove from the widget and set                  #
     #the content to the showed component                                        #
-    ##########################################################################
+    #############################################################################
     
+    '''
+    show the ack-view
+    '''
     def show_ack_view(self, button):
         self.ack_view.update()
         self.remove_widget(self.content)
@@ -131,13 +129,19 @@ class MainWindow(GridLayout):
         self.content = self.ack_view
         self.ack_view.update()
         self.popup.dismiss()
-
+    
+    '''
+    show the cross-section-view
+    '''
     def show_cross_section_view(self, button):
         self.remove_widget(self.content)
-        self.add_widget(self.cross_section)
-        self.content = self.cross_section
+        self.add_widget(self.allCrossSections)
+        self.content = self.allCrossSections
         self.popup.dismiss()
-
+    
+    '''
+    show the material-editor
+    '''
     def show_material_editor(self, button):
         self.remove_widget(self.content)
         self.add_widget(self.material_editor)

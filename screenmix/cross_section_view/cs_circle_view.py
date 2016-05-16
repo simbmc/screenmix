@@ -37,7 +37,7 @@ class CS_Circle_View(AView, BoxLayout):
                 print(layer.y_coordinate)
             else:
                 layer.rect = MeshLinePlot(color=layer.colors)
-            layer.rect.points = self.draw_layer(0.5)
+            layer.rect._points = self.draw_layer(0.5)
             self.graph.add_plot(layer.rect)
         for plot in list:
             self.graph.remove_plot(plot)
@@ -47,12 +47,12 @@ class CS_Circle_View(AView, BoxLayout):
         '''
         self.draw_circle()
         self.rect = MeshLinePlot(color=[1, 0, 0, 1])
-        self.rect.points=self.draw_layer(self.cross_section_radius)
+        self.rect._points=self.draw_layer(self.cross_section_radius)
         self.graph.add_plot(self.rect)
         return self.graph
     
     '''
-    the method draw_layer was developed to get the points of the rectangle
+    the method draw_layer was developed to get the _points of the rectangle
     the while_loop was create to make the rectangle set a grid.
     '''
     @staticmethod
@@ -77,7 +77,7 @@ class CS_Circle_View(AView, BoxLayout):
     def draw_circle(self):
         print('Hier')
         self.rect = MeshLinePlot(color=[1, 0, 0, 1])
-        self.rect.points = self.draw_layer(0.5)
+        self.rect._points = self.draw_layer(0.5)
         self.graph.add_plot(self.rect)
         
         

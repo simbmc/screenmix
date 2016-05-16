@@ -11,27 +11,36 @@ from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.uix.slider import Slider
 from designClass.design import Design
+from material_editor.iobserver import IObserver
+from cross_section_information.shape_selection import ShapeSelection
+from cross_section_information.doubleTInformation import DoubleTInformation
+from cross_section_information.rectangleInformation import RectangleInformation
+
 '''
 the class Cross_Section_Information was developed to show 
 the information of the cs_view
 '''
-class Cross_Section_Information(BoxLayout):
+class Cross_Section_Information(GridLayout, IObserver):
     
     #Constructor
     def __init__(self, **kwargs):
         super(Cross_Section_Information, self).__init__(**kwargs)
-        self.orientation='vertical'
+        self.cols=1
+        self.focusCrossSection=None
+        self.firstTimeDoubleT=True
         self.btnSize=Design.btnSize
-        
-        
     
     ########################################################################################################
     # The following part of code create only the graphical user interface                                  #
     ########################################################################################################
     
-    #not finished yet
+    '''
+    create the gui of the information
+    '''
     def create_gui(self):
-        self.create_scale_area()
+        self.createPopUp_Shape()
+        self.create_selectionMenu()
+        self.add_widget(self.rectangleInformation)
         self.create_cross_section_area()
         self.create_add_delete_area()
         self.create_material_information()
@@ -39,25 +48,26 @@ class Cross_Section_Information(BoxLayout):
         self.create_confirm_cancel_area()
     
     '''
-    the method create_scale_area create the area where you can 
-    scale the height and the width of the cs_view
+    create the layout where you can select the cross-section-shape
     '''
-    def create_scale_area(self):
-        self.scale_area=GridLayout(cols=2)
-        #adding_material_area to manage the height-area
-        self.height_value=Label(text='height: 0.5 m',size_hint_x=None, width=100)
-        slider_height=Slider(min=0.1, max=0.5, value=0.5)
-        slider_height.bind(value=self.set_height)
-        self.scale_area.add_widget(self.height_value)
-        self.scale_area.add_widget(slider_height)
-        #adding_material_area to manage the width-area
-        self.width_value=Label(text='width: 0.25 m',size_hint_x=None, width=100)
-        slider_width=Slider(min=0.1, max=0.5, value=0.25)
-        slider_width.bind(value=self.set_width)
-        self.scale_area.add_widget(self.width_value)
-        self.scale_area.add_widget(slider_width)
-        self.add_widget(self.scale_area)
+    def create_selectionMenu(self):
+        selectionContent=GridLayout(cols=1,spacing=10, 
+                                    size_hint_y=None,row_force_default=True, 
+                                    row_default_height=self.btnSize)
+        self.btn_selection=Button(text='rectangle',size_hint_y=None, height=self.btnSize,
+                                  size_hint_x=None, width=200)
+        self.btn_selection.bind(on_press=self.showShapeSelection)
+        selectionContent.add_widget(self.btn_selection)
+        self.add_widget(selectionContent)
     
+    '''
+    create popup where you can select the shape of the cross section
+    '''
+    def createPopUp_Shape(self):
+        shapeContent=ShapeSelection()
+        shapeContent.setInformation(self)
+        self.shapeSelection=Popup(title='shape',content=shapeContent)        
+        
     '''
     the method create_add_delete_area create the area where you can 
     add new materials and delete materials from the cs_view
@@ -255,8 +265,24 @@ class Cross_Section_Information(BoxLayout):
         btn_material_A.bind(on_press=self.select_material)
         self.layout_materials.add_widget(btn_material_A)
         self.layout_materials.add_widget(self.btn_material_editor)
+        
+    '''
+    look which shape the user has selected
+    '''
+    def finishedShapeSelection(self,btn):
+        if btn.text=='circle':
+            #not finished yet
+            pass
+        elif btn.text=='rectangle':
+            self.setRectangle(btn)
+        elif btn.text=='doubleT':
+            self.setDoubleT(btn)
     
-    
+    '''
+    open the popup where the user can select the shape
+    ''' 
+    def showShapeSelection(self,btn):
+        self.shapeSelection.open()
     
     #################################################################################################
     #                                Setter && Getter                                               #
@@ -270,22 +296,6 @@ class Cross_Section_Information(BoxLayout):
     def select_material(self, Button):
         self.popup.dismiss()
         self.material_option.text=Button.text
-        
-    '''
-    the method set_height change the height of the cs_view
-    '''
-    def set_height(self, instance, value):
-        self.cross_section.set_height(value)
-        value=int(value*100)
-        self.height_value.text='height: 0.'+str(value)+' m'
-    
-    '''
-    the method set_width change the width of the cs_view
-    '''
-    def set_width(self, instance, value):
-        self.cross_section.set_width(value)
-        value=int(value*100)
-        self.width_value.text='width: 0.'+str(value)+' m'
     
     '''
     the method set_percent change the percentage share 
@@ -308,8 +318,58 @@ class Cross_Section_Information(BoxLayout):
     the method set_cross_section was developed to say the view, 
     which cross section should it use
     '''
-    def set_cross_section(self,cross_section):
-        self.cross_section=cross_section
-        self.all_materials=self.cross_section.all_materials
+    def set_cross_section(self,allCrossSections):
+        self.allCrossSections=allCrossSections
+        #default cross section rectangle
+        self.cross_section=allCrossSections.getCSRectangle()
+        self.rectangleInformation=RectangleInformation()
+        self.focusCrossSection=self.rectangleInformation
+        self.rectangleInformation.setCrossSection(self.cross_section)
+        self.all_materials=self.allCrossSections.all_materials
         self.all_materials.add_listener(self)
         self.create_gui()
+    
+    '''
+    change the current cross section
+    '''
+    def change_CrossSection(self,cross_section):
+        self.cross_section=cross_section
+        
+    '''
+    show the rectangle shape
+    '''
+    def setRectangle(self, btn):
+        self.btn_selection.text=btn.text
+        self.cross_section=self.allCrossSections.getCSRectangle()
+        self.remove_widget(self.focusCrossSection)
+        self.focusCrossSection=self.rectangleInformation
+        self.add_widget(self.rectangleInformation,3)
+        self.allCrossSections.showRectangleView()
+        self.shapeSelection.dismiss()
+    
+    '''
+    show the doubleT shape
+    '''
+    def setDoubleT(self,btn):
+        self.btn_selection.text=btn.text
+        self.cross_section=self.allCrossSections.getCSDoubleT()
+        if self.firstTimeDoubleT:
+            self.doubleTInformation=DoubleTInformation()
+            self.doubleTInformation.setCrossSection(self.cross_section)
+            self.firstTimeDoubleT=False
+        self.remove_widget(self.focusCrossSection)
+        self.focusCrossSection=self.doubleTInformation
+        self.add_widget(self.doubleTInformation,3)
+        self.allCrossSections.showDoubleTView()
+        self.shapeSelection.dismiss()
+    
+    '''
+    show the circle shape
+    '''
+    #not finished yet
+    def setCircle(self,btn):
+        self.btn_selection.text=btn.text
+        #not finished yet
+        #self.cross_section=self.allCrossSections.getCSCircle()
+        self.shapeSelection.dismiss()
+    

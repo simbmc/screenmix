@@ -3,11 +3,12 @@ Created on 18.04.2016
 
 @author: Yingxiong
 '''
-from kivy.garden.graph import Plot
-from kivy.properties import ListProperty, ObjectProperty, NumericProperty
-from kivy.graphics import LinePlot
-from kivy.graphics.texture import Texture
 from math import log10
+
+from kivy.graphics.texture import Texture
+from kivy.properties import ListProperty, ObjectProperty, NumericProperty
+from kivy.graphics import Line
+from kivy.garden.graph import Plot
 
 
 class Circle(Plot):
@@ -28,7 +29,7 @@ class Circle(Plot):
             color=self.ask_draw, pos=self.ask_draw, r=self.ask_draw)
 
     def create_drawings(self):
-        self._image = LinePlot(circle=[0., 0., 0.])
+        self._image = Line(circle=[0., 0., 0.])
         return [self._image]
 
     def draw(self, *args):

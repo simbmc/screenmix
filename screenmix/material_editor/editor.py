@@ -12,9 +12,10 @@ from kivy.uix.scrollview import ScrollView
 
 from material_editor.creater import Material_Creater
 from designClass.design import Design
+from material_editor.iobserver import IObserver
 
 
-class Material_Editor(ScrollView):
+class Material_Editor(ScrollView, IObserver):
     #Constructor
     def __init__(self, **kwargs):
         super(Material_Editor, self).__init__(**kwargs)

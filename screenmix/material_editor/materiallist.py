@@ -13,7 +13,7 @@ the class MaterialList was developed to make it possible
 to use only one materiallist and update the observerclasses
 when something has changed. the class implements the observer-pattern.
 Attention: if you add a new observer, make sure that the observer
-           implements a update-method.
+implements a update-method.
 '''
 
 class MaterialList:

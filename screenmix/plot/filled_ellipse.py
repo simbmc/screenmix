@@ -55,7 +55,6 @@ class FilledEllipse(Plot):
         h = tr[1] - bl[1]
         image.size = (w, h)
     
-
 if __name__ == '__main__':
     from kivy.uix.boxlayout import BoxLayout
     from kivy.app import App

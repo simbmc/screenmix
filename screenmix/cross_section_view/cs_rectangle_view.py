@@ -13,9 +13,7 @@ from cross_section_view.aview import AView
 from cross_section_view.layer_rectangle import Layer_Rectangle
 from plot.filled_rect import FilledRect
 from designClass.design import Design
-colors = [[255, 102, 102], [255, 255, 102], [140, 255, 102], [102, 255, 217],
-          [102, 102, 255], [255, 102, 102], [179, 179, 179], [102, 71, 133]]
-colorcycler = cycle(colors)
+
 
 
 '''
@@ -203,7 +201,7 @@ class CS_Rectangle_View(BoxLayout, AView):
     def add_layer(self, value, material):
         height = self.cross_section_height * value
         cur = Layer_Rectangle(self.cross_section_width / 2, self.cross_section_height - height / 2., height,
-                              self.cross_section_width, next(colorcycler), value)
+                              self.cross_section_width, next(Design.colorcycler), value)
         cur.set_material(material)
         y = cur.y_coordinate
         h = cur._height

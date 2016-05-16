@@ -7,30 +7,30 @@ Created on 15.03.2016
 
 from kivy.uix.gridlayout import GridLayout
 from cross_section_view.cs_rectangle_view import CS_Rectangle_View
-from cross_section_view.cross_section_information import Cross_Section_Information
+from cross_section_information.cs_information import Cross_Section_Information
 from material_editor.materiallist import MaterialList
+from cross_section.ashape import AShape
 
 '''
 the cross_Section was developed to undock the cs_information from the view
 '''
-class Cross_Section(GridLayout): 
+class CrossSectionRectangle(GridLayout,AShape): 
     #Constructor
     def __init__(self, **kwargs):
-        super(Cross_Section, self).__init__(**kwargs)
+        super(CrossSectionRectangle, self).__init__(**kwargs)
         self.cross_section_height = 0.5
         self.cross_section_width = 0.25
-        self.all_materials=MaterialList()
-        self.view=CS_Rectangle_View()
         self.concrete_density=2300.
         self.concrete_price=0.065
         self.concrete_stiffness= 30000.
-        self.concrete_strength= 3. 
-        self.information=Cross_Section_Information()
-        self.cols=2
-        self.add_widget(self.view)
-        self.add_widget(self.information)
+        self.concrete_strength= 3.
+        self.view=CS_Rectangle_View() 
         self.view.set_cross_section(self)
-        self.information.set_cross_section(self)
+        #self.information=Cross_Section_Information()
+        #self.information.set_cross_section(self)
+        
+    def setInformation(self,information):
+        self.information=information
         self.calculate_weight_price()
         self.calculate_strength()
         self.set_cross_section_information()
@@ -151,5 +151,10 @@ class Cross_Section(GridLayout):
     '''
     calculate the strain of concrete
     '''
-    def calculate_strain_of_concrete(self):
-        return self.concrete_strength/self.concrete_stiffness
+    #def calculate_strain_of_concrete(self):
+    #    return self.concrete_strength/self.concrete_stiffness
+    
+    def signParent(self, allcrossection):
+        self.allCrossSection=allcrossection
+        self.information=allcrossection.getInformation()
+        

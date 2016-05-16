@@ -57,7 +57,6 @@ class MultilinearInformation(GridLayout):
     the method finished_numpad close the numpad_popup
     '''
     def finished_numpad(self):
-        self.focus_btn.text=self.numpad.textinput.text
         self.popup_numpad.dismiss()
         if self.focus_btn==self.points_btn:
             self.points_btn.text=self.numpad.textinput.text

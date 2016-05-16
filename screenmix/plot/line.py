@@ -27,7 +27,7 @@ class LinePlot(Plot):
             color=self.ask_draw, xrange=self.ask_draw, yrange=self.ask_draw)
     
     def create_drawings(self):
-        self._image = Line(points=(0.,0.))
+        self._image = Line(points=(0.,0.,1,1),width=2)
         return [self._image]
 
     def draw(self, *args):
@@ -39,5 +39,7 @@ class LinePlot(Plot):
         image.texture = self._texture
         print('point1: '+str((self.xrange[0],self.yrange[0])))
         print('point2: '+str((self.xrange[1],self.yrange[1])))
-        image.points=[(self.xrange[0],self.yrange[0]),(self.xrange[1],self.yrange[1])]
+        image.points=(self.xrange[0],self.yrange[0],self.xrange[1],self.yrange[1])
+        print(image.points)
+        image.width=1
         
