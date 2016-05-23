@@ -18,105 +18,105 @@ class CrossSectionRectangle(GridLayout,AShape):
     #Constructor
     def __init__(self, **kwargs):
         super(CrossSectionRectangle, self).__init__(**kwargs)
-        self.cross_section_height = 0.5
-        self.cross_section_width = 0.25
+        self.cheight = 0.5
+        self.cw = 0.25
         self.concrete_density=2300.
         self.concrete_price=0.065
         self.concrete_stiffness= 30000.
         self.concrete_strength= 3.
         self.view=CS_Rectangle_View() 
-        self.view.set_cross_section(self)
+        self.view.setCrossSection(self)
         #self.information=Cross_Section_Information()
-        #self.information.set_cross_section(self)
+        #self.information.setCrossSection(self)
         
     def setInformation(self,information):
         self.information=information
-        self.calculate_weight_price()
-        self.calculate_strength()
-        self.set_cross_section_information()
+        self.calculateWeightPrice()
+        self.calculateStrength()
+        self.setCrossSectionInformation()
     
     '''
-    the method set_cross_section was developed to say the view, 
+    the method setCrossSection was developed to say the view, 
     which cross section should it use
     '''
-    def set_ack(self,ack):
+    def setAck(self,ack):
         self.ack=ack
     
     '''
-    the method add_layer add new materials in the view
+    the method addLayer add new materials in the view
     '''
-    def add_layer(self,percent,material):
-        self.view.add_layer(percent,material)
+    def addLayer(self,percent,material):
+        self.view.addLayer(percent,material)
         
     '''
-    the method delete_layer delete the selected materials
+    the method deleteLayer delete the selected materials
     '''
-    def delete_layer(self):
-        self.view.delete_layer()
+    def deleteLayer(self):
+        self.view.deleteLayer()
         
     '''
-    the method set_layer_information update the layer
+    the method setLayerInformation update the layer
     after a layer get the focus
     '''
-    def set_layer_information(self,name,price,density,stiffness,strength,percent):
-        self.information.update_layer_information(name,price,density,stiffness,strength,percent)
+    def setLayerInformation(self,name,price,density,stiffness,strength,percent):
+        self.information.updateLayerInformation(name,price,density,stiffness,strength,percent)
     
     '''
-    the method set_layer_information update the cross section information
+    the method setLayerInformation update the cross section information
     '''
-    def set_cross_section_information(self):
-        self.information.update_cross_section_information(self.price, self.weight, self.strength)
+    def setCrossSectionInformation(self):
+        self.information.updateCrossSectionInformation(self.price, self.weight, self.strength)
     
     '''
     get all the layers
     '''
-    def get_layers(self):
-        return self.view.get_layers()
+    def getLayers(self):
+        return self.view.getLayers()
     
     '''
-    the method set_height changes the height of the view
+    the method setHeight changes the height of the view
     '''
-    def set_height(self,value):
-        self.view.set_height(value)
-        self.cross_section_height=value
+    def setHeight(self,value):
+        self.view.setHeight(value)
+        self.cheight=value
     
     '''
-    the method set_width change the width of the view
+    the method setWidth change the width of the view
     ''' 
-    def set_width(self,value):
-        self.view.set_width(value)
-        self.cross_section_width=value
+    def setWidth(self,value):
+        self.view.setWidth(value)
+        self.cw=value
         
     '''
-    the method set_percent change the percentage share of the selected materials
+    the method setPercent change the percentage share of the selected materials
     '''
-    def set_percent(self, value):
-        self.view.set_percent(value)
+    def setPercent(self, value):
+        self.view.setPercent(value)
     
     '''
     calculate the weight and the price of the cross section
     '''
-    def calculate_weight_price(self):
+    def calculateWeightPrice(self):
         weight=price=percent_of_layers=0.
         #go trough all layers and
         #get the weight of them
-        for layer in self.view.layers:
-            cur=layer.get_weight()
+        for l in self.view.layers:
+            cur=l.getWeight()
             weight+=cur
-            price+=cur*layer.material.price
-            percent_of_layers+=layer._height/self.cross_section_height
+            price+=cur*l.material.price
+            percent_of_layers+=l.h/self.cheight
         #if the percent_of_layers is not 1 there is a matrix
         #with concrete as material
-        weight+=(1-percent_of_layers)*self.cross_section_width*self.concrete_density
-        price+=(1-percent_of_layers)*self.cross_section_height*self.cross_section_width*self.concrete_price
+        weight+=(1-percent_of_layers)*self.cw*self.concrete_density
+        price+=(1-percent_of_layers)*self.cheight*self.cw*self.concrete_price
         self.weight=weight
         self.price=price
     
     '''
-    the method calculate_strength calculate the strength of 
+    the method calculateStrength calculate the strength of 
     the cross_section
     '''
-    def calculate_strength(self):
+    def calculateStrength(self):
         strength=0.
         #cur supremum
         self.min_of_maxstrain=10000000.
@@ -125,8 +125,8 @@ class CrossSectionRectangle(GridLayout,AShape):
         percent_of_layers=0.
         #find the minimum max_strain and the maximum max_strain
         for layer in self.view.layers:
-            percent_of_layers+=layer._height/self.cross_section_height
-            cur_strain=layer.get_strain()
+            percent_of_layers+=layer.h/self.cheight
+            cur_strain=layer.getStrain()
             #proof whether the cur_strain is smaller as the min
             if cur_strain<self.min_of_maxstrain:
                 self.min_of_maxstrain=cur_strain
@@ -143,7 +143,7 @@ class CrossSectionRectangle(GridLayout,AShape):
                 self.max_of_maxstrain=cur_value
         #calculate the strength
         for layer in self.view.layers:
-            strength+=self.min_of_maxstrain*layer.material.stiffness*layer._height/self.cross_section_height
+            strength+=self.min_of_maxstrain*layer.material.stiffness*layer.h/self.cheight
         if 1.-percent_of_layers>0:
             strength+=self.min_of_maxstrain*(1.-percent_of_layers)*self.concrete_stiffness
         self.strength=strength

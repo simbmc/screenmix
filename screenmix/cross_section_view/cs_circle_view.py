@@ -18,27 +18,27 @@ class CS_Circle_View(AView, BoxLayout):
         super(CS_Circle_View, self).__init__(**kwargs)
         self.cross_section_radius = 0.5
         self.layers=[1]
-        self.create_graph()
-        self.add_widget(self.update_all_graph)
+        self.createGraph()
+        self.add_widget(self.updateAllGraph)
     
     '''
-    the method update_all_graph update the graph. the method should be called, when
+    the method updateAllGraph update the graph. the method should be called, when
     something has changed
     '''
     @property    
-    def update_all_graph(self):
+    def updateAllGraph(self):
         #list = []
         '''
         for plot in self.graph.plots:
             list.append(plot)
         for layer in self.layers:
             if layer.focus:
-                layer.rect = MeshLinePlot(color=[1, 0, 0, 1])
+                layer.p = MeshLinePlot(color=[1, 0, 0, 1])
                 print(layer.y_coordinate)
             else:
-                layer.rect = MeshLinePlot(color=layer.colors)
-            layer.rect._points = self.draw_layer(0.5)
-            self.graph.add_plot(layer.rect)
+                layer.p = MeshLinePlot(color=layer.colors)
+            layer.p._points = self.draw_layer(0.5)
+            self.graph.add_plot(layer.p)
         for plot in list:
             self.graph.remove_plot(plot)
             self.graph._clear_buffer()
@@ -46,9 +46,9 @@ class CS_Circle_View(AView, BoxLayout):
             self.graph._clear_buffer()
         '''
         self.draw_circle()
-        self.rect = MeshLinePlot(color=[1, 0, 0, 1])
-        self.rect._points=self.draw_layer(self.cross_section_radius)
-        self.graph.add_plot(self.rect)
+        self.p = MeshLinePlot(color=[1, 0, 0, 1])
+        self.p._points=self.draw_layer(self.cross_section_radius)
+        self.graph.add_plot(self.p)
         return self.graph
     
     '''
@@ -65,10 +65,10 @@ class CS_Circle_View(AView, BoxLayout):
         return points
     
     '''
-    the method create_graph create the graph, where you can add 
+    the method createGraph create the graph, where you can add 
     the rectangles. the method should be called only once at the beginning
     '''
-    def create_graph(self):
+    def createGraph(self):
         self.graph = Graph(
                         x_ticks_major=0.05, y_ticks_major=0.05,
                         y_grid_label=True, x_grid_label=True, padding=5,
@@ -76,27 +76,27 @@ class CS_Circle_View(AView, BoxLayout):
     
     def draw_circle(self):
         print('Hier')
-        self.rect = MeshLinePlot(color=[1, 0, 0, 1])
-        self.rect._points = self.draw_layer(0.5)
-        self.graph.add_plot(self.rect)
+        self.p = MeshLinePlot(color=[1, 0, 0, 1])
+        self.p._points = self.draw_layer(0.5)
+        self.graph.add_plot(self.p)
         
         
-    def set_height(self,value):
+    def setHeight(self,value):
         pass
     
-    def set_width(self, value):
+    def setWidth(self, value):
         pass
     
-    def set_percent(self, value):
+    def setPercent(self, value):
         pass
     
-    def add_layer(self, percent,name):
+    def addLayer(self, percent,name):
         pass
     
-    def delete_layer(self):
+    def deleteLayer(self):
         pass
     
-    def update_layer_information(self,name,price,density,stiffness,strength,percent):
+    def updateLayerInformation(self,name,price,density,stiffness,strength,percent):
         pass
     
     '''

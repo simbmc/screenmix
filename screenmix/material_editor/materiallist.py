@@ -32,19 +32,19 @@ class MaterialList:
     '''
     add observer to the listeners-list.
     '''
-    def add_listener(self,listener):
+    def addListener(self,listener):
         self.listeners.append(listener)
     
     '''
     add a new material in the materiallist and 
     update all listeners
     '''
-    def add_Material(self, material):
+    def addMaterial(self, material):
         self.all_materials.append(material)
         self.update()
     
     '''
     return the length of the materiallist
     '''
-    def get_length(self):
+    def getLength(self):
         return len(self.all_materials)

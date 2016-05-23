@@ -20,7 +20,7 @@ class Material_Creater(GridLayout):
         super(Material_Creater, self).__init__(**kwargs)
         self.cols=2
         self.btnSize=Design.btnSize
-        self.create_gui()
+        self.createGui()
         self._parent=None
         self.focus_btn=None
     
@@ -28,9 +28,9 @@ class Material_Creater(GridLayout):
     the method create gui create the gui of 
     the material_editor and create the popups
     '''
-    def create_gui(self):
-        self.create_popups()
-        self.create_buttons()
+    def createGui(self):
+        self.createPopups()
+        self.createButtons()
         self.add_widget(Label(text='name: '))
         self.add_widget(self.name_btn)
         self.add_widget(Label(text='price[euro/kg]:'))
@@ -45,87 +45,87 @@ class Material_Creater(GridLayout):
         self.add_widget(self.create_btn)
     
     '''
-    the method create_buttons create all buttons of the class
+    the method createButtons create all buttons of the class
     '''
-    def create_buttons(self):
+    def createButtons(self):
         #materialname
         self.name_btn=Button(text='name',size_hint_y=None, height=self.btnSize)
-        self.name_btn.bind(on_press=self.use_keyboard)
+        self.name_btn.bind(on_press=self.useKeyboard)
         #materialprice
         self.price_btn=Button(text='1.0',size_hint_y=None, height=self.btnSize)
-        self.price_btn.bind(on_press=self.use_numpad)
+        self.price_btn.bind(on_press=self.useNumpad)
         #materialdensity
         self.density_btn=Button(text='1.0',size_hint_y=None, height=self.btnSize)
-        self.density_btn.bind(on_press=self.use_numpad)
+        self.density_btn.bind(on_press=self.useNumpad)
         #materialstiffness
         self.stiffness_btn=Button(text='1.0',size_hint_y=None, height=self.btnSize)
-        self.stiffness_btn.bind(on_press=self.use_numpad)
+        self.stiffness_btn.bind(on_press=self.useNumpad)
         #materialstrength
         self.strength_btn=Button(text='1.0',size_hint_y=None, height=self.btnSize)
-        self.strength_btn.bind(on_press=self.use_numpad)
+        self.strength_btn.bind(on_press=self.useNumpad)
         #create material and cancel 
         self.create_btn=Button(text='create',size_hint_y=None, height=self.btnSize)
-        self.create_btn.bind(on_press=self.create_material)
+        self.create_btn.bind(on_press=self.createMaterial)
         self.cancel_btn=Button(text='cancel',size_hint_y=None, height=self.btnSize)
         self.cancel_btn.bind(on_press=self.cancel)
         
     '''
     the method use_keyword open the keyboard_popup for the user
     '''
-    def use_keyboard(self,button):
+    def useKeyboard(self,button):
         self.keyboard.textinput.text=button.text
         self.popup_keyboard.open()
     
     '''
-    the method use_numpad open the numpad_popup for the user
+    the method useNumpad open the numpad_popup for the user
     '''
-    def use_numpad(self,button):
+    def useNumpad(self,button):
         self.focus_btn=button
         self.numpad.textinput.text=button.text
         self.popup_numpad.open()
         
     '''
-    the method create_popups create the popups 
+    the method createPopups create the popups 
     and sign in by the keyboard and numpad 
     '''
-    def create_popups(self):
+    def createPopups(self):
         self.numpad=Numpad()
         self.keyboard=Keyboard()
         self.popup_keyboard=Popup(title='name:',content=self.keyboard)
         self.popup_numpad=Popup(title='numpad', content=self.numpad)
-        self.numpad.sign_in_parent(self)
-        self.keyboard.sign_in_parent(self)
+        self.numpad.signInParent(self)
+        self.keyboard.signInParent(self)
     
     
     '''
-    the method finished_keyboard close the keyboard_popup
+    the method finishedKeyboard close the keyboard_popup
     '''
-    def finished_keyboard(self):
+    def finishedKeyboard(self):
         self.name_btn.text=self.keyboard.textinput.text
         self.popup_keyboard.dismiss()
-        self.keyboard.reset_text()
+        self.keyboard.resetText()
     
     '''
-    the method finished_numpad close the numpad_popup
+    the method finishedNumpad close the numpad_popup
     '''
-    def finished_numpad(self):
+    def finishedNumpad(self):
         self.focus_btn.text=self.numpad.textinput.text
         self.popup_numpad.dismiss()
-        self.numpad.reset_text()
+        self.numpad.resetText()
     
     '''
-    the method sign_in_parent to set the parent of 
+    the method signInParent to set the parent of 
     the object. the parent must have the method update_materials
     '''
-    def sign_in_parent(self, parent):
+    def signInParent(self, parent):
         self._parent=parent
     
     '''
-    the method reset_editor reset the values of the editor
+    the method resetEditor reset the values of the editor
     the method must be called, when the user cancel or add 
     the material
     '''
-    def reset_editor(self):
+    def resetEditor(self):
         self.name_btn.text='name'
         self.price_btn.text='0.0'
         self.density_btn.text='0.0'
@@ -137,13 +137,13 @@ class Material_Creater(GridLayout):
     materiallist all_materials and the layout where you can choose 
     the materials
     '''
-    def create_material(self,button):
+    def createMaterial(self,button):
         cur_material=Own_Material(self.name_btn.text,self.price_btn.text,self.density_btn.text,self.stiffness_btn.text,self.strength_btn.text)
-        self._parent.all_materials.add_Material(cur_material)
-        self._parent.cancel_edit_material()
+        self._parent.all_materials.addMaterial(cur_material)
+        self._parent.cancelEditMaterial()
     
     '''
     cancel the create-process
     '''
     def cancel(self,button):
-        self._parent.cancel_edit_material()
+        self._parent.cancelEditMaterial()

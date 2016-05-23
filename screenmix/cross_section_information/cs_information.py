@@ -37,20 +37,20 @@ class Cross_Section_Information(GridLayout, IObserver):
     '''
     create the gui of the information
     '''
-    def create_gui(self):
-        self.createPopUp_Shape()
-        self.create_selectionMenu()
+    def createGui(self):
+        self.createPopUpShape()
+        self.createSelectionMenu()
         self.add_widget(self.rectangleInformation)
-        self.create_cross_section_area()
-        self.create_add_delete_area()
-        self.create_material_information()
-        self.create_add_layer_information_area()
-        self.create_confirm_cancel_area()
+        self.createCrossSectionArea()
+        self.createAddDeleteArea()
+        self.createMaterialInformation()
+        self.createAddLayerInformationArea()
+        self.createConfirmCancelArea()
     
     '''
     create the layout where you can select the cross-section-shape
     '''
-    def create_selectionMenu(self):
+    def createSelectionMenu(self):
         selectionContent=GridLayout(cols=1,spacing=10, 
                                     size_hint_y=None,row_force_default=True, 
                                     row_default_height=self.btnSize)
@@ -63,30 +63,30 @@ class Cross_Section_Information(GridLayout, IObserver):
     '''
     create popup where you can select the shape of the cross section
     '''
-    def createPopUp_Shape(self):
+    def createPopUpShape(self):
         shapeContent=ShapeSelection()
         shapeContent.setInformation(self)
         self.shapeSelection=Popup(title='shape',content=shapeContent)        
         
     '''
-    the method create_add_delete_area create the area where you can 
+    the method createAddDeleteArea create the area where you can 
     add new materials and delete materials from the cs_view
     '''
-    def create_add_delete_area(self):
+    def createAddDeleteArea(self):
         self.btn_area=BoxLayout(orientation='horizontal')
         add_btn=Button(text='add layer',size_hint_y=None, height=self.btnSize)
-        add_btn.bind(on_press=self.show_add_layer_area)
+        add_btn.bind(on_press=self.showAddLayerArea)
         delete_btn=Button(text='delete layer',size_hint_y=None, height=self.btnSize)
-        delete_btn.bind(on_press=self.delete_layer)
+        delete_btn.bind(on_press=self.deleteLayer)
         self.btn_area.add_widget(add_btn)
         self.btn_area.add_widget(delete_btn)
         self.add_widget(self.btn_area)
     
     '''
-    the method create_material_information create the area where you can 
+    the method createMaterialInformation create the area where you can 
     see the information about the selected materials
     '''
-    def create_material_information(self):
+    def createMaterialInformation(self):
         self.material_area=GridLayout(cols=1)
         self.material_name=Label(text='-')
         self.material_price=Label(text='-')
@@ -108,16 +108,16 @@ class Cross_Section_Information(GridLayout, IObserver):
         label_layout.add_widget(Label(text='percent:'))
         label_layout.add_widget(self.material_percent)
         self.percent_value=Slider(min=0.05, max=0.2, value=0.1)
-        self.percent_value.bind(value=self.set_percent)
+        self.percent_value.bind(value=self.setPercent)
         self.material_area.add_widget(label_layout)
         self.material_area.add_widget(self.percent_value)
         self.add_widget(self.material_area)
     
     '''
-    the method create_cross_section_area create the area where you can 
+    the method createCrossSectionArea create the area where you can 
     see the information of the cs_view
     '''
-    def create_cross_section_area(self):
+    def createCrossSectionArea(self):
         self.cross_section_price=Label(text='-')
         self.cross_section_weight=Label(text='-')
         self.cross_section_strength=Label(text='-')
@@ -131,11 +131,11 @@ class Cross_Section_Information(GridLayout, IObserver):
         self.add_widget(self.cross_section_area)
     
     '''
-    the method create_add_layer_information_area create the area where you can 
+    the method createAddLayerInformationArea create the area where you can 
     add new materials
     '''
-    def create_add_layer_information_area(self):
-        self.create_material_options()
+    def createAddLayerInformationArea(self):
+        self.createMaterialOptions()
         self.adding_material_area=GridLayout(cols=2)
         self.adding_material_area.add_widget(Label(text='Material:'))
         self.material_option=Button(text='steel',size_hint_y=None, height=self.btnSize)
@@ -144,21 +144,21 @@ class Cross_Section_Information(GridLayout, IObserver):
         self.material_percent_while_creating=Label(text='percent: 10%')
         self.adding_material_area.add_widget(self.material_percent_while_creating)
         self.slider_layer_percent=Slider(min=0.05,max=0.2,value=0.1)
-        self.slider_layer_percent.bind(value=self.set_percenet_while_creating)
+        self.slider_layer_percent.bind(value=self.setPercenetWhileCreating)
         self.adding_material_area.add_widget(self.slider_layer_percent)
     
     '''
-    the method create_material_options create the popup where you can 
+    the method createMaterialOptions create the popup where you can 
     select the materials for the new layer
     '''
-    def create_material_options(self):
+    def createMaterialOptions(self):
         self.layout_materials=GridLayout(cols=3)
         self.material_editor=Material_Creater()
-        self.material_editor.sign_in_parent(self)
+        self.material_editor.signInParent(self)
         self.popup_material_editor=Popup(title='editor',content=self.material_editor)
-        for i in range(0,self.all_materials.get_length()):
+        for i in range(0,self.all_materials.getLength()):
             btn_material_A=Button(text=self.all_materials.all_materials[i].name)
-            btn_material_A.bind(on_press=self.select_material)
+            btn_material_A.bind(on_press=self.selectMaterial)
             self.layout_materials.add_widget(btn_material_A)
         self.btn_material_editor=Button(text='create material')
         self.btn_material_editor.bind(on_press=self.popup_material_editor.open)
@@ -166,15 +166,15 @@ class Cross_Section_Information(GridLayout, IObserver):
         self.popup=Popup(title='materials',content=self.layout_materials)
     
     '''
-    the method create_confirm_cancel_area create the area where you can 
+    the method createConfirmCancelArea create the area where you can 
     confirm your creation of the new materials or cancel the creation
     '''
-    def create_confirm_cancel_area(self):
+    def createConfirmCancelArea(self):
         self.confirm_cancel_area=BoxLayout()
         confirm_btn=Button(text='confirm',size_hint_y=None, height=self.btnSize)
-        confirm_btn.bind(on_press=self.add_layer)
+        confirm_btn.bind(on_press=self.addLayer)
         cancel_btn=Button(text='cancel',size_hint_y=None, height=self.btnSize)
-        cancel_btn.bind(on_press=self.cancel_adding)
+        cancel_btn.bind(on_press=self.cancelAdding)
         self.confirm_cancel_area.add_widget(confirm_btn)
         self.confirm_cancel_area.add_widget(cancel_btn)
     
@@ -182,10 +182,10 @@ class Cross_Section_Information(GridLayout, IObserver):
     ########################################################################################################
     
     '''
-    the method show_add_layer_area was developed to show the 
+    the method showAddLayerArea was developed to show the 
     the adding_material_area and hide the material_information
     '''
-    def show_add_layer_area(self, button):
+    def showAddLayerArea(self, button):
         self.remove_widget(self.material_area)
         self.remove_widget(self.btn_area)
         self.slider_layer_percent.value=0.1
@@ -193,44 +193,44 @@ class Cross_Section_Information(GridLayout, IObserver):
         self.add_widget(self.confirm_cancel_area, 1)
     
     '''
-    the method finished_adding was developed to hide the 
+    the method finishedAdding was developed to hide the 
     the adding_material_area and show the material_area
     '''
-    def finished_adding(self):
+    def finishedAdding(self):
         self.remove_widget(self.adding_material_area)
         self.remove_widget(self.confirm_cancel_area)
         self.add_widget(self.material_area,0)
         self.add_widget(self.btn_area,1)
     
     '''
-    the method add_layer add a new layer at the cross section
+    the method addLayer add a new layer at the cross section
     it use the choosen percent value
     '''
-    def add_layer(self,button):
-        self.finished_adding()
-        for i in range(0,self.all_materials.get_length()):
+    def addLayer(self,button):
+        self.finishedAdding()
+        for i in range(0,self.all_materials.getLength()):
             if self.all_materials.all_materials[i].name==self.material_option.text:
-                self.cross_section.add_layer(self.slider_layer_percent.value,self.all_materials.all_materials[i])
+                self.cs.addLayer(self.slider_layer_percent.value,self.all_materials.all_materials[i])
                 return
     '''
-    the method cancel_adding would be must call when the user wouldn't 
+    the method cancelAdding would be must call when the user wouldn't 
     add a new materials
     '''
-    def cancel_adding(self,button):
-        self.finished_adding()
+    def cancelAdding(self,button):
+        self.finishedAdding()
     
     '''
-    the method delete_layer was developed to delete a existing
+    the method deleteLayer was developed to delete a existing
     materials
     '''
-    def delete_layer(self, button):
-        self.cross_section.delete_layer()
+    def deleteLayer(self, button):
+        self.cs.deleteLayer()
     
     '''
-    the method update_layer_information was developed to update
+    the method updateLayerInformation was developed to update
     the information, when the user selected a other rectangle in the view
     '''
-    def update_layer_information(self,name,price,density,stiffness,strength,percent):
+    def updateLayerInformation(self,name,price,density,stiffness,strength,percent):
         self.material_name.text=str(name)
         self.material_price.text=str(price)
         self.material_density.text=str(density)
@@ -239,20 +239,20 @@ class Cross_Section_Information(GridLayout, IObserver):
         self.percent_value.value=percent
     
     '''
-    the method update_cross_section_information update the cross section information.
+    the method updateCrossSectionInformation update the cross section information.
     '''
-    def update_cross_section_information(self,price, weight,strength):
+    def updateCrossSectionInformation(self,price, weight,strength):
         self.cross_section_price.text=str(price)
         self.cross_section_weight.text=str(weight)
         self.cross_section_strength.text=str(strength)
     
     '''
-    the method cancel_edit_material cancel the editing of the material
+    the method cancelEditMaterial cancel the editing of the material
     and reset the values of the material_editor
     '''
-    def cancel_edit_material(self):
+    def cancelEditMaterial(self):
         self.popup_material_editor.dismiss()
-        self.material_editor.reset_editor()
+        self.material_editor.resetEditor()
         
     '''
     the method update_materials update the view of the materials. 
@@ -262,7 +262,7 @@ class Cross_Section_Information(GridLayout, IObserver):
     def update(self):
         self.layout_materials.remove_widget(self.btn_material_editor)
         btn_material_A=Button(text=self.all_materials.all_materials[-1].name)
-        btn_material_A.bind(on_press=self.select_material)
+        btn_material_A.bind(on_press=self.selectMaterial)
         self.layout_materials.add_widget(btn_material_A)
         self.layout_materials.add_widget(self.btn_material_editor)
         
@@ -293,54 +293,54 @@ class Cross_Section_Information(GridLayout, IObserver):
     the popup will be closed and the button text change to the material
     name
     '''
-    def select_material(self, Button):
+    def selectMaterial(self, Button):
         self.popup.dismiss()
         self.material_option.text=Button.text
     
     '''
-    the method set_percent change the percentage share 
+    the method setPercent change the percentage share 
     of the materials. 
     Attention: this method must be call when the materials already exist
     '''
-    def set_percent(self, instance, value):
-        self.cross_section.set_percent(value)
+    def setPercent(self, instance, value):
+        self.cs.setPercent(value)
         self.material_percent.text=str(int(value*100))+' %'
     
     '''
-    the method set_percenet_while_creating change the percentage share 
+    the method setPercenetWhileCreating change the percentage share 
     of the materials. Attention: this method must be call 
     when the materials isn't exist
     '''
-    def set_percenet_while_creating(self,instance,value):
+    def setPercenetWhileCreating(self,instance,value):
         self.material_percent_while_creating.text='percent: '+str(int(value*100))+' %'
     
     '''
-    the method set_cross_section was developed to say the view, 
+    the method setCrossSection was developed to say the view, 
     which cross section should it use
     '''
-    def set_cross_section(self,allCrossSections):
+    def setCrossSection(self,allCrossSections):
         self.allCrossSections=allCrossSections
         #default cross section rectangle
-        self.cross_section=allCrossSections.getCSRectangle()
+        self.cs=allCrossSections.getCSRectangle()
         self.rectangleInformation=RectangleInformation()
         self.focusCrossSection=self.rectangleInformation
-        self.rectangleInformation.setCrossSection(self.cross_section)
+        self.rectangleInformation.setCrossSection(self.cs)
         self.all_materials=self.allCrossSections.all_materials
-        self.all_materials.add_listener(self)
-        self.create_gui()
+        self.all_materials.addListener(self)
+        self.createGui()
     
     '''
     change the current cross section
     '''
-    def change_CrossSection(self,cross_section):
-        self.cross_section=cross_section
+    def changeCrossSection(self,cross_section):
+        self.cs=cross_section
         
     '''
     show the rectangle shape
     '''
     def setRectangle(self, btn):
         self.btn_selection.text=btn.text
-        self.cross_section=self.allCrossSections.getCSRectangle()
+        self.cs=self.allCrossSections.getCSRectangle()
         self.remove_widget(self.focusCrossSection)
         self.focusCrossSection=self.rectangleInformation
         self.add_widget(self.rectangleInformation,3)
@@ -352,10 +352,10 @@ class Cross_Section_Information(GridLayout, IObserver):
     '''
     def setDoubleT(self,btn):
         self.btn_selection.text=btn.text
-        self.cross_section=self.allCrossSections.getCSDoubleT()
+        self.cs=self.allCrossSections.getCSDoubleT()
         if self.firstTimeDoubleT:
             self.doubleTInformation=DoubleTInformation()
-            self.doubleTInformation.setCrossSection(self.cross_section)
+            self.doubleTInformation.setCrossSection(self.cs)
             self.firstTimeDoubleT=False
         self.remove_widget(self.focusCrossSection)
         self.focusCrossSection=self.doubleTInformation
@@ -370,6 +370,6 @@ class Cross_Section_Information(GridLayout, IObserver):
     def setCircle(self,btn):
         self.btn_selection.text=btn.text
         #not finished yet
-        #self.cross_section=self.allCrossSections.getCSCircle()
+        #self.cs=self.allCrossSections.getCSCircle()
         self.shapeSelection.dismiss()
     

@@ -21,9 +21,9 @@ class Linear(GridLayout):
         self.m=1
         self.b=0
         self.view=LinearView()
-        self.view.sign_in(self)
+        self.view.signIn(self)
         self.information=LinearInformation()
-        self.information.sign_in(self)
+        self.information.signIn(self)
         self.add_widget(self.view)
         self.add_widget(self.information)
     

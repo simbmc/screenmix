@@ -22,17 +22,17 @@ class Ack(GridLayout):
     '''
     create the gui
     '''
-    def create_gui(self):
+    def createGui(self):
         self.strainSlider=Slider(min=1e-10, max=0.1,value=1e-5)
         self.content_ack=GridLayout(cols=2)
         self.ack_left=Ack_Left()
         self.ack_right=Ack_Right()
         self.ack_right.setAck(self)
-        self.ack_left.set_ack(self)
-        self.ack_left.set_ack_right(self.ack_right)
-        self.ack_right.set_ack_left(self.ack_left)
-        self.ack_left.set_cross_section(self.cross_section)
-        self.ack_right.set_cross_section(self.cross_section)
+        self.ack_left.setAck(self)
+        self.ack_left.setAckRight(self.ack_right)
+        self.ack_right.setAckLeft(self.ack_left)
+        self.ack_left.setCrossSection(self.cs)
+        self.ack_right.setCrossSection(self.cs)
         self.content_ack.add_widget(self.ack_left)
         self.content_ack.add_widget(self.ack_right)
         self.add_widget(self.content_ack)
@@ -45,12 +45,12 @@ class Ack(GridLayout):
         self.strainSlider.bind(value=self.update_strain)
     
     '''
-    the method set_cross_section was developed to say the view, 
+    the method setCrossSection was developed to say the view, 
     which cross section should it use
     '''
-    def set_cross_section(self,cross_section):
-        self.cross_section=cross_section
-        self.create_gui()
+    def setCrossSection(self,cross_section):
+        self.cs=cross_section
+        self.createGui()
     
     '''
     update the left and the right side
@@ -72,8 +72,8 @@ class Ack(GridLayout):
     '''
     def update_strain(self,instance,value):
         self.strain.text='strain: '+str('%.2E' % Decimal(str(value)))
-        self.ack_right.update_plots()
-        self.ack_left.set_FocusPosition(value)
+        self.ack_right.updatePlots()
+        self.ack_left.setFocusPosition(value)
     
     '''
     return the current strain

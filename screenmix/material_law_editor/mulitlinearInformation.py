@@ -50,13 +50,13 @@ class MultilinearInformation(GridLayout):
     '''
     def createPopup(self):
         self.numpad=Numpad()
-        self.numpad.sign_in_parent(self)
+        self.numpad.signInParent(self)
         self.popup_numpad=Popup(title='Numpad', content=self.numpad)
     
     '''
-    the method finished_numpad close the numpad_popup
+    the method finishedNumpad close the numpad_popup
     '''
-    def finished_numpad(self):
+    def finishedNumpad(self):
         self.popup_numpad.dismiss()
         if self.focus_btn==self.points_btn:
             self.points_btn.text=self.numpad.textinput.text
@@ -68,7 +68,7 @@ class MultilinearInformation(GridLayout):
         elif self.focus_btn==self.height_btn:
             self.height_btn.text=self.numpad.textinput.text
             self.editor.setHeight(float(self.height_btn.text))
-        self.numpad.reset_text()
+        self.numpad.resetText()
     
     '''
     open the numpad popup
@@ -80,7 +80,7 @@ class MultilinearInformation(GridLayout):
     '''
     sign in by the parent
     '''
-    def sign_in(self, parent):
+    def signIn(self, parent):
         self.editor=parent
     
     

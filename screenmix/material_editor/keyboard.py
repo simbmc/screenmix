@@ -17,16 +17,16 @@ class Keyboard(GridLayout):
     def __init__(self, **kwargs):
         super(Keyboard, self).__init__(**kwargs)
         self.alphabet_small='qwertzuiopasdfghjkl_.yxcvbnm'
-        self.create_small_keyboard()
+        self.createSmallKeyboard()
         self.cols=1
         self.add_widget(self.layout)
         self._parent=None
         
     '''
-    the method create_small_keyboard create the
+    the method createSmallKeyboard create the
     gui of the keyboard
     '''
-    def create_small_keyboard(self):
+    def createSmallKeyboard(self):
         self.textinput = Label(text='')
         self.layout=GridLayout(cols=1)
         self.layout.add_widget(self.textinput)
@@ -61,20 +61,20 @@ class Keyboard(GridLayout):
     is finished and press the button 'ok'
     '''
     def finished(self,button):
-        self._parent.finished_keyboard()
+        self._parent.finishedKeyboard()
     
     '''
-    the method reset_text reset the text of the label
+    the method resetText reset the text of the label
     the method must be called from the developer when
     the text must be deleted
     '''
-    def reset_text(self):
+    def resetText(self):
         self.textinput.text=''
     
     '''
-    the method sign_in_parent to set the parent of 
-    the object. the parent must have the method finished_keyboard
+    the method signInParent to set the parent of 
+    the object. the parent must have the method finishedKeyboard
     '''
-    def sign_in_parent(self, parent):
+    def signInParent(self, parent):
         self._parent=parent
         

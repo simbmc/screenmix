@@ -8,14 +8,14 @@ from cross_section_view.aLayer import ALayer
 
 class Layer_Rectangle(ALayer):
     # Constructor
-    def __init__(self, x_coordinate, y_coordinate, height, width, colors, percent):
-        self.x_coordinate = x_coordinate
-        self.y_coordinate = y_coordinate
-        self._height = height
-        self._width = width
+    def __init__(self, x, y, h, w, colors, percent):
+        self.x = x
+        self.y = y
+        self.h = h
+        self.w = w
         self.colors = colors
         self.focus = False
-        self.percentage = percent
+        self.percent = percent
         self.filledRectCs=None
         self.filledRectAck=None
         
@@ -24,8 +24,9 @@ class Layer_Rectangle(ALayer):
     return true, if the mouse is within, otherwise return false
     '''
 
-    def mouse_within(self, x_value, y_value):
-        if y_value < self.y_coordinate + self._height / 2. and y_value > self.y_coordinate - self._height / 2. and x_value > 0. and x_value < self._width:
+    def mouseWithin(self, x, y):
+        if y < self.y + self.h / 2. and y > self.y - self.h / 2.\
+             and x > 0. and x < self.w:
             return True
         else:
             return False
@@ -33,11 +34,11 @@ class Layer_Rectangle(ALayer):
     '''
     check if the mouse is in the rectangle
     return true, if the mouse is within, otherwise return false
-    Attention: it checks only the x_coordinate. this method
+    Attention: it checks only the x. this method
     was developed to make the the movement of the layer faster
     '''
-    def mouse_within_just_x_coordinate(self, x_value):
-        if x_value > 0. and x_value < self._width:
+    def mouseWithinX(self, x):
+        if x > 0. and x < self.w:
             return True
         else:
             return False
@@ -47,32 +48,33 @@ class Layer_Rectangle(ALayer):
     checked wheter the layers are the same
     '''
 
-    def equals(self, x, y, width, height):
-        if self.x_coordinate == x and self.y_coordinate == y and self._height == height and self._width == width:
+    def equals(self, x, y, w, h):
+        if self.x == x and self.y == y and self.h == h \
+        and self.w == w:
             return True
         else:
             return False
 
     '''
-    the method set_height change the height of the small_keyboard-rectangle
+    the method setHeight change the height of the small_keyboard-rectangle
     '''
-    def set_height(self, value):
-        self._height = value
+    def setHeight(self, value):
+        self.h = value
 
 
     '''
-    the method set_width change the width of the small_keyboard-rectangle
+    the method setWidth change the width of the small_keyboard-rectangle
     '''
-    def set_width(self, value):
-        self._width = value
+    def setWidth(self, value):
+        self.w = value
 
 
     '''
     return the weight of the layer
     '''
 
-    def get_weight(self):
-        volume = self._height * self._width
+    def getWeight(self):
+        volume = self.h * self.w
         weight = self.material.density * volume
         return weight
 

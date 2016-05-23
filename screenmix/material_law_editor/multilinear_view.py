@@ -14,13 +14,13 @@ class MultilinearView(GridLayout):
     def __init__(self, **kwargs):
         super(MultilinearView, self).__init__(**kwargs)
         self.cols = 1
-        self.create_graph()
-        self.create_points(5)
+        self.createGraph()
+        self.createPoints(5)
     
     '''
     create the graph of the view
     '''
-    def create_graph(self):
+    def createGraph(self):
         self.graph = Graph(xlabel='strain', ylabel='stress',
                            x_ticks_major=10, y_ticks_major=10,
                            y_grid_label=True, x_grid_label=True,
@@ -30,7 +30,7 @@ class MultilinearView(GridLayout):
     '''
     create the points 
     '''
-    def create_points(self, n):
+    def createPoints(self, n):
         self._points=[]
         self.lines=[]
         delta=100.
@@ -54,8 +54,8 @@ class MultilinearView(GridLayout):
     def on_touch_down(self, touch):
         x0, y0 = self.graph._plot_area.pos  # position of the lowerleft
         graph_w, graph_h = self.graph._plot_area.size  # graph size
-        x_coordinate = (touch.x - x0) / graph_w*self.editor._width
-        y_coordinate = (touch.y - y0) / graph_h*self.editor._height
+        x_coordinate = (touch.x - x0) / graph_w*self.editor.w
+        y_coordinate = (touch.y - y0) / graph_h*self.editor.h
         print('x: '+str(x_coordinate))
         print('y: '+str(y_coordinate))
         for point in self._points:
@@ -72,8 +72,8 @@ class MultilinearView(GridLayout):
     def on_touch_move(self, touch):
         x0, y0 = self.graph._plot_area.pos  # position of the lowerleft
         graph_w, graph_h = self.graph._plot_area.size  # graph size
-        x_coordinate = (touch.x - x0) / graph_w*self.editor._width
-        y_coordinate = (touch.y - y0) / graph_h*self.editor._height
+        x_coordinate = (touch.x - x0) / graph_w*self.editor.w
+        y_coordinate = (touch.y - y0) / graph_h*self.editor.h
         for i in range(len(self._points)):
             point=self._points[i]
             if point.color==Design.focusColor:
@@ -118,11 +118,11 @@ class MultilinearView(GridLayout):
                 self.graph.remove_plot(plot)
                 self.graph._clear_buffer()
         #draw the new points and lines
-        self.create_points(self.editor.getPoints())
+        self.createPoints(self.editor.getPoints())
         self.drawLines()
     
     '''
     sign in by the parent
     '''
-    def sign_in(self, parent):
+    def signIn(self, parent):
         self.editor=parent

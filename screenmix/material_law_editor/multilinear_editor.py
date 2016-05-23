@@ -16,13 +16,13 @@ class Multilinear(GridLayout):
     def __init__(self, **kwargs):
         super(Multilinear, self).__init__(**kwargs)
         self.cols = 2
-        self._height=50.
-        self._width=50.
+        self.h=50.
+        self.w=50.
         self._points=5
         self.information=MultilinearInformation()
         self.view=MultilinearView()
-        self.information.sign_in(self)
-        self.view.sign_in(self)
+        self.information.signIn(self)
+        self.view.signIn(self)
         self.add_widget(self.view)
         self.add_widget(self.information)
     
@@ -30,27 +30,27 @@ class Multilinear(GridLayout):
     set the width of the graph
     '''
     def setWidth(self, value):
-        self._width=value
+        self.w=value
         self.view.updateWidth()
     
     '''
     set the height of the graph
     '''
     def setHeight(self,value):
-        self._height=value
+        self.h=value
         self.view.updateHeight()
     
     '''
     return the height of the graph
     '''
     def getHeight(self):
-        return self._height
+        return self.h
     
     '''
     return the width of the graph
     '''
     def getWidth(self):
-        return self._width
+        return self.w
     
     '''
     set the numbers of points which the graph should have

@@ -24,17 +24,17 @@ class Material_Editor(ScrollView, IObserver):
     the method create gui create the gui of 
     the material_editor and create the popups
     '''
-    def create_gui(self):
-        self.create_material_information()
+    def createGui(self):
+        self.createMaterialInformation()
         self.material_layout=GridLayout(cols=1,spacing=2, size_hint_y=None)
         # Make sure the height is such that there is something to scroll.
         self.material_layout.bind(minimum_height=self.material_layout.setter('height'))
         for i in self.all_materials.all_materials:
             btn=Button(text=i.name,size_hint_y=None, height=self.btnSize)
-            btn.bind(on_press=self.show_material_information)
+            btn.bind(on_press=self.showMaterialInformation)
             self.material_layout.add_widget(btn)
         self.btn_material_editor=Button(text='create material',size_hint_y=None, height=self.btnSize)
-        self.btn_material_editor.bind(on_press=self.create_material)
+        self.btn_material_editor.bind(on_press=self.createMaterial)
         self.material_layout.add_widget(self.btn_material_editor)
         self.add_widget(self.material_layout)
     
@@ -43,9 +43,9 @@ class Material_Editor(ScrollView, IObserver):
     popup_info to show the material information
     popup_create to create new material
     '''
-    def create_popups(self):
+    def createPopups(self):
         creater=Material_Creater()
-        creater.sign_in_parent(self)
+        creater.signInParent(self)
         self.popup_info=Popup(title='material',content=self.content)
         self.popup_create=Popup(title='create new material', content=creater)
         
@@ -53,7 +53,7 @@ class Material_Editor(ScrollView, IObserver):
     create the gui which is necessary for the show of the 
     material-information
     '''
-    def create_material_information(self):
+    def createMaterialInformation(self):
         self.name=Label()
         self.price=Label()
         self.density=Label()
@@ -71,15 +71,15 @@ class Material_Editor(ScrollView, IObserver):
         self.content.add_widget(Label(text='strength[MPa]:'))
         self.content.add_widget(self.strenght)
         btn_back=Button(text='back',size_hint_y=None,height=self.btnSize)
-        btn_back.bind(on_press=self.cancel_show)
+        btn_back.bind(on_press=self.cancelShow)
         self.content.add_widget(btn_back)
-        self.create_popups()
+        self.createPopups()
     
     '''
     set the labeltext with the materialproperties
     '''
-    def show_material_information(self,button):
-        for i in range(0,self.cross_section.all_materials.get_length()):
+    def showMaterialInformation(self,button):
+        for i in range(0,self.cs.all_materials.getLength()):
             if self.all_materials.all_materials[i].name==button.text:
                 self.name.text=self.all_materials.all_materials[i].name
                 self.price.text=str(self.all_materials.all_materials[i].price)
@@ -92,13 +92,13 @@ class Material_Editor(ScrollView, IObserver):
     close the popup, which shows the information from
     the choosen material
     '''
-    def cancel_show(self,button):
+    def cancelShow(self,button):
         self.popup_info.dismiss()
         
     '''
     open the popup, which has the creator as content
     '''
-    def create_material(self,button):
+    def createMaterial(self,button):
         self.popup_create.open()
     
     '''
@@ -109,26 +109,26 @@ class Material_Editor(ScrollView, IObserver):
     def update(self):
         self.material_layout.remove_widget(self.btn_material_editor)
         btn_material_A=Button(text=self.all_materials.all_materials[-1].name,size_hint_y=None, height=40)
-        btn_material_A.bind(on_press=self.show_material_information)
+        btn_material_A.bind(on_press=self.showMaterialInformation)
         self.material_layout.add_widget(btn_material_A)
         self.material_layout.add_widget(self.btn_material_editor)
         
     '''
     cancel the create-process. this method 
     is necessary, because editor is the parent 
-    of the creator and creator call the method cancel_edit_material
+    of the creator and creator call the method cancelEditMaterial
     from the parent
     '''
-    def cancel_edit_material(self):
+    def cancelEditMaterial(self):
         self.popup_create.dismiss()
     
     '''
-    the method set_cross_section was developed to say the view, 
+    the method setCrossSection was developed to say the view, 
     which cross section should it use
     '''
-    def set_cross_section(self,cross_section):
-        self.cross_section=cross_section
-        self.all_materials=self.cross_section.all_materials
-        self.all_materials.add_listener(self)
-        self.create_gui()
+    def setCrossSection(self,cross_section):
+        self.cs=cross_section
+        self.all_materials=self.cs.all_materials
+        self.all_materials.addListener(self)
+        self.createGui()
         

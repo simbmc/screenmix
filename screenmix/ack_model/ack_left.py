@@ -21,24 +21,24 @@ class Ack_Left(GridLayout):
         self.cols = 1
         self.allPlots=[]
         self.btnSize=Design.btnSize
-        self.create_graph()
-        self.create_option_layout()
+        self.createGraph()
+        self.createOptionLayout()
         self.createFocusPoint()
         self.cur_plot=None
         
     '''
-    the method create_graph create the graph
+    the method createGraph create the graph
     '''
-    def create_graph(self):
+    def createGraph(self):
         self.graph = Graph(xlabel='strain', ylabel='stress',
                            y_grid_label=True, x_grid_label=True,
                            xmin=0.0, xmax=0.01, ymin=0, ymax=30)
         self.add_widget(self.graph)
 
     '''
-    the method create_option_layout create gui-part without the graph
+    the method createOptionLayout create gui-part without the graph
     '''
-    def create_option_layout(self):
+    def createOptionLayout(self):
         self.option_layout = GridLayout(cols=2,row_force_default=True, row_default_height=self.btnSize, size_hint_y=None, height=self.btnSize)
 #         self.option_layout.add_widget(Label(text='bond [N/mm]:'))
 #         self.bond_slider = Slider()
@@ -57,7 +57,7 @@ class Ack_Left(GridLayout):
     def plot(self, button):
         self.plot = MeshLinePlot(
             color=[random.random(), random.random(), random.random(), 1])
-        self.plot._points = self.calculate_points()
+        self.plot._points = self.calculatePoints()
         self.cur_plot=self.plot
         self.graph.add_plot(self.plot)
         print(self.graph.plots)
@@ -67,39 +67,39 @@ class Ack_Left(GridLayout):
     the graphh 
     '''
 
-    def calculate_points(self):
+    def calculatePoints(self):
         points = [(0, 0)]
         points.append(
-            (self.cross_section.min_of_maxstrain, self.cross_section.strength))
-        if self.cross_section.view.layers:
+            (self.cs.min_of_maxstrain, self.cs.strength))
+        if self.cs.view.layers:
             # calculate the second _points
             # calculate the stiffness of the reinforcement layers according to
             # mixture rule
-            percent_of_layers = 0.  # the sum of the percentage of the reinforcement layers
-            for layer in self.cross_section.view.layers:
-                percent_of_layers += layer.percentage
+            percent_of_layers = 0.  # the sum of the percent of the reinforcement layers
+            for layer in self.cs.view.layers:
+                percent_of_layers += layer.percent
             # stiffness of the section
-            E_s = self.cross_section.strength / \
-                self.cross_section.min_of_maxstrain
+            E_s = self.cs.strength / \
+                self.cs.min_of_maxstrain
             E_r = 0.  # the stiffness of the reinforement mixture
-            for layer in self.cross_section.view.layers:
+            for layer in self.cs.view.layers:
                 E_r += layer.material.stiffness * \
-                    layer.percentage / percent_of_layers
+                    layer.percent / percent_of_layers
             # the reinforcement strain at the crack postion
-            eps_r_max = self.cross_section.min_of_maxstrain * \
+            eps_r_max = self.cs.min_of_maxstrain * \
                 E_s / (E_r * percent_of_layers)
             # the minimum reinforcement strain
             eps_r_min = eps_r_max - 0.6685 * \
-                (1 - percent_of_layers) * self.cross_section.concrete_strength / \
+                (1 - percent_of_layers) * self.cs.concrete_strength / \
                 (percent_of_layers * E_r)
             eps_r_avg = (eps_r_max + eps_r_min) / 2.
-            points.append((eps_r_avg, self.cross_section.strength))
+            points.append((eps_r_avg, self.cs.strength))
             self.secondpoint=points[2]
             # calculate the third _points
             # the maximum reinforcement strain
             max_strain_r = 1e8
-            for layer in self.cross_section.view.layers:
-                cur_strain = layer.get_strain()
+            for layer in self.cs.view.layers:
+                cur_strain = layer.getStrain()
                 max_strain_r = min(cur_strain, max_strain_r)
             # maximum composite strength
             max_strangth_c = E_r * max_strain_r * percent_of_layers
@@ -129,23 +129,23 @@ class Ack_Left(GridLayout):
                     self.graph._clear_buffer()
 
     '''
-    the method set_cross_section was developed to say the view, 
+    the method setCrossSection was developed to say the view, 
     which cross section should it use
     '''
 
-    def set_cross_section(self, cross_section):
-        self.cross_section = cross_section
+    def setCrossSection(self, cross_section):
+        self.cs = cross_section
     
     '''
     ack_left sign in by ack left
     '''
-    def set_ack_right(self, ack_right):
+    def setAckRight(self, ack_right):
         self.ack_right=ack_right
     
     '''
     set the ack
     '''
-    def set_ack(self,ack):
+    def setAck(self,ack):
         self.ack=ack
     
     '''
@@ -153,15 +153,15 @@ class Ack_Left(GridLayout):
     the point is dependet from the strainvalue 
     of ack_right
     '''
-    def set_FocusPosition(self, value):
+    def setFocusPosition(self, value):
         eps_x=self.graph.xmax/self.delta
         eps_y=self.graph.ymax/self.delta
         self.focus.xrange=[value-eps_x,value+eps_x]
         #calculation when the value is smaller then
         #the x-coordinate of the first point
-        if value<=self.cross_section.min_of_maxstrain:
+        if value<=self.cs.min_of_maxstrain:
             #f(x)=mx => m=y1-0/x1-0
-            m=self.cross_section.strength/self.cross_section.min_of_maxstrain
+            m=self.cs.strength/self.cs.min_of_maxstrain
             self.focus.yrange=[value*m-eps_y,value*m+eps_y]
         #calculation when the value is between the  second and the third point
         elif value>self.secondpoint[0]:
@@ -178,7 +178,7 @@ class Ack_Left(GridLayout):
         #calculation when the value is between the first- and secondpoint
         else:
             #m=0 => independet from the x-value
-            b=self.cross_section.strength
+            b=self.cs.strength
             self.focus.yrange=[-eps_y+b,+eps_y+b]
             
     '''
@@ -194,11 +194,11 @@ class Ack_Left(GridLayout):
     '''
     update the plots
     '''
-    def plot_update(self):
+    def plotUpdate(self):
         if not self.cur_plot==None:
             self.cur_plot.color=[random.random(), random.random(), random.random(), 1]
         plot = MeshLinePlot(color=Design.focusColor)
-        plot.points = self.calculate_points()
+        plot.points = self.calculatePoints()
         print('points: '+str(plot.points))
         self.cur_plot=plot
         self.allPlots.append(plot)
@@ -208,4 +208,4 @@ class Ack_Left(GridLayout):
     update the ack_left side
     '''
     def update(self):
-        self.plot_update()
+        self.plotUpdate()
