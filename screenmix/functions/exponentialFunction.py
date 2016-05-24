@@ -16,3 +16,8 @@ class ExponentialFunction(IFunction):
     def f(self,x):
         return self.a*np.exp(self.b*x)
     
+    def setA(self,value):
+        self.a=value
+    
+    def setB(self,value):
+        self.b=value 
