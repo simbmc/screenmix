@@ -9,11 +9,11 @@ from crossSectionView.doubleTView import DoubleTView
 from crossSectionView.aview import AView
 
 
-class CrossSectionDoubleT(GridLayout, AView):
+class ShapeDoubleT(GridLayout, AView):
     # Constructor
 
     def __init__(self, **kwargs):
-        super(CrossSectionDoubleT, self).__init__(**kwargs)
+        super(ShapeDoubleT, self).__init__(**kwargs)
         self.cols = 2
         # topare
         self.tw = 0.2
@@ -151,7 +151,7 @@ class CrossSectionDoubleT(GridLayout, AView):
     '''
 
     def setAck(self, ack):
-        pass
+        self.ack=ack
 
     '''
     the method addLayer add new materials in the view
@@ -180,8 +180,7 @@ class CrossSectionDoubleT(GridLayout, AView):
     '''
 
     def setCrossSectionInformation(self):
-        pass
-        #self.information.updateCrossSectionInformation(self.price, self.weight, self.strength)
+        self.information.updateCrossSectionInformation(self.price, self.weight, self.strength)
 
     '''
     set the percent
@@ -195,39 +194,35 @@ class CrossSectionDoubleT(GridLayout, AView):
     '''
 
     def calculateWeightPrice(self):
-        pass
-        '''
-        weight=price=percentOfLayers=0.
+        weight=0.
+        price=0.
         #go trough all layers and get the weight of them
         for l in self.view.layers:
             cur=l.getWeight()
             weight+=cur
             price+=cur*l.material.price
-            percentOfLayers+=l.getHeight()/(self.th+self.mh+self.bh)
         #if the percentOfLayers is not 1 there is a matrix
         #with concrete as material
-        weight+=(1-percentOfLayers)*self.cw*self.concreteDensity
-        price+=(1-percentOfLayers)*self.cheight*self.cw*self.concretePrice
+        freeplaces=self.view.getFreePlaces()
+        for i in freeplaces:
+            cur=(i[1]-i[0])*i[2]*self.concreteDensity
+            weight+=cur
+            price+=cur*self.concretePrice
         self.weight=weight
         self.price=price
-        '''
 
     '''
     calculate the strength of the cross section
     '''
 
     def calculateStrength(self):
-        pass
-        '''
         strength=0.
         #cur supremum
         self.minOfMaxstrain=1e10
         #max strain is necessary for other calculations
         self.maxOfMaxstrain=0
-        percentOfLayers=0.
         #find the minimum max_strain and the maximum max_strain
         for l in self.view.layers:
-            percentOfLayers+=l.getHeight()/(self.th+self.mh+self.bh)
             curStrain=l.getStrain()
             #proof whether the curStrain is smaller as the min
             if curStrain<self.minOfMaxstrain:
@@ -237,16 +232,19 @@ class CrossSectionDoubleT(GridLayout, AView):
                 self.maxOfMaxstrain=curStrain
         #if the percentOfLayers is not 1 there is a matrix
         #with concrete as material
-        if 1.-percentOfLayers>0:
-            cur_value=self.concreteStrength/self.concreteStiffness
-            if self.minOfMaxstrain>cur_value:
-                self.minOfMaxstrain=cur_value
-            if self.maxOfMaxstrain<cur_value:
-                self.maxOfMaxstrain=cur_value
+        freePlaces=self.view.getFreePlaces()
+        if len(freePlaces)>0:
+            curValue=self.concreteStrength/self.concreteStiffness
+            if self.minOfMaxstrain>curValue:
+                self.minOfMaxstrain=curValue
+            if self.maxOfMaxstrain<curValue:
+                self.maxOfMaxstrain=curValue
         #calculate the strength
+        csSize=self.th*self.tw+self.mw*self.mh+self.bh*self.bw
         for l in self.view.layers:
-            strength+=self.minOfMaxstrain*l.material.stiffness*l.getHeight()/(self.th+self.mh+self.bh)
-        if 1.-percentOfLayers>0:
-            strength+=self.minOfMaxstrain*(1.-percentOfLayers)*self.concreteStiffness
+            strength+=self.minOfMaxstrain*l.material.stiffness*l.getSize()/csSize
+        freePlacesSize=0.
+        for i in freePlaces:
+            freePlacesSize+=(i[1]-i[0])*i[2]
+        strength+=self.minOfMaxstrain*freePlacesSize/csSize*self.concreteStiffness
         self.strength=strength
-        '''

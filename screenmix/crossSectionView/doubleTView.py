@@ -71,14 +71,14 @@ class DoubleTView(AView, GridLayout):
         self.oth = self.th
         self.ohmax = self.hmax
         # get the new values
-        self.bh = self.cs.getHeightBottom()
-        self.bw = self.cs.getWidthBottom()
-        self.mh = self.cs.getHeightMiddle()
-        self.mw = self.cs.getWidthMiddle()
-        self.th = self.cs.getHeightTop()
-        self.tw = self.cs.getWidthTop()
-        self.hmax = self.cs.getMaxHeight()
-        self.wmax = self.cs.getMaxWidth()
+        self.bh = self.csShape.getHeightBottom()
+        self.bw = self.csShape.getWidthBottom()
+        self.mh = self.csShape.getHeightMiddle()
+        self.mw = self.csShape.getWidthMiddle()
+        self.th = self.csShape.getHeightTop()
+        self.tw = self.csShape.getWidthTop()
+        self.hmax = self.csShape.getMaxHeight()
+        self.wmax = self.csShape.getMaxWidth()
         # update graph
         self.updateAllGraph()
 
@@ -93,15 +93,8 @@ class DoubleTView(AView, GridLayout):
                 op = l.getHeight() / (self.th + self.mh + self.bh)
                 a = value / op
                 delta = self.wmax / 2. + self.deltaX / 2.
-                print(l.r1.yrange[1])
-                # l.r1.yrange[0]+=a.*l.r1.yrange[0]
-                # l.r1.yrange[1]+=a*l.r1.yrange[1]
-                # l.r2.yrange[0]=a*l.r2.yrange[0]
-                # l.r2.yrange[1]=a*l.r2.yrange[1]
-                # l.r3.yrange[0]=a*l.r3.yrange[0]
-                # l.r3.yrange[1]=a*l.r3.yrange[1]
                 l.h1 = a * l.h1
-                l.h2 = a * l.h2
+                #l.h2 = a * l.h2
                 l.h3 = a * l.h3
                 # case 1
                 if l.r1.yrange[1] < self.bh:
@@ -110,10 +103,8 @@ class DoubleTView(AView, GridLayout):
                     l.r1.xrange = [x, x + self.bw]
                     l.r2.xrange = [x, x + self.bw]
                     l.r3.xrange = [x, x + self.bw]
-                    l.r1.yrange[0] = a * l.r1.yrange[0]
-                    l.r1.yrange[1] = a * l.r1.yrange[1]
-                    l.r2.yrange[0] = a * l.r2.yrange[0]
-                    l.r2.yrange[1] = a * l.r2.yrange[1]
+                    y1=l.r1.yrange[0]
+                    l.r1.yrange = [y1, y1 + l.h1]
                     l.r3.yrange = [0, 0]
                 # case 2
                 elif l.r1.yrange[1] < self.bh + self.mh and l.r2.yrange[0] > self.bh:
@@ -121,10 +112,8 @@ class DoubleTView(AView, GridLayout):
                     x = delta - self.mw / 2.
                     l.r1.xrange = [x, x + self.mw]
                     l.r2.xrange = [x, x + self.mw]
-                    l.r1.yrange[0] = a * l.r1.yrange[0]
-                    l.r1.yrange[1] = a * l.r1.yrange[1]
-                    l.r2.yrange[0] = a * l.r2.yrange[0]
-                    l.r2.yrange[1] = a * l.r2.yrange[1]
+                    y1=l.r1.yrange[0]
+                    l.r1.yrange = [y1, y1 + l.h1]
                     l.r3.yrange = [0, 0]
                 # case 3
                 elif l.r2.yrange[0] > self.bh + self.mh:
@@ -133,10 +122,8 @@ class DoubleTView(AView, GridLayout):
                     l.r1.xrange = [x, x + self.tw]
                     l.r2.xrange = [x, x + self.tw]
                     l.r3.xrange = [x, x + self.tw]
-                    l.r1.yrange[0] = a * l.r1.yrange[0]
-                    l.r1.yrange[1] = a * l.r1.yrange[1]
-                    l.r2.yrange[0] = a * l.r2.yrange[0]
-                    l.r2.yrange[1] = a * l.r2.yrange[1]
+                    y1=l.r1.yrange[0]
+                    l.r1.yrange = [y1, y1 + l.h1]
                     l.r3.yrange = [0, 0]
                 # case 4
                 elif l.r1.yrange[1] < self.bh + self.mh and l.r2.yrange[0] < self.bh:
@@ -153,10 +140,10 @@ class DoubleTView(AView, GridLayout):
                     print('case 5')
                     x1 = delta - self.tw / 2.
                     x2 = delta - self.mw / 2.
-                    l.r1.yrange = [
-                        self.bh + self.mh, self.bh + self.mh + l.h1 / 2.]
                     l.r1.xrange = [x1, x1 + self.tw]
                     l.r2.xrange = [x2, x2 + self.mw]
+                    l.r1.yrange = [
+                        self.bh + self.mh, self.bh + self.mh + l.h1 / 2.]
                     l.r2.yrange = [
                         self.bh + self.mh - l.h1 / 2., self.bh + self.mh]
                     l.r3.yrange = [0, 0]
@@ -173,7 +160,7 @@ class DoubleTView(AView, GridLayout):
                     l.r1.xrange = [x1, x1 + self.tw]
                     l.r2.xrange = [x2, x2 + self.mw]
                     l.r3.xrange = [x3, x3 + self.bw]
-
+        self.updateCrossSectionInformation()
     '''
     the method addLayer was developed to add new layer at the cross section
     '''
@@ -264,7 +251,6 @@ class DoubleTView(AView, GridLayout):
         self.graph.add_plot(r2)
         self.graph.add_plot(r3)
         self.layers.append(l)
-        self.cs.calculateStrength()
         self.updateCrossSectionInformation()
 
     '''
@@ -284,8 +270,10 @@ class DoubleTView(AView, GridLayout):
         self.p.points = self.drawDoubleT()
         self.graph.add_plot(self.p)
         # update layers
-        self.updateWidth()
-        self.updateHeight()
+        if len(self.layers)>0:
+            self.updateWidth()
+            self.updateHeight()
+            self.updateCrossSectionInformation()
 
     '''
     update the width of the layer
@@ -330,15 +318,15 @@ class DoubleTView(AView, GridLayout):
         delta = self.wmax / 2. + self.deltaX / 2.
         a = self.hmax / self.ohmax
         for l in self.layers:
-            # l.r1.yrange[0]=a*l.r1.yrange[0]
+            l.r1.yrange[0]=a*l.r1.yrange[0]
             l.r1.yrange[1] = a * l.r1.yrange[1]
-            # l.r2.yrange[0]=a*l.r2.yrange[0]
+            l.r2.yrange[0]=a*l.r2.yrange[0]
             l.r2.yrange[1] = a * l.r2.yrange[1]
-            # l.r3.yrange[0]=a*l.r3.yrange[0]
+            l.r3.yrange[0]=a*l.r3.yrange[0]
             l.r3.yrange[1] = a * l.r3.yrange[1]
-            # l.h1=a*l.h1
-            # l.h2=a*l.h2
-            # l.h3=a*l.h3
+            l.h1=a*l.h1
+            l.h2=a*l.h2
+            l.h3=a*l.h3
             print('h1: ' + str(l.h1))
             print('h2: ' + str(l.h1))
             print('h3: ' + str(l.h1))
@@ -401,15 +389,110 @@ class DoubleTView(AView, GridLayout):
     '''
 
     def getFreePlaces(self):
-        pass
-
+        self.freePlaces = []
+        # running index
+        y = 0
+        h = self.th + self.mh + self.bh
+        # if the cross section contains layers
+        if not len(self.layers) == 0:
+            #minLayer is the layer nearest at the bottom
+            minLayer=self.findLayer()
+            if minLayer.r3.yrange==[0,0]:
+                minValue = minLayer.r2.yrange[0]
+            else:
+                minValue = minLayer.r3.yrange[0]
+            nextMinValue = minLayer.getHeight()+minValue
+            self.appendLayer(y, minValue)
+            y=minLayer.getHeight()+minValue
+            while y < h:
+                # layerExist is a switch to proofs whether
+                # a layer exist over the runnning index or not
+                layerExist = False
+                minValue = h
+                for layer in self.layers:
+                    if not layer is minLayer:
+                        #the r3 of the layer is not in use
+                        if layer.r3.yrange==[0,0] and layer.r2.yrange[0] >= y and layer.r2.yrange[0] < minValue:
+                            layerExist = True
+                            minValue = layer.r2.yrange[0]
+                            nextMinValue = layer.getHeight()+minValue
+                        #the r3 of the layer is in use
+                        elif layer.r3.yrange[0] >= y and layer.r3.yrange[0] < minValue:
+                            print('case 2')
+                            layerExist = True
+                            minValue = layer.r3.yrange[0]
+                            nextMinValue = layer.getHeight()+minValue
+                        # if the running index is equals the min, means that there's no
+                        # area
+                        if y < minValue:
+                            print('y: '+str(y))
+                            print('minValue: '+str(minValue))
+                            if minValue<h:
+                                self.appendLayer(y, minValue)
+                        y = nextMinValue
+                        print('nextvalue: '+str(y))
+                # if no layer exist over the running index then that's the last
+                # area which is free.
+                if not layerExist:
+                    self.appendLayer(y, h)
+                    return self.freePlaces
+        # if no layer exist,all area of the cross section is free
+        else:
+            self.appendLayer(0, h)
+        return self.freePlaces
+    
+    '''
+    append the layer
+    '''
+    def appendLayer(self,y1,y2):
+        #case 1
+        if y1<self.bh and y2>self.bh and y2<self.mh+self.bh:
+            self.freePlaces.append([y1, self.bh,self.bw])
+            self.freePlaces.append([self.bh, y2,self.mw])
+        #case 2
+        elif y1<self.bh and y2>self.bh:
+            self.freePlaces.append([y1, self.bh,self.bw])
+            self.freePlaces.append([self.bh, self.mh+self.bh,self.mw])
+            self.freePlaces.append([self.bh+self.mh,y2,self.tw])
+        #case 3
+        elif y1<self.mh+self.bh and y2>self.mh+self.bh:
+            self.freePlaces.append([y1, self.mh+self.bh,self.mw])
+            self.freePlaces.append([self.mh+self.bh, y2,self.tw])
+        #case 4
+        else:
+            if y2<self.bh:
+                self.freePlaces.append([y1,y2,self.bw])
+            elif y2<self.bh+self.mh:
+                self.freePlaces.append([y1,y2,self.mw])
+            else:
+                self.freePlaces.append([y1,y2,self.tw])
+    '''
+    return the layer which is nearest at the bottom
+    '''
+    def findLayer(self):
+        minY=self.th+self.mh+self.bh
+        for layer in self.layers:
+            if not layer.r3.yrange==[0,0]:
+                if minY>layer.r3.yrange[0]:
+                    minY=layer.r3.yrange[0]
+                    ret=layer
+                    print('minY: '+str(minY))
+            else:
+                if minY>layer.r2.yrange[0]:
+                    minY=layer.r2.yrange[0]
+                    print('minY: '+str(minY))
+                    ret=layer
+        return ret
+                
+            
     '''
     update the cross section information
     '''
 
     def updateCrossSectionInformation(self):
-        self.cs.calculateWeightPrice()
-        self.cs.setCrossSectionInformation()
+        self.csShape.calculateWeightPrice()
+        self.csShape.calculateStrength()
+        self.csShape.setCrossSectionInformation()
 
     '''
     delete the selected layer
@@ -424,9 +507,8 @@ class DoubleTView(AView, GridLayout):
     '''
     update the layer information in the information-area
     '''
-
     def updateLayerInformation(self, name, price, density, stiffness, strength, percent):
-        self.cs.setLayerInformation(name, price, density,
+        self.csShape.setLayerInformation(name, price, density,
                                     stiffness, strength, percent)
 
     '''
@@ -527,10 +609,6 @@ class DoubleTView(AView, GridLayout):
                             [delta - self.tw / 2., delta + self.tw / 2.])
                         l.w1 = self.tw
                         l.w2 = self.tw
-                    print('x0: '+str(x))
-                    print('middle1: '+str(l.w1))
-                    print('middle2: '+str(l.w2))
-                    print('middle3: '+str(l.w3))
                     return
 
     '''
@@ -561,13 +639,13 @@ class DoubleTView(AView, GridLayout):
     '''
 
     def setCrossSection(self, crossSection):
-        self.cs = crossSection
-        self.bh = self.cs.getHeightBottom()
-        self.bw = self.cs.getWidthBottom()
-        self.mh = self.cs.getHeightMiddle()
-        self.mw = self.cs.getWidthMiddle()
-        self.th = self.cs.getHeightTop()
-        self.tw = self.cs.getWidthTop()
-        self.hmax = self.cs.getMaxHeight()
-        self.wmax = self.cs.getMaxWidth()
+        self.csShape = crossSection
+        self.bh = self.csShape.getHeightBottom()
+        self.bw = self.csShape.getWidthBottom()
+        self.mh = self.csShape.getHeightMiddle()
+        self.mw = self.csShape.getWidthMiddle()
+        self.th = self.csShape.getHeightTop()
+        self.tw = self.csShape.getWidthTop()
+        self.hmax = self.csShape.getMaxHeight()
+        self.wmax = self.csShape.getMaxWidth()
         self.createGraph()

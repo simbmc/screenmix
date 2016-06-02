@@ -19,8 +19,6 @@ class LayerDoubleT(ALayer):
         self.colors = colors
         self.focus = False
         self.percent = percent
-        self.r1 = None
-        self.r2 = None
 
     '''
     check if the mouse is in the rectangle
@@ -206,3 +204,8 @@ class LayerDoubleT(ALayer):
     def getHeight(self):
         return (self.r1.yrange[1] - self.r1.yrange[0] + self.r2.yrange[1] - self.r2.yrange[0]
                 + self.r3.yrange[1] - self.r3.yrange[0])
+
+    def getSize(self):
+        return (self.r1.yrange[1] - self.r1.yrange[0]) * (self.r1.xrange[1] - self.r1.xrange[0]) \
+                + (self.r2.yrange[1] - self.r2.yrange[0]) * (self.r2.xrange[1] - self.r2.xrange[0]) \
+                + (self.r3.yrange[1] - self.r3.yrange[0]) * (self.r3.xrange[1] - self.r3.xrange[0])

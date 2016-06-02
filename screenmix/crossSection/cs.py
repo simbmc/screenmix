@@ -7,27 +7,23 @@ from kivy.uix.gridlayout import GridLayout
 
 from crossSectionInformation.csInformation import CrossSectionInformation
 from materialEditor.materiallist import MaterialList
-from shapes.shapeDoubleT import CrossSectionDoubleT
-from shapes.shapeRectangle import CrossSectionRectangle
+from shapes.shapeDoubleT import ShapeDoubleT
+from shapes.shapeRectangle import shapeRectangle
 
 
 class CrossSection(GridLayout):
-    #Constructor
     #Constructor
     def __init__(self, **kwargs):
         super(CrossSection, self).__init__(**kwargs)
         self.cols=2
         self.allMaterials=MaterialList()
-        self.csRectangle=CrossSectionRectangle()
-        self.csDoubleT=CrossSectionDoubleT()
+        self.csRectangle=shapeRectangle()
+        self.csDoubleT=ShapeDoubleT()
         self.view=self.csRectangle.view
-        self.information=CrossSectionInformation()
-        self.information.setCrossSection(self)
-        self.add_widget(self.csRectangle.view)
-        self.add_widget(self.information)
-        self.csRectangle.setInformation(self.information)
-        self.csDoubleT.setInformation(self.information)
+        #self.csRectangle.setInformation(self.information)
+        #self.csDoubleT.setInformation(self.information)
         #circle not finished yet
+    
     
     '''
     return the cs-rectangle
@@ -44,21 +40,35 @@ class CrossSection(GridLayout):
     '''
     show rectangle-view
     '''
-    def showRectangleView(self):
+    def setRectangleView(self):
         self.remove_widget(self.view)
         self.view=self.csRectangle.view
-        self.add_widget(self.view, 1)
+        self.reEditor.changeCrossSection(self.view)
     
     '''
     show doubleT-view
     '''
-    def showDoubleTView(self):
+    def setDoubleTView(self):
         self.remove_widget(self.view)
         self.view=self.csDoubleT.view
-        self.add_widget(self.view, 1)
+        self.reEditor.changeCrossSection(self.view)
     
     '''
     get the information-component
     '''
     def getInformation(self):
         return self.information
+    
+    '''
+    set the cross section editor
+    '''
+    def setCrossSectionEditor(self, csEditor):
+        self.csEditor=csEditor
+    
+    '''
+    set the reinforcement editor
+    '''
+    def setReinforcementEditor(self,reEditor):
+        self.reEditor=reEditor
+        self.csRectangle.setInformation(reEditor)
+        self.csDoubleT.setInformation(reEditor)

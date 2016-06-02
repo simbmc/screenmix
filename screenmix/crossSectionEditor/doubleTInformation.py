@@ -20,12 +20,12 @@ class DoubleTInformation(GridLayout):
     create the gui
     '''
     def createGui(self):
-        self.topWidth=Button(text=str(self.cs.getWidthTop()))
-        self.middleWidth=Button(text=str(self.cs.getWidthMiddle()))
-        self.bottomWidth=Button(text=str(self.cs.getWidthBottom()))
-        self.topHeight=Button(text=str(self.cs.getHeightTop()))
-        self.middleHeight=Button(text=str(self.cs.getHeightMiddle()))
-        self.bottomHeight=Button(text=str(self.cs.getHeightBottom()))
+        self.topWidth=Button(text=str(self.csShape.getWidthTop()))
+        self.middleWidth=Button(text=str(self.csShape.getWidthMiddle()))
+        self.bottomWidth=Button(text=str(self.csShape.getWidthBottom()))
+        self.topHeight=Button(text=str(self.csShape.getHeightTop()))
+        self.middleHeight=Button(text=str(self.csShape.getHeightMiddle()))
+        self.bottomHeight=Button(text=str(self.csShape.getHeightBottom()))
         self.topWidth.bind(on_press=self.showNumpad)
         self.topHeight.bind(on_press=self.showNumpad)
         self.middleWidth.bind(on_press=self.showNumpad)
@@ -50,7 +50,7 @@ class DoubleTInformation(GridLayout):
     set the cross section
     '''
     def setCrossSection(self, crossSection):
-        self.cs=crossSection
+        self.csShape=crossSection
         self.createGui()
     
     '''
@@ -76,14 +76,14 @@ class DoubleTInformation(GridLayout):
         self.popup.dismiss()
         value=float(self.focusBtn.text)
         if self.focusBtn==self.topHeight:
-            self.cs.setHeightTop(value)
+            self.csShape.setHeightTop(value)
         elif self.focusBtn==self.topWidth:
-            self.cs.setWidthTop(value)
+            self.csShape.setWidthTop(value)
         elif self.focusBtn==self.middleHeight:
-            self.cs.setHeightMiddle(value)
+            self.csShape.setHeightMiddle(value)
         elif self.focusBtn==self.middleWidth:
-            self.cs.setWidthMiddle(value)
+            self.csShape.setWidthMiddle(value)
         elif self.focusBtn==self.bottomHeight:
-            self.cs.setHeightBottom(value)
+            self.csShape.setHeightBottom(value)
         elif self.focusBtn==self.bottomWidth:
-            self.cs.setWidthBottom(value)
+            self.csShape.setWidthBottom(value)

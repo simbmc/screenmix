@@ -79,7 +79,7 @@ class MaterialEditor(ScrollView, IObserver):
     set the labeltext with the materialproperties
     '''
     def showMaterialInformation(self,button):
-        for i in range(0,self.cs.allMaterials.getLength()):
+        for i in range(0,self.csShape.allMaterials.getLength()):
             if self.allMaterials.allMaterials[i].name==button.text:
                 self.name.text=self.allMaterials.allMaterials[i].name
                 self.price.text=str(self.allMaterials.allMaterials[i].price)
@@ -127,8 +127,8 @@ class MaterialEditor(ScrollView, IObserver):
     which cross section should it use
     '''
     def setCrossSection(self,crossSection):
-        self.cs=crossSection
-        self.allMaterials=self.cs.allMaterials
+        self.csShape=crossSection
+        self.allMaterials=self.csShape.allMaterials
         self.allMaterials.addListener(self)
         self.createGui()
         

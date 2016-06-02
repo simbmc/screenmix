@@ -7,20 +7,17 @@ Created on 15.03.2016
 
 from kivy.uix.gridlayout import GridLayout
 from crossSectionView.rectangleView import CSRectangleView
-from crossSectionInformation.csInformation import CrossSectionInformation
-from materialEditor.materiallist import MaterialList
 from shapes.ashape import AShape
 
 '''
 the cross_Section was developed to undock the cs_information from the view
 '''
 
-
-class CrossSectionRectangle(GridLayout, AShape):
+class shapeRectangle(GridLayout, AShape):
     # Constructor
 
     def __init__(self, **kwargs):
-        super(CrossSectionRectangle, self).__init__(**kwargs)
+        super(shapeRectangle, self).__init__(**kwargs)
         self.cheight = 0.5
         self.cw = 0.25
         self.concreteDensity = 2300.

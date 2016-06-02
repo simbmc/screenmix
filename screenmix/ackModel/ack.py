@@ -31,8 +31,8 @@ class Ack(GridLayout):
         self.ackLeft.setAck(self)
         self.ackLeft.setAckRight(self.ackRight)
         self.ackRight.setAckLeft(self.ackLeft)
-        self.ackLeft.setCrossSection(self.cs)
-        self.ackRight.setCrossSection(self.cs)
+        self.ackLeft.setCrossSection(self.csShape)
+        self.ackRight.setCrossSection(self.csShape)
         self.contentAck.add_widget(self.ackLeft)
         self.contentAck.add_widget(self.ackRight)
         self.add_widget(self.contentAck)
@@ -49,7 +49,7 @@ class Ack(GridLayout):
     which cross section should it use
     '''
     def setCrossSection(self,crossSection):
-        self.cs=crossSection
+        self.csShape=crossSection
         self.createGui()
     
     '''

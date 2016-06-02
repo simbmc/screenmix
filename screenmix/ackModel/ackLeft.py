@@ -69,35 +69,35 @@ class AckLeft(GridLayout):
     def calculatePoints(self):
         points = [(0, 0)]
         points.append(
-            (self.cs.minOfMaxstrain, self.cs.strength))
-        if self.cs.view.layers:
+            (self.csShape.minOfMaxstrain, self.csShape.strength))
+        if self.csShape.view.layers:
             # calculate the second _points
             # calculate the stiffness of the reinforcement layers according to
             # mixture rule
             percent_of_layers = 0.  # the sum of the percent of the reinforcement layers
-            for layer in self.cs.view.layers:
+            for layer in self.csShape.view.layers:
                 percent_of_layers += layer.percent
             # stiffness of the section
-            E_s = self.cs.strength / \
-                self.cs.minOfMaxstrain
+            E_s = self.csShape.strength / \
+                self.csShape.minOfMaxstrain
             E_r = 0.  # the stiffness of the reinforement mixture
-            for layer in self.cs.view.layers:
+            for layer in self.csShape.view.layers:
                 E_r += layer.material.stiffness * \
                     layer.percent / percent_of_layers
             # the reinforcement strain at the crack postion
-            eps_r_max = self.cs.minOfMaxstrain * \
+            eps_r_max = self.csShape.minOfMaxstrain * \
                 E_s / (E_r * percent_of_layers)
             # the minimum reinforcement strain
             eps_r_min = eps_r_max - 0.6685 * \
-                (1 - percent_of_layers) * self.cs.concreteStrength / \
+                (1 - percent_of_layers) * self.csShape.concreteStrength / \
                 (percent_of_layers * E_r)
             eps_r_avg = (eps_r_max + eps_r_min) / 2.
-            points.append((eps_r_avg, self.cs.strength))
+            points.append((eps_r_avg, self.csShape.strength))
             self.secondpoint=points[2]
             # calculate the third _points
             # the maximum reinforcement strain
             max_strain_r = 1e8
-            for layer in self.cs.view.layers:
+            for layer in self.csShape.view.layers:
                 cur_strain = layer.getStrain()
                 max_strain_r = min(cur_strain, max_strain_r)
             # maximum composite strength
@@ -131,7 +131,7 @@ class AckLeft(GridLayout):
     which cross section should it use
     '''
     def setCrossSection(self, crossSection):
-        self.cs = crossSection
+        self.csShape = crossSection
     
     '''
     ack_left sign in by ack left
@@ -156,9 +156,9 @@ class AckLeft(GridLayout):
         self.focus.xrange=[value-epsX,value+epsX]
         #calculation when the value is smaller then
         #the x-coordinate of the first point
-        if value<=self.cs.minOfMaxstrain:
+        if value<=self.csShape.minOfMaxstrain:
             #f(x)=mx => m=y1-0/x1-0
-            m=self.cs.strength/self.cs.minOfMaxstrain
+            m=self.csShape.strength/self.csShape.minOfMaxstrain
             self.focus.yrange=[value*m-epsY,value*m+epsY]
         #calculation when the value is between the  second and the third point
         elif value>self.secondpoint[0]:
@@ -175,7 +175,7 @@ class AckLeft(GridLayout):
         #calculation when the value is between the first- and secondpoint
         else:
             #m=0 => independet from the x-value
-            b=self.cs.strength
+            b=self.csShape.strength
             self.focus.yrange=[-epsY+b,+epsY+b]
             
     '''

@@ -28,7 +28,7 @@ class CSRectangleView(BoxLayout, AView):
         super(CSRectangleView, self).__init__(**kwargs)
         self.cheight = 0.5
         self.cw = 0.25
-        self.cs = None
+        self.csShape = None
         self.percent_change = False
         self.layers = []
         self.createGraph()
@@ -126,7 +126,7 @@ class CSRectangleView(BoxLayout, AView):
                     l.focus = True
                     focus = True
                     cur_info = l.getMaterialInformations()
-                    self.cs.setLayerInformation(cur_info[0], cur_info[1], cur_info[
+                    self.csShape.setLayerInformation(cur_info[0], cur_info[1], cur_info[
                         2], cur_info[3], cur_info[4], l.h / self.cheight)
                     changed = True
             else:
@@ -175,7 +175,7 @@ class CSRectangleView(BoxLayout, AView):
         cur.setFilledRectAck(filledRectAck)
         self.layers.append(cur)
         self.updateAllGraph()
-        self.cs.calculateStrength()
+        self.csShape.calculateStrength()
         self.updateCrossSectionInformation()
 
     '''
@@ -189,7 +189,7 @@ class CSRectangleView(BoxLayout, AView):
                 layer.filledRectAck.yrange = [0, 0]
                 self.layers.remove(layer)
         self.updateAllGraph()
-        self.cs.calculateStrength()
+        self.csShape.calculateStrength()
         self.updateCrossSectionInformation()
 
     '''
@@ -198,7 +198,7 @@ class CSRectangleView(BoxLayout, AView):
     '''
 
     def updateLayerInformation(self, name, price, density, stiffness, strength, percent):
-        self.cs.setLayerInformation(
+        self.csShape.setLayerInformation(
             name, price, density, stiffness, strength, percent)
 
     '''
@@ -207,8 +207,8 @@ class CSRectangleView(BoxLayout, AView):
     '''
 
     def updateCrossSectionInformation(self):
-        self.cs.calculateWeightPrice()
-        self.cs.setCrossSectionInformation()
+        self.csShape.calculateWeightPrice()
+        self.csShape.setCrossSectionInformation()
 
     '''
     the method getFreePlaces return the free-places, 
@@ -218,30 +218,30 @@ class CSRectangleView(BoxLayout, AView):
     def getFreePlaces(self):
         self.freePlaces = []
         # running index
-        curY = 0
+        y = 0
         # if the cross section contains layers
         if not len(self.layers) == 0:
-            while curY < self.cheight:
+            while y < self.cheight:
                 # layerExist is a switch to proofs whether
-                # a layer exist over the runnning index or not
+                # a l exist over the runnning index or not
                 layerExist = False
                 minValue = self.cheight
-                for layer in self.layers:
-                    if layer.y >= curY and layer.y < minValue:
+                for l in self.layers:
+                    if l.y >= y and l.y < minValue:
                         layerExist = True
-                        minValue = layer.y - layer.h / 2.
-                        nextMinValue = layer.y + layer.h / 2.
+                        minValue = l.y - l.h / 2.
+                        nextMinValue = l.y + l.h / 2.
                         # if the running index is equals the min, means that there's no
                         # area
-                        if not curY == minValue:
-                            self.freePlaces.append((curY, minValue))
-                        curY = nextMinValue
-                # if no layer exist over the running index then that's the last
+                        if not y == minValue:
+                            self.freePlaces.append((y, minValue))
+                        y = nextMinValue
+                # if no l exist over the running index then that's the last
                 # area which is free.
                 if not layerExist:
-                    self.freePlaces.append((curY, self.cheight))
+                    self.freePlaces.append((y, self.cheight))
                     return self.freePlaces
-        # if no layer exist,all area of the cross section is free
+        # if no l exist,all area of the cross section is free
         else:
             self.freePlaces.append((0, self.cheight))
         return self.freePlaces
@@ -260,7 +260,7 @@ class CSRectangleView(BoxLayout, AView):
                 rectangle.setHeight(self.cheight * value)
                 rectangle.setPercentage(value)
                 self.updateAllGraph()
-                self.cs.calculateStrength()
+                self.csShape.calculateStrength()
                 self.updateCrossSectionInformation()
                 return
 
@@ -297,7 +297,7 @@ class CSRectangleView(BoxLayout, AView):
     '''
 
     def setCrossSection(self, crossSection):
-        self.cs = crossSection
+        self.csShape = crossSection
 
     '''
     return all layers 

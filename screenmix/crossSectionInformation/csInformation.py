@@ -12,9 +12,9 @@ from kivy.uix.popup import Popup
 from kivy.uix.slider import Slider
 from designClass.design import Design
 from materialEditor.iobserver import IObserver
-from crossSectionInformation.shapeSelection import ShapeSelection
-from crossSectionInformation.doubleTInformation import DoubleTInformation
-from crossSectionInformation.rectangleInformation import RectangleInformation
+from crossSectionEditor.shapeSelection import ShapeSelection
+from crossSectionEditor.doubleTInformation import DoubleTInformation
+from crossSectionEditor.rectangleInformation import RectangleInformation
 
 '''
 the class CrossSectionInformation was developed to show 
@@ -26,7 +26,7 @@ class CrossSectionInformation(GridLayout, IObserver):
     def __init__(self, **kwargs):
         super(CrossSectionInformation, self).__init__(**kwargs)
         self.cols=1
-        self.focusCrossSection=None
+        self.shape=None
         self.firstTimeDoubleT=True
         self.btnSize=Design.btnSize
     
@@ -323,7 +323,7 @@ class CrossSectionInformation(GridLayout, IObserver):
         #default cross section rectangle
         self.cs=allCrossSections.getCSRectangle()
         self.rectangleInformation=RectangleInformation()
-        self.focusCrossSection=self.rectangleInformation
+        self.shape=self.rectangleInformation
         self.rectangleInformation.setCrossSection(self.cs)
         self.allMaterials=self.allCrossSections.allMaterials
         self.allMaterials.addListener(self)
@@ -341,10 +341,10 @@ class CrossSectionInformation(GridLayout, IObserver):
     def setRectangle(self, btn):
         self.btnSelection.text=btn.text
         self.cs=self.allCrossSections.getCSRectangle()
-        self.remove_widget(self.focusCrossSection)
-        self.focusCrossSection=self.rectangleInformation
+        self.remove_widget(self.shape)
+        self.shape=self.rectangleInformation
         self.add_widget(self.rectangleInformation,3)
-        self.allCrossSections.showRectangleView()
+        self.allCrossSections.setRectangleView()
         self.shapeSelection.dismiss()
     
     '''
@@ -357,10 +357,10 @@ class CrossSectionInformation(GridLayout, IObserver):
             self.doubleTInformation=DoubleTInformation()
             self.doubleTInformation.setCrossSection(self.cs)
             self.firstTimeDoubleT=False
-        self.remove_widget(self.focusCrossSection)
-        self.focusCrossSection=self.doubleTInformation
+        self.remove_widget(self.shape)
+        self.shape=self.doubleTInformation
         self.add_widget(self.doubleTInformation,3)
-        self.allCrossSections.showDoubleTView()
+        self.allCrossSections.setDoubleTView()
         self.shapeSelection.dismiss()
     
     '''

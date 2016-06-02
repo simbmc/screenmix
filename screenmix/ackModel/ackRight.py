@@ -31,7 +31,7 @@ class AckRight(GridLayout):
         self.graph = Graph(xlabel='stress [MPa]', ylabel='height [m]',
                            y_ticks_major=0.1,
                            y_grid_label=True, x_grid_label=True,
-                           xmin=0.0, xmax=0.0005, ymin=0, ymax=self.cs.cheight)
+                           xmin=0.0, xmax=0.0005, ymin=0, ymax=self.csShape.cheight)
         self.add_widget(self.graph)
     
     
@@ -41,7 +41,7 @@ class AckRight(GridLayout):
     '''
 
     def setCrossSection(self, crossSection):
-        self.cs = crossSection
+        self.csShape = crossSection
         self.createGui()
 
     '''
@@ -54,13 +54,13 @@ class AckRight(GridLayout):
     update the layerinformation of layers
     '''
     def update(self):
-        self.graph.ymax=self.cs.cheight
+        self.graph.ymax=self.csShape.cheight
         self.findMaxStress()
         for plot in self.graph.plots:
             self.graph.remove_plot(plot)
             self.graph._clear_buffer()
         self.concreteLayers=[]
-        free_places = self.cs.view.getFreePlaces()
+        free_places = self.csShape.view.getFreePlaces()
         for l in free_places:
             filledRect = FilledRect(xrange=[0., 1e-5],
                                    yrange=[l[0], l[1]],
@@ -72,19 +72,19 @@ class AckRight(GridLayout):
     
     def updatePlots(self):
         # the four points determining the ACK curve
-        if self.cs.view.layers:  # reinforcement layer exists
+        if self.csShape.view.layers:  # reinforcement layer exists
             points = self.ackLeft.calculatePoints()
             eps1, eps2, eps3 = points[1][0], points[2][0], points[3][0]
         else:
             eps1, eps2 = 1e6, 1e6
         # draw the free places of the cross section
-        concreteStress = self.cs.concreteStiffness * \
+        concreteStress = self.csShape.concreteStiffness * \
             self.ack.getCurrentStrain() * (self.ack.getCurrentStrain() <= eps1)
         maxStress = concreteStress
         for layer in self.concreteLayers:
             layer.xrange=[0.,concreteStress]
         # draw the stress of the reinforcing layers
-        for layer in self.cs.view.layers:
+        for layer in self.csShape.view.layers:
             if self.ack.getCurrentStrain() <= eps1:
                 layerStress = layer.material.stiffness * self.ack.getCurrentStrain()
             elif self.ack.getCurrentStrain() <= eps2:
@@ -98,10 +98,10 @@ class AckRight(GridLayout):
         return self.graph
     
     def findMaxStress(self):
-        self.maxStress = self.cs.concreteStiffness * \
+        self.maxStress = self.csShape.concreteStiffness * \
             self.ack.getMaxStrain()
-        if self.cs.view.layers:
-            for l in self.cs.view.layers:
+        if self.csShape.view.layers:
+            for l in self.csShape.view.layers:
                 curValue = l.material.stiffness * self.ack.getMaxStrain()
                 if self.maxStress < curValue:
                     self.maxStress = curValue
