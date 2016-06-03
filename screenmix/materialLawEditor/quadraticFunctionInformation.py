@@ -58,6 +58,12 @@ class QuadraticFunctionInformation(GridLayout):
         self.popupNumpad=Popup(title='Numpad', content=self.numpad)
     
     '''
+    close the numpad
+    '''
+    def closeNumpad(self):
+        self.popup.dismiss()
+        
+    '''
     the method finishedNumpad close the numpad_popup
     '''
     def finishedNumpad(self):

@@ -5,10 +5,10 @@ Created on 12.05.2016
 '''
 from kivy.uix.gridlayout import GridLayout
 
-from crossSectionInformation.csInformation import CrossSectionInformation
 from materialEditor.materiallist import MaterialList
 from shapes.shapeDoubleT import ShapeDoubleT
-from shapes.shapeRectangle import shapeRectangle
+from shapes.shapeRectangle import ShapeRectangle
+from shapes.shapeT import ShapeT
 
 
 class CrossSection(GridLayout):
@@ -17,8 +17,9 @@ class CrossSection(GridLayout):
         super(CrossSection, self).__init__(**kwargs)
         self.cols=2
         self.allMaterials=MaterialList()
-        self.csRectangle=shapeRectangle()
+        self.csRectangle=ShapeRectangle()
         self.csDoubleT=ShapeDoubleT()
+        self.csT=ShapeT()
         self.view=self.csRectangle.view
         #self.csRectangle.setInformation(self.information)
         #self.csDoubleT.setInformation(self.information)
@@ -26,19 +27,23 @@ class CrossSection(GridLayout):
     
     
     '''
-    return the cs-rectangle
+    return the cs-rectangle-shape
     '''
     def getCSRectangle(self):
         return self.csRectangle
     
     '''
-    return the cs-doubleT
+    return the cs-doubleT-shape
     '''
     def getCSDoubleT(self):
         return self.csDoubleT
-    
     '''
-    show rectangle-view
+    return the csT-shape
+    '''
+    def getCST(self):
+        return self.csT
+    '''
+    set the rectangle-view
     '''
     def setRectangleView(self):
         self.remove_widget(self.view)
@@ -46,11 +51,19 @@ class CrossSection(GridLayout):
         self.reEditor.changeCrossSection(self.view)
     
     '''
-    show doubleT-view
+    set the doubleT-view
     '''
     def setDoubleTView(self):
         self.remove_widget(self.view)
         self.view=self.csDoubleT.view
+        self.reEditor.changeCrossSection(self.view)
+    
+    '''
+    set the T-view
+    '''
+    def setTView(self):
+        self.remove_widget(self.view)
+        self.view=self.csT.view
         self.reEditor.changeCrossSection(self.view)
     
     '''
@@ -72,3 +85,4 @@ class CrossSection(GridLayout):
         self.reEditor=reEditor
         self.csRectangle.setInformation(reEditor)
         self.csDoubleT.setInformation(reEditor)
+        self.csT.setInformation(reEditor)

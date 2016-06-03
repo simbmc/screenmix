@@ -41,6 +41,12 @@ class LinearInformation(GridLayout):
         self.popupNumpad=Popup(title='Numpad', content=self.numpad)
     
     '''
+    close the numpad
+    '''
+    def closeNumpad(self):
+        self.popup.dismiss()
+        
+    '''
     open the numpad popup
     '''
     def showPopup(self,btn):

@@ -7,11 +7,14 @@ from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 
+from designClass.design import Design
+
 
 class Numpad(GridLayout):
     #Construktor
     def __init__(self, **kwargs):
         super(Numpad, self).__init__(**kwargs)
+        self.btnSize = Design.btnSize
         self.createNumfield()
         self.cols=1
         self.add_widget(self.layout)
@@ -39,9 +42,14 @@ class Numpad(GridLayout):
         self.numfield.add_widget(btnZero)
         self.numfield.add_widget(btnDelete)
         cur=GridLayout(cols=1)
-        btnFinished=Button(text='finished')
-        btnFinished.bind(on_press=self.finished)
-        cur.add_widget(btnFinished)
+        layout=GridLayout(cols=2,spacing=10)
+        btnOK=Button(text='ok',size_hint_y=None, height=self.btnSize)
+        btnOK.bind(on_press=self.finished)
+        btnCancel=Button(text='cancel',size_hint_y=None, height=self.btnSize)
+        btnCancel.bind(on_press=self.cancel)
+        layout.add_widget(btnOK)
+        layout.add_widget(btnCancel)
+        cur.add_widget(layout)
         cur.add_widget(self.textinput)
         self.layout.add_widget(cur)
         self.layout.add_widget(self.numfield)
@@ -82,4 +90,11 @@ class Numpad(GridLayout):
     def finished(self,button):
         if len(self.textinput.text)>0:
             self._parent.finishedNumpad()
+        self.resetText()
+    
+    '''
+    cancel the numpad input
+    '''
+    def cancel(self,btn):
+        self._parent.closeNumpad()
         self.resetText()

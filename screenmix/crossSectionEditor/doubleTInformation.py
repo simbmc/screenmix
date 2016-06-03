@@ -67,6 +67,12 @@ class DoubleTInformation(GridLayout):
         self.popup=Popup(content=self.numpad)
     
     '''
+    close the numpad
+    '''
+    def closeNumpad(self):
+        self.popup.dismiss()
+        
+    '''
     open the popup
     '''
     def showNumpad(self,btn):

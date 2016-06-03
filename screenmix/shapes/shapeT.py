@@ -4,23 +4,27 @@ Created on 03.06.2016
 @author: mkennert
 '''
 from shapes.ashape import AShape
+from crossSectionView.tView import TView
+from kivy.uix.gridlayout import GridLayout
 
-class ShapeT(AShape):
+class ShapeT(AShape, GridLayout):
     # Constructor
 
     def __init__(self, **kwargs):
         super(ShapeT, self).__init__(**kwargs)
         self.cols = 2
         # toparea
-        self.tw = 0.2
-        self.th = 0.2
+        self.tw = 0.3
+        self.th = 0.15
         # bottomarea
-        self.bw = 0.3
-        self.bh = 0.2
+        self.bw = 0.15
+        self.bh = 0.3
         self.concreteDensity = 2300.
         self.concretePrice = 0.065
         self.concreteStiffness = 30000.
         self.concreteStrength = 3.
+        self.view = TView()
+        self.view.setCrossSection(self)
         
     '''
     return the top-width
@@ -186,7 +190,7 @@ class ShapeT(AShape):
             if self.maxOfMaxstrain<curValue:
                 self.maxOfMaxstrain=curValue
         #calculate the strength
-        csSize=self.th*self.tw+self.mw*self.mh+self.bh*self.bw
+        csSize=self.th*self.tw+self.bh*self.bw
         for l in self.view.layers:
             strength+=self.minOfMaxstrain*l.material.stiffness*l.getSize()/csSize
         freePlacesSize=0.

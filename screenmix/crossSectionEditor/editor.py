@@ -11,6 +11,7 @@ from crossSectionEditor.doubleTInformation import DoubleTInformation
 from crossSectionEditor.rectangleInformation import RectangleInformation
 from crossSectionEditor.shapeSelection import ShapeSelection
 from designClass.design import Design
+from crossSectionEditor.shapeTInformation import TInformation
 
 
 class CrossSectionEditor(GridLayout):
@@ -19,8 +20,10 @@ class CrossSectionEditor(GridLayout):
     def __init__(self, **kwargs):
         super(CrossSectionEditor, self).__init__(**kwargs)
         self.cols = 2
+        self.spacing=20
         self.btnSize = Design.btnSize
         self.firstTimeDoubleT = True
+        self.firstTimeT=True
         self.focusInformation = None
         self.content = GridLayout(cols=1)
         self.add_widget(self.content)
@@ -65,7 +68,7 @@ class CrossSectionEditor(GridLayout):
         selectionContent = GridLayout(cols=1, spacing=10,
                                       size_hint_y=None, row_force_default=True,
                                       row_default_height=self.btnSize)
-        self.btnSelection = Button(text='rectangle', size_hint_y=None, height=self.btnSize,
+        self.btnSelection = Button(text='choose shape', size_hint_y=None, height=self.btnSize,
                                    size_hint_x=None, width=200)
         self.btnSelection.bind(on_press=self.showShapeSelection)
         selectionContent.add_widget(self.btnSelection)
@@ -92,6 +95,13 @@ class CrossSectionEditor(GridLayout):
             self.setRectangle(btn)
         elif btn.text == 'doubleT':
             self.setDoubleT(btn)
+        elif btn.text=='t-shape':
+            self.setT(btn)
+        self.shapeSelection.dismiss()
+    
+    def cancelShapeSelection(self):
+        self.shapeSelection.dismiss()
+        
 
     '''
     open the popup where the user can select the shape
@@ -105,7 +115,7 @@ class CrossSectionEditor(GridLayout):
     '''
 
     def setRectangle(self, btn):
-        self.btnSelection.text = btn.text
+        #self.btnSelection.text = btn.text
         self.csShape = self.crossSection.getCSRectangle()
         self.crossSection.view = self.csShape
         self.remove_widget(self.shape)
@@ -116,14 +126,13 @@ class CrossSectionEditor(GridLayout):
         self.crossSection.setRectangleView()
         self.updateView()
         self.crossSection.setRectangleView()
-        self.shapeSelection.dismiss()
 
     '''
     show the doubleT shape
     '''
 
     def setDoubleT(self, btn):
-        self.btnSelection.text = btn.text
+        #self.btnSelection.text = btn.text
         self.csShape = self.crossSection.getCSDoubleT()
         self.crossSection.view = self.csShape
         if self.firstTimeDoubleT:
@@ -137,7 +146,6 @@ class CrossSectionEditor(GridLayout):
         self.focusInformation = self.doubleTInformation
         self.crossSection.setDoubleTView()
         self.updateView()
-        self.shapeSelection.dismiss()
 
     '''
     show the circle shape
@@ -145,10 +153,26 @@ class CrossSectionEditor(GridLayout):
     # not finished yet
 
     def setCircle(self, btn):
-        self.btnSelection.text = btn.text
+        #self.btnSelection.text = btn.text
         # not finished yet
         # self.csShape=self.crossSection.getCSCircle()
         self.shapeSelection.dismiss()
+    
+    def setT(self,btn):
+        #self.btnSelection.text = btn.text
+        self.csShape = self.crossSection.getCST()
+        self.crossSection.view = self.csShape
+        if self.firstTimeT:
+            self.tInformation = TInformation()
+            self.tInformation.setCrossSection(self.csShape)
+            self.firstTimeDoubleT = False
+        self.remove_widget(self.shape)
+        self.shape = self.tInformation
+        self.content.remove_widget(self.focusInformation)
+        self.content.add_widget(self.tInformation, 0)
+        self.focusInformation = self.tInformation
+        self.crossSection.setTView()
+        self.updateView()
 
     '''
     add the view at the left side of the editor

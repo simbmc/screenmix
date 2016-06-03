@@ -13,11 +13,11 @@ from shapes.ashape import AShape
 the cross_Section was developed to undock the cs_information from the view
 '''
 
-class shapeRectangle(GridLayout, AShape):
+class ShapeRectangle(GridLayout, AShape):
     # Constructor
 
     def __init__(self, **kwargs):
-        super(shapeRectangle, self).__init__(**kwargs)
+        super(ShapeRectangle, self).__init__(**kwargs)
         self.ch = 0.5
         self.cw = 0.25
         self.concreteDensity = 2300.

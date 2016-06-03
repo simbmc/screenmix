@@ -22,6 +22,7 @@ class ReinforcementEditor(GridLayout, IObserver):
     def __init__(self, **kwargs):
         super(ReinforcementEditor, self).__init__(**kwargs)
         self.cols = 2
+        self.spacing=20
         self.btnSize = Design.btnSize
         self.content = GridLayout(cols=1)
         self.containsView = False

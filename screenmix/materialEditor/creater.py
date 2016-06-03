@@ -113,6 +113,8 @@ class MaterialCreater(GridLayout):
         self.popupNumpad.dismiss()
         self.numpad.resetText()
     
+    def closeNumpad(self):
+        self.popupNumpad.dismiss()
     '''
     the method signInParent to set the parent of 
     the object. the parent must have the method update_materials

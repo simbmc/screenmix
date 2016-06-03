@@ -16,11 +16,11 @@ class ShapeDoubleT(GridLayout, AShape):
         super(ShapeDoubleT, self).__init__(**kwargs)
         self.cols = 2
         # toparea
-        self.tw = 0.2
+        self.tw = 0.3
         self.th = 0.2
         # middlearea
         self.mw = 0.1
-        self.mh = 0.05
+        self.mh = 0.25
         # bottomarea
         self.bw = 0.3
         self.bh = 0.2

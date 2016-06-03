@@ -9,7 +9,7 @@ from layers.aLayer import ALayer
 class LayerT(ALayer):
     # Constructor
 
-    def __init__(self, h1, h2, h3, w1, w2, colors, percent):
+    def __init__(self, h1, h2, w1, w2, colors, percent):
         self.h1 = h1
         self.w1 = w1
         self.h2 = h2

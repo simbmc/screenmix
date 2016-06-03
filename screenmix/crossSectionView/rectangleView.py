@@ -6,13 +6,11 @@ Created on 14.03.2016
 
 
 from kivy.garden.graph import Graph, MeshLinePlot
-from kivy.app import App
-from kivy.uix.boxlayout import BoxLayout
-from itertools import cycle
 from crossSectionView.aview import AView
 from layers.layerRectangle import LayerRectangle
 from plot.filled_rect import FilledRect
 from designClass.design import Design
+from kivy.uix.gridlayout import GridLayout
 
 
 '''
@@ -21,11 +19,12 @@ which has a rectangle shape
 '''
 
 
-class CSRectangleView(BoxLayout, AView):
+class CSRectangleView(GridLayout, AView):
     # Constructor
 
     def __init__(self, **kwargs):
         super(CSRectangleView, self).__init__(**kwargs)
+        self.cols=1
         self.ch = 0.5
         self.cw = 0.25
         self.csShape = None
@@ -60,14 +59,32 @@ class CSRectangleView(BoxLayout, AView):
     def createGraph(self):
         self.graph = Graph(
             #background_color = [1, 1, 1, 1],
-            #border_color = [.5,.5,.5,1],
-            #tick_color = [0.25,0.25,0.25,1],
+            border_color = [0,0,0,1],
+            tick_color = [0.25,0.25,0.25,0],
             #_trigger_color = [0,0,0,1],
-            x_ticks_major=0.05, y_ticks_major=0.05,
-            y_grid_label=True, x_grid_label=True, padding=5,
+            #x_ticks_major=0.05, y_ticks_major=0.05,
+            #y_grid_label=True, x_grid_label=True, padding=5,
             xmin=0, xmax=self.cw, ymin=0, ymax=self.ch)
         self.add_widget(self.graph)
-
+        self.p = MeshLinePlot(color=[1, 1, 1, 1])
+        self.p.points = self.drawRectangle()
+        self.graph.add_plot(self.p)
+    '''
+    update the graph
+    '''
+    def updateGraph(self):
+        self.graph.remove_plot(self.p)
+        self.p = MeshLinePlot(color=[1, 1, 1, 1])
+        self.p.points = self.drawRectangle()
+        self.graph.add_plot(self.p)
+    '''
+    draw the rectangle
+    '''
+    def drawRectangle(self):
+        h=self.ch/1e3
+        w=self.cw/1e3
+        return [(w,h),(w,self.ch),(self.cw,self.ch),(self.cw,h),(w,h)]
+    
     '''
     the method on_touch_move is invoked after the user touch within a rectangle and move it.
     it changes the position of the rectangle
@@ -277,6 +294,7 @@ class CSRectangleView(BoxLayout, AView):
         self.ch = value
         self.graph.ymax = self.ch
         self.updateCrossSectionInformation()
+        self.updateGraph()
 
     '''
     the method setWidth change the width of the cross section shape
@@ -290,6 +308,7 @@ class CSRectangleView(BoxLayout, AView):
             rectangle.setWidth(value)
         self.updateAllGraph()
         self.updateCrossSectionInformation()
+        self.updateGraph()
 
     '''
     the method setCrossSection was developed to say the view, 

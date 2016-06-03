@@ -29,8 +29,10 @@ class DoubleTView(AView, GridLayout):
         self.deltaX = self.wmax / 10.
         self.deltaY = self.hmax / 50.
         self.graph = Graph(
-            x_ticks_major=0.05, y_ticks_major=0.05,
-            y_grid_label=True, x_grid_label=True, padding=5,
+            #x_ticks_major=0.05, y_ticks_major=0.05,
+            #y_grid_label=True, x_grid_label=True, padding=5,
+            border_color = [0.,0.,0.,1],
+            tick_color = [0.25,0.25,0.25,0],
             xmin=0, xmax=self.wmax + self.deltaX,
             ymin=0, ymax=self.hmax + self.deltaY)
         self.add_widget(self.graph)
@@ -44,7 +46,7 @@ class DoubleTView(AView, GridLayout):
 
     def drawDoubleT(self):
         x0 = self.graph.xmax / 2.
-        y1 = 0
+        y1 = self.graph.ymax/1e3
         x1 = x0 - self.bw / 2.
         y2 = y3 = self.bh
         x3 = x1 + self.bw / 2. - self.mw / 2.
@@ -55,7 +57,7 @@ class DoubleTView(AView, GridLayout):
         x9 = x7 - self.tw / 2. + self.mw / 2.
         x11 = x9 + self.bw / 2. - self.mw / 2.
         return [(x1, y1), (x1, y2), (x3, y2), (x3, y4), (x5, y4), (x5, y6),
-                (x7, y6), (x7, y4), (x9, y4), (x9, y3), (x11, y3), (x11, y1)]
+                (x7, y6), (x7, y4), (x9, y4), (x9, y3), (x11, y3), (x11, y1),(x1,y1)]
 
     '''
     update the view when the model has changed
@@ -278,7 +280,6 @@ class DoubleTView(AView, GridLayout):
     '''
     update the width of the layer
     '''
-
     def updateWidth(self):
         delta = self.wmax / 2. + self.deltaX / 2.
         for l in self.layers:

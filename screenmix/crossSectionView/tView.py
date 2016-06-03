@@ -29,8 +29,10 @@ class TView(AView, GridLayout):
         self.deltaX = self.wmax / 10.
         self.deltaY = self.hmax / 50.
         self.graph = Graph(
-            x_ticks_major=0.05, y_ticks_major=0.05,
-            y_grid_label=True, x_grid_label=True, padding=5,
+            #x_ticks_major=0.05, y_ticks_major=0.05,
+            #y_grid_label=True, x_grid_label=True, padding=5,
+            border_color = [0.,0.,0.,1],
+            tick_color = [0.25,0.25,0.25,0],
             xmin=0, xmax=self.wmax + self.deltaX,
             ymin=0, ymax=self.hmax + self.deltaY)
         self.add_widget(self.graph)
@@ -44,7 +46,7 @@ class TView(AView, GridLayout):
 
     def drawT(self):
         x0 = self.graph.xmax / 2.
-        y1 = 0
+        y1 = self.hmax/1e3
         x1 = x0 - self.bw / 2.
         y2  = self.bh
         x3 = x1 + self.bw / 2. - self.tw / 2.
@@ -54,7 +56,7 @@ class TView(AView, GridLayout):
         x5 = x3 + self.tw
         x7 = x5 - self.tw / 2. + self.bw / 2.
         return [(x1, y1), (x1, y2), (x3, y2), (x3, y4), (x5, y4), (x5, y2),
-                (x7, y2), (x7, y1)]
+                (x7, y2), (x7, y1),(x1,y1)]
 
     '''
     update the view when the model has changed
@@ -110,18 +112,12 @@ class TView(AView, GridLayout):
             if not l.w1 == self.obw:
                 l.w1 = self.bw
                 l.r1.xrange = [delta - self.bw / 2., delta + self.bw / 2.]
-            elif not l.w1 == self.omw:
-                l.w1 = self.mw
-                l.r1.xrange = [delta - self.mw / 2., delta + self.mw / 2.]
             elif not l.w1 == self.otw:
                 l.w1 = self.tw
                 l.r1.xrange = [delta - self.tw / 2., delta + self.tw / 2.]
             if not l.w2 == self.obw:
                 l.w2 = self.bw
                 l.r2.xrange = [delta - self.bw / 2., delta + self.bw / 2.]
-            elif not l.w2 == self.omw:
-                l.w2 = self.mw
-                l.r2.xrange = [delta - self.mw / 2., delta + self.mw / 2.]
             elif not l.w2 == self.otw:
                 l.w2 = self.tw
                 l.r2.xrange = [delta - self.tw / 2., delta + self.tw / 2.]
@@ -148,18 +144,12 @@ class TView(AView, GridLayout):
                 l.r1.xrange = [x, x + self.bw]
                 l.r2.xrange = [x, x + self.bw]
             # case 2
-            elif l.r1.yrange[1] < self.bh + self.mh and l.r2.yrange[0] > self.bh:
+            elif l.r2.yrange[0] > self.bh:
                 print('case 2')
-                x = delta - self.mw / 2.
-                l.r1.xrange = [x, x + self.mw]
-                l.r2.xrange = [x, x + self.mw]
-            # case 3
-            elif l.r2.yrange[0] > self.bh + self.mh:
-                print('case 3')
                 x = delta - self.tw / 2.
                 l.r1.xrange = [x, x + self.tw]
                 l.r2.xrange = [x, x + self.tw]
-            # case 4
+            # case 3
             elif l.r1.yrange[1] > self.bh and l.r2.yrange[0] < self.bh:
                 print('case 4')
                 x1 = delta - self.tw / 2.
@@ -183,7 +173,7 @@ class TView(AView, GridLayout):
                 a = value / op
                 delta = self.wmax / 2. + self.deltaX / 2.
                 l.h1 = a * l.h1
-                #l.h2 = a * l.h2
+                l.h2 = a * l.h2
                 # case 1
                 if l.r1.yrange[1] < self.bh:
                     print('case 1')
@@ -193,23 +183,22 @@ class TView(AView, GridLayout):
                     y1 = l.r1.yrange[0]
                     l.r1.yrange = [y1, y1 + l.h1]
                 # case 2
-                elif l.r2.yrange[0] > self.bh + self.mh:
+                elif l.r2.yrange[0] > self.bh :
                     print('case 2')
                     x = delta - self.tw / 2.
                     l.r1.xrange = [x, x + self.tw]
                     l.r2.xrange = [x, x + self.tw]
-                    l.r3.xrange = [x, x + self.tw]
                     y1 = l.r1.yrange[0]
                     l.r1.yrange = [y1, y1 + l.h1]
                 # case 4
                 elif l.r1.yrange[1] > self.bh and l.r2.yrange[0] < self.bh:
                     print('case 3')
-                    x1 = delta - self.mw / 2.
+                    x1 = delta - self.tw / 2.
                     x2 = delta - self.bw / 2.
                     l.r1.yrange = [self.bh, self.bh + l.h1 / 2.]
                     l.r1.xrange = [x1, x1 + self.tw]
                     l.r2.xrange = [x2, x2 + self.bw]
-                    l.r2.yrange = [self.bh - l.h21 / 2., self.bh]
+                    l.r2.yrange = [self.bh - l.h2 / 2., self.bh]
         self.updateCrossSectionInformation()
 
     '''
@@ -328,6 +317,25 @@ class TView(AView, GridLayout):
                     l.w2 = self.bw
                     l.w3 = 0
                     return
+                else:
+                    l.setYRange1([y, y + l.h1])
+                    l.setYRange2([y - l.h2, y])
+                    if y < self.bh:
+                        l.setXRange1(
+                            [delta - self.bw / 2., delta + self.bw / 2.])
+                        l.setXRange2(
+                            [delta - self.bw / 2., delta + self.bw / 2.])
+                        l.w1 = self.bw
+                        l.w2 = self.bw
+                    else:
+                        l.setXRange1(
+                            [delta - self.tw / 2., delta + self.tw / 2.])
+                        l.setXRange2(
+                            [delta - self.tw / 2., delta + self.tw / 2.])
+                        l.w1 = self.tw
+                        l.w2 = self.tw
+                
+                    
     '''
     return the freePlaces, where is no layer of the cross section
     '''
@@ -392,7 +400,7 @@ class TView(AView, GridLayout):
     return the layer which is nearest at the bottom
     '''
     def findLayer(self):
-        minY=self.th+self.mh+self.bh
+        minY=self.hmax
         for layer in self.layers:
                 if minY>layer.r2.yrange[0]:
                     minY=layer.r2.yrange[0]

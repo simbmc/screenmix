@@ -40,6 +40,12 @@ class RectangleInformation(GridLayout):
         self.add_widget(self.widthValue)
         self.add_widget(self.btnWidth)
     
+    '''
+    close the numpad
+    '''
+    def closeNumpad(self):
+        self.popUp.dismiss()
+    
     def showNumpad(self,btn):
         self.focusbtn=btn
         self.popUp.open()
