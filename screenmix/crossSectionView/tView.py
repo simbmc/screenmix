@@ -46,7 +46,7 @@ class TView(AView, GridLayout):
         x0 = self.graph.xmax / 2.
         y1 = 0
         x1 = x0 - self.bw / 2.
-        y2 = y3 = self.bh
+        y2  = self.bh
         x3 = x1 + self.bw / 2. - self.tw / 2.
         #y4 = y3 + self.mh
         #x5 = x3 + self.mw / 2. - self.tw / 2.
@@ -288,6 +288,15 @@ class TView(AView, GridLayout):
                                     stiffness, strength, percent)
     
     '''
+    update the cross section information
+    '''
+
+    def updateCrossSectionInformation(self):
+        self.csShape.calculateWeightPrice()
+        self.csShape.calculateStrength()
+        self.csShape.setCrossSectionInformation()
+    
+    '''
     the method on_touch_move is invoked after the user touch within a rectangle and move it.
     it changes the position of the rectangle
     '''
@@ -312,59 +321,83 @@ class TView(AView, GridLayout):
                     print('move case 4')
                     l.setXRange1([delta - self.tw / 2., delta + self.tw / 2.])
                     l.setXRange2([delta - self.bw / 2., delta + self.bw / 2.])
-                    height2 = self.bh - y - l.h2 / 2.
                     height1 = -self.bh + y + l.h1
                     l.setYRange1([self.bh, self.bh + height1])
                     l.setYRange2([y - l.h2, self.bh])
-                    l.setYRange3([0, 0])
-                    l.w1 = self.mw
+                    l.w1 = self.tw
                     l.w2 = self.bw
                     l.w3 = 0
                     return
-                # case 5
-                elif y + l.h1 > self.bh + self.mh and \
-                        y - l.h2 < self.bh + self.mh:
-                    print('move case 5')
-                    l.setXRange1([delta - self.tw / 2., delta + self.tw / 2.])
-                    l.setXRange2([delta - self.mw / 2., delta + self.mw / 2.])
-                    height1 = y + l.h1 - self.bh - self.mh
-                    height2 = l.h1 + l.h2 - height1
-                    l.setYRange1(
-                        [self.bh + self.mh, self.bh + self.mh + height1])
-                    l.setYRange2([y - l.h2, self.bh + self.mh])
-                    l.setYRange3([0, 0])
-                    l.w1 = self.tw
-                    l.w2 = self.mw
-                    l.w3 = 0
-                    return
-                # case 6
-                else:
-                    print('move case 6')
-                    l.setYRange1([y, y + l.h1])
-                    l.setYRange2([y - l.h2, y])
-                    #l.setYRange3([0, 0])
-                    if y < self.bh:
-                        l.setXRange1(
-                            [delta - self.bw / 2., delta + self.bw / 2.])
-                        l.setXRange2(
-                            [delta - self.bw / 2., delta + self.bw / 2.])
-                        l.w1 = self.bw
-                        l.w2 = self.bw
-                    elif y < self.bh + self.mh:
-                        l.setXRange1(
-                            [delta - self.mw / 2., delta + self.mw / 2.])
-                        l.setXRange2(
-                            [delta - self.mw / 2., delta + self.mw / 2.])
-                        l.w1 = self.mw
-                        l.w2 = self.mw
-                    elif y < self.bh + self.mh + self.th:
-                        l.setXRange1(
-                            [delta - self.tw / 2., delta + self.tw / 2.])
-                        l.setXRange2(
-                            [delta - self.tw / 2., delta + self.tw / 2.])
-                        l.w1 = self.tw
-                        l.w2 = self.tw
-                    return
+    '''
+    return the freePlaces, where is no layer of the cross section
+    '''
+
+    def getFreePlaces(self):
+        self.freePlaces = []
+        # running index
+        y = 0
+        h = self.hmax
+        # if the cross section contains layers
+        if not len(self.layers) == 0:
+            #minLayer is the layer nearest at the bottom
+            minLayer=self.findLayer()
+            minValue = minLayer.r2.yrange[0]
+            nextMinValue = minLayer.getHeight()+minValue
+            self.appendLayer(y, minValue)
+            y=minLayer.getHeight()+minValue
+            while y < h:
+                # layerExist is a switch to proofs whether
+                # a layer exist over the runnning index or not
+                layerExist = False
+                minValue = h
+                for layer in self.layers:
+                    if not layer is minLayer:
+                        #the r3 of the layer is not in use
+                        if layer.r2.yrange[0] >= y and layer.r2.yrange[0] < minValue:
+                            layerExist = True
+                            minValue = layer.r2.yrange[0]
+                            nextMinValue = layer.getHeight()+minValue
+                        # if the running index is equals the min, means that there's no
+                        # area
+                        if y < minValue:
+                            if minValue<h:
+                                self.appendLayer(y, minValue)
+                        y = nextMinValue
+                # if no layer exist over the running index then that's the last
+                # area which is free.
+                if not layerExist:
+                    self.appendLayer(y, h)
+                    return self.freePlaces
+        # if no layer exist,all area of the cross section is free
+        else:
+            self.appendLayer(0, h)
+        return self.freePlaces
+    
+    '''
+    append the free layer in the freeplaces
+    '''
+    def appendLayer(self,y1,y2):
+        #case 1
+        if y1<self.bh and y2>self.bh:
+            self.freePlaces.append([y1, self.bh,self.bw])
+            self.freePlaces.append([self.bh, y2,self.tw])
+        #case 2
+        else:
+            if y2<self.bh:
+                self.freePlaces.append([y1,y2,self.bw])
+            else:
+                self.freePlaces.append([y1,y2,self.tw])
+            
+    '''
+    return the layer which is nearest at the bottom
+    '''
+    def findLayer(self):
+        minY=self.th+self.mh+self.bh
+        for layer in self.layers:
+                if minY>layer.r2.yrange[0]:
+                    minY=layer.r2.yrange[0]
+                    ret=layer
+        return ret
         
     '''
     the method on_touch_down is invoked when the user touch within a rectangle.

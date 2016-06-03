@@ -34,6 +34,8 @@ class ReinforcementEditor(GridLayout, IObserver):
 
     def setCrossSection(self, cs):
         self.crossSection = cs
+        self.allMaterials = self.crossSection.allMaterials
+        self.allMaterials.addListener(self)
         # default cross section rectangle
         self.csShape = cs.getCSRectangle()
         self.rectangleInformation = RectangleInformation()
@@ -41,8 +43,6 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.rectangleInformation.setCrossSection(self.csShape)
         self.createGui()
         self.signIn()
-        self.allMaterials = self.crossSection.allMaterials
-        self.allMaterials.addListener(self)
 
     '''
     create the gui

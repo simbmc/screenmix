@@ -392,7 +392,7 @@ class DoubleTView(AView, GridLayout):
         self.freePlaces = []
         # running index
         y = 0
-        h = self.th + self.mh + self.bh
+        h = self.hmax
         # if the cross section contains layers
         if not len(self.layers) == 0:
             #minLayer is the layer nearest at the bottom
@@ -554,10 +554,8 @@ class DoubleTView(AView, GridLayout):
                     print('move case 4')
                     l.setXRange1([delta - self.mw / 2., delta + self.mw / 2.])
                     l.setXRange2([delta - self.bw / 2., delta + self.bw / 2.])
-                    height2 = self.bh - y - l.h2 / 2.
                     height1 = -self.bh + y + l.h1
                     l.setYRange1([self.bh, self.bh + height1])
-                    print('yrange: ' + str(l.r1.yrange))
                     l.setYRange2([y - l.h2, self.bh])
                     l.setYRange3([0, 0])
                     l.w1 = self.mw
@@ -571,7 +569,6 @@ class DoubleTView(AView, GridLayout):
                     l.setXRange1([delta - self.tw / 2., delta + self.tw / 2.])
                     l.setXRange2([delta - self.mw / 2., delta + self.mw / 2.])
                     height1 = y + l.h1 - self.bh - self.mh
-                    height2 = l.h1 + l.h2 - height1
                     l.setYRange1(
                         [self.bh + self.mh, self.bh + self.mh + height1])
                     l.setYRange2([y - l.h2, self.bh + self.mh])
