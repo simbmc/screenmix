@@ -48,8 +48,8 @@ class Ack(GridLayout):
     the method setCrossSection was developed to say the view, 
     which cross section should it use
     '''
-    def setCrossSection(self,crossSection):
-        self.csShape=crossSection
+    def setCrossSection(self,cs):
+        self.csShape=cs
         self.createGui()
     
     '''

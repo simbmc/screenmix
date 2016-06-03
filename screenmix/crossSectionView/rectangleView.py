@@ -296,8 +296,8 @@ class CSRectangleView(BoxLayout, AView):
     which cross section should it use
     '''
 
-    def setCrossSection(self, crossSection):
-        self.csShape = crossSection
+    def setCrossSection(self, cs):
+        self.csShape = cs
 
     '''
     return all layers 

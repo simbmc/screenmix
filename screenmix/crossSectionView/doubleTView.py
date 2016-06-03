@@ -90,7 +90,7 @@ class DoubleTView(AView, GridLayout):
         for l in self.layers:
             if l.r1.color == Design.focusColor:
                 l.percent = value
-                op = l.getHeight() / (self.th + self.mh + self.bh)
+                op = l.getHeight() / (self.hmax)
                 a = value / op
                 delta = self.wmax / 2. + self.deltaX / 2.
                 l.h1 = a * l.h1
@@ -442,7 +442,7 @@ class DoubleTView(AView, GridLayout):
         return self.freePlaces
     
     '''
-    append the layer
+    append the free layer in the freeplaces
     '''
     def appendLayer(self,y1,y2):
         #case 1
@@ -556,8 +556,6 @@ class DoubleTView(AView, GridLayout):
                     l.setXRange2([delta - self.bw / 2., delta + self.bw / 2.])
                     height2 = self.bh - y - l.h2 / 2.
                     height1 = -self.bh + y + l.h1
-                    print('h1: ' + str(height1))
-                    print('h2: ' + str(height2))
                     l.setYRange1([self.bh, self.bh + height1])
                     print('yrange: ' + str(l.r1.yrange))
                     l.setYRange2([y - l.h2, self.bh])
@@ -638,8 +636,8 @@ class DoubleTView(AView, GridLayout):
     set the cross section
     '''
 
-    def setCrossSection(self, crossSection):
-        self.csShape = crossSection
+    def setCrossSection(self, cs):
+        self.csShape = cs
         self.bh = self.csShape.getHeightBottom()
         self.bw = self.csShape.getWidthBottom()
         self.mh = self.csShape.getHeightMiddle()

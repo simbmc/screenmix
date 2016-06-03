@@ -31,10 +31,10 @@ class CrossSectionEditor(GridLayout):
     which cross section should it use
     '''
 
-    def setCrossSection(self, crossSection):
-        self.crossSection = crossSection
+    def setCrossSection(self, cs):
+        self.crossSection = cs
         # default cross section rectangle
-        self.csShape = crossSection.getCSRectangle()
+        self.csShape = cs.getCSRectangle()
         self.rectangleInformation = RectangleInformation()
         self.shape = self.rectangleInformation
         self.rectangleInformation.setCrossSection(self.csShape)

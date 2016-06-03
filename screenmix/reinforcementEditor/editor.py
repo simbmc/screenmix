@@ -2,6 +2,7 @@
 Created on 02.06.2016
 
 @author: mkennert
+
 '''
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
@@ -31,17 +32,17 @@ class ReinforcementEditor(GridLayout, IObserver):
     which cross section should it use
     '''
 
-    def setCrossSection(self, crossSection):
-        self.crossSection = crossSection
+    def setCrossSection(self, cs):
+        self.crossSection = cs
         # default cross section rectangle
-        self.csShape = crossSection.getCSRectangle()
+        self.csShape = cs.getCSRectangle()
         self.rectangleInformation = RectangleInformation()
         self.shape = self.rectangleInformation
         self.rectangleInformation.setCrossSection(self.csShape)
-        self.allMaterials = self.crossSection.allMaterials
-        self.allMaterials.addListener(self)
         self.createGui()
         self.signIn()
+        self.allMaterials = self.crossSection.allMaterials
+        self.allMaterials.addListener(self)
 
     '''
     create the gui
@@ -344,3 +345,5 @@ class ReinforcementEditor(GridLayout, IObserver):
 
     def signIn(self):
         self.crossSection.setReinforcementEditor(self)
+    
+    

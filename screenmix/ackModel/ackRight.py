@@ -40,8 +40,8 @@ class AckRight(GridLayout):
     which cross section should it use
     '''
 
-    def setCrossSection(self, crossSection):
-        self.csShape = crossSection
+    def setCrossSection(self, cs):
+        self.csShape = cs
         self.createGui()
 
     '''

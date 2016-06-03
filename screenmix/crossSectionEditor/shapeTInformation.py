@@ -61,8 +61,8 @@ class TInformation(GridLayout):
     '''
     set the cross section
     '''
-    def setCrossSection(self, crossSection):
-        self.csShape=crossSection
+    def setCrossSection(self, cs):
+        self.csShape=cs
         self.createGui()
     
     '''

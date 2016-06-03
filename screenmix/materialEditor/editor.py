@@ -126,8 +126,8 @@ class MaterialEditor(ScrollView, IObserver):
     the method setCrossSection was developed to say the view, 
     which cross section should it use
     '''
-    def setCrossSection(self,crossSection):
-        self.csShape=crossSection
+    def setCrossSection(self,cs):
+        self.csShape=cs
         self.allMaterials=self.csShape.allMaterials
         self.allMaterials.addListener(self)
         self.createGui()

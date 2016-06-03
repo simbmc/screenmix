@@ -36,7 +36,7 @@ class AView(object):
         raise NotImplemented('not implemented')
     
     @abstractmethod
-    def setCrossSection(self, crossSection):
+    def setCrossSection(self, cs):
         raise NotImplemented('not implemented')
     
     @abstractmethod
