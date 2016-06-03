@@ -45,6 +45,14 @@ class AShape:
     @abstractmethod
     def getFreePlaces(self):
         raise NotImplemented('not implemented')
+
+    @abstractmethod
+    def getHeight(self):
+        raise NotImplemented('not implemented')
+
+    @abstractmethod
+    def getWidth(self):
+        raise NotImplemented('not implemented')
     '''
     calculate the strain of concrete
     '''

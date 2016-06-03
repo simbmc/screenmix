@@ -26,7 +26,7 @@ class CSRectangleView(BoxLayout, AView):
 
     def __init__(self, **kwargs):
         super(CSRectangleView, self).__init__(**kwargs)
-        self.cheight = 0.5
+        self.ch = 0.5
         self.cw = 0.25
         self.csShape = None
         self.percent_change = False
@@ -65,7 +65,7 @@ class CSRectangleView(BoxLayout, AView):
             #_trigger_color = [0,0,0,1],
             x_ticks_major=0.05, y_ticks_major=0.05,
             y_grid_label=True, x_grid_label=True, padding=5,
-            xmin=0, xmax=self.cw, ymin=0, ymax=self.cheight)
+            xmin=0, xmax=self.cw, ymin=0, ymax=self.ch)
         self.add_widget(self.graph)
 
     '''
@@ -77,13 +77,13 @@ class CSRectangleView(BoxLayout, AView):
         x0, y0 = self.graph._plot_area.pos  # position of the lowerleft
         gw, gh = self.graph._plot_area.size  # graph size
         x = (touch.x - x0) / gw * self.cw
-        y = (touch.y - y0) / gh * self.cheight
+        y = (touch.y - y0) / gh * self.ch
         for l in self.layers:
             if l.focus and l.mouseWithinX(x):
                 # case:1 the l don't collide with the border of the cross
                 # section
                 if y > l.h / 2 and \
-                        y < self.cheight - l.h / 2:
+                        y < self.ch - l.h / 2:
                     l.setYRange([
                         y - l.h / 2., y + l.h / 2.])
                     l.setYCoordinate(y)
@@ -96,11 +96,11 @@ class CSRectangleView(BoxLayout, AView):
                     return
                 # case:3 the l collide with the top border of the cross section
                 #       the user can't move the l up
-                elif y > self.cheight - l.h / 2:
+                elif y > self.ch - l.h / 2:
                     l.setYRange([
-                        self.cheight - l.h, self.cheight])
+                        self.ch - l.h, self.ch])
                     l.setYCoordinate(
-                        self.cheight - l.h / 2)
+                        self.ch - l.h / 2)
                     return
 
     '''
@@ -113,7 +113,7 @@ class CSRectangleView(BoxLayout, AView):
         x0, y0 = self.graph._plot_area.pos  # position of the lowerleft
         gw, gh = self.graph._plot_area.size  # graph size
         x = (touch.x - x0) / gw * self.cw
-        y = (touch.y - y0) / gh * self.cheight
+        y = (touch.y - y0) / gh * self.ch
         changed = False
         focus = False  # one is alreay focus
         for l in self.layers:
@@ -127,7 +127,7 @@ class CSRectangleView(BoxLayout, AView):
                     focus = True
                     cur_info = l.getMaterialInformations()
                     self.csShape.setLayerInformation(cur_info[0], cur_info[1], cur_info[
-                        2], cur_info[3], cur_info[4], l.h / self.cheight)
+                        2], cur_info[3], cur_info[4], l.h / self.ch)
                     changed = True
             else:
                 if l.focus == True:
@@ -158,8 +158,8 @@ class CSRectangleView(BoxLayout, AView):
     '''
 
     def addLayer(self, value, material):
-        h = self.cheight * value
-        cur = LayerRectangle(self.cw / 2, self.cheight - h / 2., h,
+        h = self.ch * value
+        cur = LayerRectangle(self.cw / 2, self.ch - h / 2., h,
                              self.cw, next(Design.colorcycler), value)
         cur.setMaterial(material)
         y = cur.y
@@ -221,11 +221,11 @@ class CSRectangleView(BoxLayout, AView):
         y = 0
         # if the cross section contains layers
         if not len(self.layers) == 0:
-            while y < self.cheight:
+            while y < self.ch:
                 # layerExist is a switch to proofs whether
                 # a l exist over the runnning index or not
                 layerExist = False
-                minValue = self.cheight
+                minValue = self.ch
                 for l in self.layers:
                     if l.y >= y and l.y < minValue:
                         layerExist = True
@@ -239,11 +239,11 @@ class CSRectangleView(BoxLayout, AView):
                 # if no l exist over the running index then that's the last
                 # area which is free.
                 if not layerExist:
-                    self.freePlaces.append((y, self.cheight))
+                    self.freePlaces.append((y, self.ch))
                     return self.freePlaces
         # if no l exist,all area of the cross section is free
         else:
-            self.freePlaces.append((0, self.cheight))
+            self.freePlaces.append((0, self.ch))
         return self.freePlaces
 
     ##########################################################################
@@ -257,7 +257,7 @@ class CSRectangleView(BoxLayout, AView):
         self.percent_change = True
         for rectangle in self.layers:
             if rectangle.focus:
-                rectangle.setHeight(self.cheight * value)
+                rectangle.setHeight(self.ch * value)
                 rectangle.setPercentage(value)
                 self.updateAllGraph()
                 self.csShape.calculateStrength()
@@ -271,11 +271,11 @@ class CSRectangleView(BoxLayout, AView):
 
     def setHeight(self, value):
         for l in self.layers:
-            l.setYCoordinate(l.y / self.cheight * value)
-            l.setHeight(l.h / self.cheight * value)
+            l.setYCoordinate(l.y / self.ch * value)
+            l.setHeight(l.h / self.ch * value)
             self.updateAllGraph()
-        self.cheight = value
-        self.graph.ymax = self.cheight
+        self.ch = value
+        self.graph.ymax = self.ch
         self.updateCrossSectionInformation()
 
     '''

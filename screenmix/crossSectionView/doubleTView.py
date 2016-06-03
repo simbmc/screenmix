@@ -77,8 +77,8 @@ class DoubleTView(AView, GridLayout):
         self.mw = self.csShape.getWidthMiddle()
         self.th = self.csShape.getHeightTop()
         self.tw = self.csShape.getWidthTop()
-        self.hmax = self.csShape.getMaxHeight()
-        self.wmax = self.csShape.getMaxWidth()
+        self.hmax = self.csShape.getHeight()
+        self.wmax = self.csShape.getWidth()
         # update graph
         self.updateAllGraph()
 
@@ -646,6 +646,6 @@ class DoubleTView(AView, GridLayout):
         self.mw = self.csShape.getWidthMiddle()
         self.th = self.csShape.getHeightTop()
         self.tw = self.csShape.getWidthTop()
-        self.hmax = self.csShape.getMaxHeight()
-        self.wmax = self.csShape.getMaxWidth()
+        self.hmax = self.csShape.getHeight()
+        self.wmax = self.csShape.getWidth()
         self.createGraph()

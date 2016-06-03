@@ -86,15 +86,16 @@ class CrossSectionInformation(GridLayout, IObserver):
     the method createMaterialInformation create the area where you can 
     see the information about the selected materials
     '''
+
     def createMaterialInformation(self):
-        self.materialArea=GridLayout(cols=1)
-        self.materialName=Label(text='-')
-        self.materialPrice=Label(text='-')
-        self.materialDensity=Label(text='-')
-        self.materialStiffness=Label(text='-')
-        self.materialStrength=Label(text='-')
-        self.materialPercent=Label(text='10 %')
-        labelLayout=GridLayout(cols=4)
+        self.materialArea = GridLayout(cols=1)
+        self.materialName = Label(text='-')
+        self.materialPrice = Label(text='-')
+        self.materialDensity = Label(text='-')
+        self.materialStiffness = Label(text='-')
+        self.materialStrength = Label(text='-')
+        self.materialPercent = Label(text='10 %')
+        labelLayout = GridLayout(cols=4)
         labelLayout.add_widget(Label(text='name:'))
         labelLayout.add_widget(self.materialName)
         labelLayout.add_widget(Label(text='price:'))
@@ -107,7 +108,7 @@ class CrossSectionInformation(GridLayout, IObserver):
         labelLayout.add_widget(self.materialStrength)
         labelLayout.add_widget(Label(text='percent:'))
         labelLayout.add_widget(self.materialPercent)
-        self.percentValue=Slider(min=0.05, max=0.2, value=0.1)
+        self.percentValue = Slider(min=0.05, max=0.2, value=0.1)
         self.percentValue.bind(value=self.setPercent)
         self.materialArea.add_widget(labelLayout)
         self.materialArea.add_widget(self.percentValue)

@@ -21,6 +21,7 @@ from reinforcementEditor.editor import ReinforcementEditor
 Window.size = (900, 600)
 #Window.clearcolor = (1, 1, 1, 1)
 
+
 class MainWindow(GridLayout):
     # Constructor
 
@@ -54,14 +55,14 @@ class MainWindow(GridLayout):
         layout = GridLayout(cols=1, spacing=10, size_hint_y=None)
         # Make sure the height is such that there is something to scroll.
         layout.bind(minimum_height=layout.setter('height'))
-        #cross section editor
-        csEditor=Button(text='cross section editor', 
-                              size_hint_y=None, height=self.btnSize)
+        # cross section editor
+        csEditor = Button(text='cross section editor',
+                          size_hint_y=None, height=self.btnSize)
         csEditor.bind(on_press=self.showCrossSectionEditor)
         layout.add_widget(csEditor)
-        #reinforcementEditor
-        reEditor=Button(text='reinforcement editor', 
-                              size_hint_y=None, height=self.btnSize)
+        # reEditor
+        reEditor = Button(text='reinforcement editor',
+                          size_hint_y=None, height=self.btnSize)
         reEditor.bind(on_press=self.showReinforcementEditor)
         layout.add_widget(reEditor)
         # ack-view
@@ -104,8 +105,6 @@ class MainWindow(GridLayout):
         bar.add_widget(menuButton)
         self.add_widget(bar)
 
-   
-
     '''
     create the ask_view
     '''
@@ -124,18 +123,26 @@ class MainWindow(GridLayout):
         self.materialEditor = MaterialEditor()
         # sign in by the cross section
         self.materialEditor.setCrossSection(self.crossSection)
-    
+
+    '''
+    create the cross section-editor
+    '''
+
     def createCrossSectionEditor(self):
-        self.csEditor=CrossSectionEditor()
+        self.csEditor = CrossSectionEditor()
         self.csEditor.setCrossSection(self.crossSection)
         self.csEditor.addView()
         self.add_widget(self.csEditor)
-        self.content=self.csEditor
-    
+        self.content = self.csEditor
+
+    '''
+    create the reinforcement-editor
+    '''
+
     def createReinforcementEditor(self):
-        self.reinforcementEditor=ReinforcementEditor()
-        self.reinforcementEditor.setCrossSection(self.crossSection)
-        #self.reinforcementEditor.addView(self.csShape.view)
+        self.reEditor = ReinforcementEditor()
+        self.reEditor.setCrossSection(self.crossSection)
+        # self.reEditor.addView(self.csShape.view)
 
     ##########################################################################
     #Attention:When you want write a new show-method than you must make sure    #
@@ -164,30 +171,33 @@ class MainWindow(GridLayout):
         self.add_widget(self.materialEditor)
         self.content = self.materialEditor
         self.popup.dismiss()
-    
+
     '''
     show the crossSection editor
     '''
+
     def showCrossSectionEditor(self, btn):
-        self.reinforcementEditor.removeView()
+        self.reEditor.removeView()
         if not self.csEditor.containsView:
             self.csEditor.addView()
         self.remove_widget(self.content)
         self.add_widget(self.csEditor)
-        self.content=self.csEditor
+        self.content = self.csEditor
         self.popup.dismiss()
-    
+
     '''
     show the reinforcement-editor
     '''
-    def showReinforcementEditor(self,btn):
+
+    def showReinforcementEditor(self, btn):
         self.csEditor.removeView()
-        if not self.reinforcementEditor.containsView:
-            self.reinforcementEditor.addView()
+        if not self.reEditor.containsView:
+            self.reEditor.addView()
         self.remove_widget(self.content)
-        self.add_widget(self.reinforcementEditor)
-        self.content=self.reinforcementEditor
+        self.add_widget(self.reEditor)
+        self.content = self.reEditor
         self.popup.dismiss()
+
 
 class CSIApp(App):
     def build(self):

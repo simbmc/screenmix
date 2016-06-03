@@ -31,7 +31,7 @@ class AckRight(GridLayout):
         self.graph = Graph(xlabel='stress [MPa]', ylabel='height [m]',
                            y_ticks_major=0.1,
                            y_grid_label=True, x_grid_label=True,
-                           xmin=0.0, xmax=0.0005, ymin=0, ymax=self.csShape.cheight)
+                           xmin=0.0, xmax=0.0005, ymin=0, ymax=self.csShape.getHeight())
         self.add_widget(self.graph)
     
     
@@ -54,7 +54,8 @@ class AckRight(GridLayout):
     update the layerinformation of layers
     '''
     def update(self):
-        self.graph.ymax=self.csShape.cheight
+        self.graph.ymax=self.csShape.getHeight()
+        self.graph.y_ticks_major=self.graph.ymax/5.
         self.findMaxStress()
         for plot in self.graph.plots:
             self.graph.remove_plot(plot)

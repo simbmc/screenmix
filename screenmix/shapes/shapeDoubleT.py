@@ -6,16 +6,16 @@ Created on 09.05.2016
 from kivy.uix.gridlayout import GridLayout
 
 from crossSectionView.doubleTView import DoubleTView
-from crossSectionView.aview import AView
+from shapes.ashape import AShape
 
 
-class ShapeDoubleT(GridLayout, AView):
+class ShapeDoubleT(GridLayout, AShape):
     # Constructor
 
     def __init__(self, **kwargs):
         super(ShapeDoubleT, self).__init__(**kwargs)
         self.cols = 2
-        # topare
+        # toparea
         self.tw = 0.2
         self.th = 0.2
         # middlearea
@@ -124,14 +124,14 @@ class ShapeDoubleT(GridLayout, AView):
     return the cs-height
     '''
 
-    def getMaxHeight(self):
+    def getHeight(self):
         return self.th + self.bh + self.mh
 
     '''
     return the max-width
     '''
 
-    def getMaxWidth(self):
+    def getWidth(self):
         wmax = self.tw
         if wmax < self.mw:
             wmax = self.mw

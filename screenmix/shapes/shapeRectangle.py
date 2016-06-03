@@ -18,7 +18,7 @@ class shapeRectangle(GridLayout, AShape):
 
     def __init__(self, **kwargs):
         super(shapeRectangle, self).__init__(**kwargs)
-        self.cheight = 0.5
+        self.ch = 0.5
         self.cw = 0.25
         self.concreteDensity = 2300.
         self.concretePrice = 0.065
@@ -85,7 +85,7 @@ class shapeRectangle(GridLayout, AShape):
 
     def setHeight(self, value):
         self.view.setHeight(value)
-        self.cheight = value
+        self.ch = value
 
     '''
     the method setWidth change the width of the view
@@ -94,7 +94,16 @@ class shapeRectangle(GridLayout, AShape):
     def setWidth(self, value):
         self.view.setWidth(value)
         self.cw = value
-
+    '''
+    return the heigth of the shape
+    '''
+    def getHeight(self):
+        return self.ch
+    '''
+    return the width of the shape
+    '''
+    def getWidth(self):
+        return self.cw
     '''
     the method setPercent change the percentage share of the selected materials
     '''
@@ -114,11 +123,11 @@ class shapeRectangle(GridLayout, AShape):
             cur = l.getWeight()
             weight += cur
             price += cur * l.material.price
-            percentOfLayers += l.h / self.cheight
+            percentOfLayers += l.h / self.ch
         # if the percentOfLayers is not 1 there is a matrix
         # with concrete as material
         weight += (1 - percentOfLayers) * self.cw * self.concreteDensity
-        price += (1 - percentOfLayers) * self.cheight * \
+        price += (1 - percentOfLayers) * self.ch * \
             self.cw * self.concretePrice
         self.weight = weight
         self.price = price
@@ -137,7 +146,7 @@ class shapeRectangle(GridLayout, AShape):
         percentOfLayers = 0.
         # find the minimum max_strain and the maximum max_strain
         for l in self.view.layers:
-            percentOfLayers += l.h / self.cheight
+            percentOfLayers += l.h / self.ch
             curStrain = l.getStrain()
             # proof whether the curStrain is smaller as the min
             if curStrain < self.minOfMaxstrain:
@@ -156,7 +165,7 @@ class shapeRectangle(GridLayout, AShape):
         # calculate the strength
         for l in self.view.layers:
             strength += self.minOfMaxstrain * \
-                l.material.stiffness * l.h / self.cheight
+                l.material.stiffness * l.h / self.ch
         if 1. - percentOfLayers > 0:
             strength += self.minOfMaxstrain * \
                 (1. - percentOfLayers) * self.concreteStiffness
