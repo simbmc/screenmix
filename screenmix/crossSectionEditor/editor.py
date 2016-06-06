@@ -68,7 +68,7 @@ class CrossSectionEditor(GridLayout):
         selectionContent = GridLayout(cols=1, spacing=10,
                                       size_hint_y=None, row_force_default=True,
                                       row_default_height=self.btnSize)
-        self.btnSelection = Button(text='choose shape', size_hint_y=None, height=self.btnSize,
+        self.btnSelection = Button(text='choose cross section shape', size_hint_y=None, height=self.btnSize,
                                    size_hint_x=None, width=200)
         self.btnSelection.bind(on_press=self.showShapeSelection)
         selectionContent.add_widget(self.btnSelection)
@@ -93,9 +93,9 @@ class CrossSectionEditor(GridLayout):
             pass
         elif btn.text == 'rectangle':
             self.setRectangle(btn)
-        elif btn.text == 'doubleT':
+        elif btn.text == 'I-shape':
             self.setDoubleT(btn)
-        elif btn.text=='t-shape':
+        elif btn.text=='T-shape':
             self.setT(btn)
         self.shapeSelection.dismiss()
     
@@ -165,7 +165,7 @@ class CrossSectionEditor(GridLayout):
         if self.firstTimeT:
             self.tInformation = TInformation()
             self.tInformation.setCrossSection(self.csShape)
-            self.firstTimeDoubleT = False
+            self.firstTimeT = False
         self.remove_widget(self.shape)
         self.shape = self.tInformation
         self.content.remove_widget(self.focusInformation)

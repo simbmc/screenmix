@@ -84,15 +84,19 @@ class ShapeSelection(GridLayout):
 
     def drawDoubleT(self):
         y1 = 1e-3
-        x1 = 0.25 / 30.
-        y2 = y3 = 0.25
-        x3 = x4 = x1 + 0.25 / 2. - 0.1 / 2.
-        y4 = y5 = y3 + 0.1
-        x5 = x6 = x4 + 0.1 / 2. - 0.25 / 2.
-        y6 = y7 = 0.6
-        x7 = x8 = x6 + 0.2
-        x9 = x10 = x8 - 0.25 / 2. + 0.1 / 2.
-        x11 = x12 = x10 + 0.25 / 2. - 0.1 / 2.
+        bw=tw=0.25
+        mw=0.1
+        bh=th=0.15
+        mh=0.3
+        x1 = bw / 30.
+        y2 = y3 = bh
+        x3 = x4 = x1 + bw / 2. - mw / 2.
+        y4 = y5 = y3 + mh
+        x5 = x6 = x4 + mw / 2. - tw / 2.
+        y6 = y7 = mh+bh+th
+        x7 = x8 = x6 + tw
+        x9 = x10 = x8 - tw / 2. + mw / 2.
+        x11 = x12 = x10 + tw / 2. - mw / 2.
         points = [(x1, y1), (x1, y2), (x3, y3), (x4, y4), (x5, y5), (x6, y6),
                   (x7, y7), (x8, y4), (x9, y4), (x10, y3), (x11, y3), (x12, y1),(x1,y1)]
         return points
@@ -142,11 +146,13 @@ class ShapeSelection(GridLayout):
         self.graphCircle = Graph(
             #x_ticks_major=0.05, y_ticks_major=0.05,
             #y_grid_label=True, x_grid_label=True, padding=5,
-            border_color = [0.,0.,0.,0],
+            #border_color = [0.5,0.5,0.5,0],
+            #xmin=0, xmax=0.51, ymin=0, ymax=0.51)
             xmin=0, xmax=0.51, ymin=0, ymax=0.51)
-        self.circle = Circle(color=[255, 255, 255])
+        self.circle = Circle()
         self.circle.r = 0.25
         self.circle.pos = [0.25, 0.25]
+        self.circle.color=[1, 1, 1, 1]
         self.graphCircle.add_plot(self.circle)
 
     '''
@@ -157,8 +163,9 @@ class ShapeSelection(GridLayout):
     def createSelection(self):
         self.createBtns()
         self.contentRight = GridLayout(cols=1)
-        self.contentRight.add_widget(self.focusShape)
+        #self.contentRight.add_widget(self.focusShape)
         self.btns = GridLayout(cols=1, spacing=10, size_hint_y=None)
+        #self.contentRight.add_widget(self.btns)
         # Make sure the height is such that there is something to scroll.
         self.btns.bind(minimum_height=self.btns.setter('height'))
         self.btns.add_widget(self.rectangle)
@@ -175,6 +182,7 @@ class ShapeSelection(GridLayout):
         self.btns.add_widget(layout)
         self.shapes = ScrollView()
         self.shapes.add_widget(self.btns)
+        self.contentRight.add_widget(self.shapes)
         self.add_widget(self.contentRight)
 
     '''
@@ -201,9 +209,9 @@ class ShapeSelection(GridLayout):
             text='rectangle', size_hint_y=None, height=self.btnSize)
         self.rectangle.bind(on_press=self.showRectangle)
         self.doubleT = Button(
-            text='doubleT', size_hint_y=None, height=self.btnSize)
+            text='I-shape', size_hint_y=None, height=self.btnSize)
         self.doubleT.bind(on_press=self.showDoubleT)
-        self.t = Button(text='t-shape', size_hint_y=None, height=self.btnSize)
+        self.t = Button(text='T-shape', size_hint_y=None, height=self.btnSize)
         self.t.bind(on_press=self.showT)
         self.circle = Button(
             text='circle', size_hint_y=None, height=self.btnSize)

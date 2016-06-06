@@ -84,7 +84,7 @@ if __name__ == '__main__':
                 xmin=0,
                 ymin=0)
 
-            plot = Circle(color=[255, 0, 0])
+            plot = Circle(color=[0, 0, 0])
             plot.pos = [50, 50]
             plot.r = 1
             graph2.add_plot(plot)
@@ -92,8 +92,8 @@ if __name__ == '__main__':
             b.add_widget(graph2)
             self.circle = plot
 
-#             Clock.schedule_interval(self.update_color, 1)
-#             Clock.schedule_interval(self.update_pos, 1)
+            Clock.schedule_interval(self.update_color, 1)
+            Clock.schedule_interval(self.update_pos, 1)
 
             return b
 

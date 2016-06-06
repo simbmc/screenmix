@@ -60,10 +60,10 @@ class CSRectangleView(GridLayout, AView):
         self.graph = Graph(
             #background_color = [1, 1, 1, 1],
             border_color = [0,0,0,1],
-            tick_color = [0.25,0.25,0.25,0],
+            #tick_color = [0.25,0.25,0.25,0],
             #_trigger_color = [0,0,0,1],
-            #x_ticks_major=0.05, y_ticks_major=0.05,
-            #y_grid_label=True, x_grid_label=True, padding=5,
+            x_ticks_major=0.05, y_ticks_major=0.05,
+            y_grid_label=True, x_grid_label=True, padding=5,
             xmin=0, xmax=self.cw, ymin=0, ymax=self.ch)
         self.add_widget(self.graph)
         self.p = MeshLinePlot(color=[1, 1, 1, 1])

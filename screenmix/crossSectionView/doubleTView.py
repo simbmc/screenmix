@@ -29,10 +29,8 @@ class DoubleTView(AView, GridLayout):
         self.deltaX = self.wmax / 10.
         self.deltaY = self.hmax / 50.
         self.graph = Graph(
-            #x_ticks_major=0.05, y_ticks_major=0.05,
-            #y_grid_label=True, x_grid_label=True, padding=5,
-            border_color = [0.,0.,0.,1],
-            tick_color = [0.25,0.25,0.25,0],
+            x_ticks_major=0.05, y_ticks_major=0.05,
+            y_grid_label=True, x_grid_label=True, padding=5,
             xmin=0, xmax=self.wmax + self.deltaX,
             ymin=0, ymax=self.hmax + self.deltaY)
         self.add_widget(self.graph)
