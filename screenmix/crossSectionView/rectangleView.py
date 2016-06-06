@@ -1,123 +1,146 @@
 '''
 Created on 14.03.2016
-
 @author: mkennert
 '''
 
 
 from kivy.garden.graph import Graph, MeshLinePlot
-from crossSectionView.aview import AView
-from layers.layerRectangle import LayerRectangle
+from kivy.uix.boxlayout import BoxLayout
+from itertools import cycle
+from crossSectionView.layerRectangle import Layer_Rectangle
 from plot.filled_rect import FilledRect
 from designClass.design import Design
-from kivy.uix.gridlayout import GridLayout
+colors = [[255, 102, 102], [255, 255, 102], [140, 255, 102], [102, 255, 217],
+          [102, 102, 255], [255, 102, 102], [179, 179, 179], [102, 71, 133]]
+colorcycler = cycle(colors)
 
 
 '''
-the class CSRectangleView was developed to show the the cross section,
+the class CS_Rectangle_View was developed to show the the cross section,
 which has a rectangle shape
 '''
 
 
-class CSRectangleView(GridLayout, AView):
+class CS_Rectangle_View(BoxLayout):
     # Constructor
 
     def __init__(self, **kwargs):
-        super(CSRectangleView, self).__init__(**kwargs)
-        self.cols=1
-        self.ch = 0.5
-        self.cw = 0.25
-        self.csShape = None
+        super(CS_Rectangle_View, self).__init__(**kwargs)
+        self.cross_section_height = 0.5
+        self.cross_section_width = 0.25
+        self.cross_section = None
         self.percent_change = False
         self.layers = []
-        self.createGraph()
-#         self.add_widget(self.updateAllGraph)
+        self.create_graph()
+#         self.add_widget(self.update_all_graph)
 
     '''
-    the method updateAllGraph update the graph. the method should be called, when
+    the method update_all_graph update the graph. the method should be called, when
     something has changed
     '''
-
-    def updateAllGraph(self):
-        for l in self.layers:
-            y = l.y
-            h = l.h
-            l.filledRectCs.xrange = [0., self.cw]
-            l.filledRectCs.yrange = [y - h / 2., y + h / 2.]
-            if l.focus:
-                l.filledRectCs.color = Design.focusColor
+    '''
+    def update_all_graph(self):
+        list = []
+        for plot in self.graph.plots:
+            list.append(plot)
+        for layer in self.layers:
+            y = layer.y_coordinate
+            h = layer._height
+            layer.rect = FilledRect(xrange=[0., self.cross_section_width],
+                                    yrange=[y - h / 2., y + h / 2.],
+                                    color=layer.colors)
+            if layer.focus:
+                layer.rect.color = Design.focusColor
+            self.graph.add_plot(layer.rect)
+        #delete the old plots
+        for plot in list:
+            self.graph.remove_plot(plot)
+            self.graph._clear_buffer()
+        if len(list) == 0:
+            self.graph._clear_buffer()
+    '''
+    
+    def update_all_graph(self):
+        for layer in self.layers:
+            y = layer.y_coordinate
+            h = layer._height
+            layer.filledRectCs.xrange =[0., self.cross_section_width]
+            layer.filledRectCs.yrange=[y - h / 2., y + h / 2.]
+            if layer.focus:
+                layer.filledRectCs.color = Design.focusColor
             else:
-                l.filledRectCs.color = l.colors
+                layer.filledRectCs.color=layer.colors
         if len(self.layers) == 0:
             self.graph._clear_buffer()
-
+            
     '''
-    the method createGraph create the graph, where you can add 
+    the method create_graph create the graph, where you can add 
     the layers. the method should be called only once at the beginning
     '''
 
-    def createGraph(self):
+    def create_graph(self):
         self.graph = Graph(
-            #background_color = [1, 1, 1, 1],
-            border_color = [0,0,0,1],
-            #tick_color = [0.25,0.25,0.25,0],
-            #_trigger_color = [0,0,0,1],
             x_ticks_major=0.05, y_ticks_major=0.05,
             y_grid_label=True, x_grid_label=True, padding=5,
-            xmin=0, xmax=self.cw, ymin=0, ymax=self.ch)
+            xmin=0, xmax=self.cross_section_width, ymin=0, ymax=self.cross_section_height)
         self.add_widget(self.graph)
-        self.p = MeshLinePlot(color=[1, 1, 1, 1])
-        self.p.points = self.drawRectangle()
-        self.graph.add_plot(self.p)
+
     '''
-    update the graph
+    the method draw_layer was developed to get the points of the rectangle
+    the while_loop was create to make the rectangle set a grid.
     '''
-    def updateGraph(self):
-        self.graph.remove_plot(self.p)
-        self.p = MeshLinePlot(color=[1, 1, 1, 1])
-        self.p.points = self.drawRectangle()
-        self.graph.add_plot(self.p)
-    '''
-    draw the rectangle
-    '''
-    def drawRectangle(self):
-        h=self.ch/1e3
-        w=self.cw/1e3
-        return [(w,h),(w,self.ch),(self.cw,self.ch),(self.cw,h),(w,h)]
-    
+    @staticmethod
+    def draw_layer(x_coordinate, y_coordinate, width, height):
+        points = [(x_coordinate - width / 2., y_coordinate - height / 2.), (x_coordinate + width / 2., y_coordinate - height / 2.), (x_coordinate + width /
+                                                                                                                                     2., y_coordinate + height / 2.), (x_coordinate - width / 2., y_coordinate + height / 2.), (x_coordinate - width / 2., y_coordinate - height / 2.)]
+        i = 0
+        delta = 1000.
+        distance = width / delta
+        while i < delta:
+            points.append(
+                (x_coordinate - width / 2. + distance, y_coordinate - height / 2.))
+            points.append(
+                (x_coordinate - width / 2. + distance, y_coordinate - height / 2. + height))
+            distance += width / delta
+            points.append(
+                (x_coordinate - width / 2. + distance, y_coordinate - height / 2. + height))
+            points.append(
+                (x_coordinate - width / 2. + distance, y_coordinate - height / 2. + height))
+            i += 1
+        return points
+
     '''
     the method on_touch_move is invoked after the user touch within a rectangle and move it.
     it changes the position of the rectangle
     '''
 
     def on_touch_move(self, touch):
-        x0, y0 = self.graph._plot_area.pos  # position of the lowerleft
-        gw, gh = self.graph._plot_area.size  # graph size
-        x = (touch.x - x0) / gw * self.cw
-        y = (touch.y - y0) / gh * self.ch
-        for l in self.layers:
-            if l.focus and l.mouseWithinX(x):
-                # case:1 the l don't collide with the border of the cross
+        x_coordinate = (touch.x / self.graph.width) / \
+            (1 / self.cross_section_width)
+        y_coordinate = (touch.y / self.graph.height) / \
+            (1. / self.cross_section_height)
+        for layer in self.layers:
+            if layer.focus and layer.mouse_within_just_x_coordinate(x_coordinate):
+                # case:1 the layer don't collide with the border of the cross
                 # section
-                if y > l.h / 2 and \
-                        y < self.ch - l.h / 2:
-                    l.setYRange([
-                        y - l.h / 2., y + l.h / 2.])
-                    l.setYCoordinate(y)
+                if y_coordinate > layer._height / 2 and y_coordinate < self.cross_section_height - layer._height / 2:
+                    layer.setYRange([
+                        y_coordinate - layer._height / 2., y_coordinate + layer._height / 2.])
+                    layer.set_y_coordinate(y_coordinate)
                     return
-                # case:2 the l collide with the bottom border of the cross section
-                #        the user can't move the l down
-                elif y < l.h / 2:
-                    l.setYRange([0., l.h])
-                    l.setYCoordinate(l.h / 2)
+                # case:2 the layer collide with the bottom border of the cross section
+                #       the user can't move the layer down
+                elif y_coordinate < layer._height / 2:
+                    layer.setYRange([0., layer._height])
+                    layer.set_y_coordinate(layer._height / 2)
                     return
-                # case:3 the l collide with the top border of the cross section
-                #       the user can't move the l up
-                elif y > self.ch - l.h / 2:
-                    l.setYRange([
-                        self.ch - l.h, self.ch])
-                    l.setYCoordinate(
-                        self.ch - l.h / 2)
+                # case:3 the layer collide with the top border of the cross section
+                #       the user can't move the layer up
+                elif y_coordinate > self.cross_section_height - layer._height / 2:
+                    layer.setYRange([
+                        self.cross_section_height - layer._height, self.cross_section_height])
+                    layer.set_y_coordinate(
+                        self.cross_section_height - layer._height / 2)
                     return
 
     '''
@@ -128,199 +151,199 @@ class CSRectangleView(GridLayout, AView):
 
     def on_touch_down(self, touch):
         x0, y0 = self.graph._plot_area.pos  # position of the lowerleft
-        gw, gh = self.graph._plot_area.size  # graph size
-        x = (touch.x - x0) / gw * self.cw
-        y = (touch.y - y0) / gh * self.ch
+        graph_w, graph_h = self.graph._plot_area.size  # graph size
+        x_coordinate = (touch.x - x0) / graph_w * self.cross_section_width
+        y_coordinate = (touch.y - y0) / graph_h * self.cross_section_height
         changed = False
-        focus = False  # one is alreay focus
-        for l in self.layers:
-            if l.mouseWithin(x, y):
-                if l.focus == True and self.percent_change:
+        one_is_already_focus = False
+        for rectangle in self.layers:
+            if rectangle.mouse_within(x_coordinate, y_coordinate):
+                if rectangle.focus == True and self.percent_change:
                     self.percent_change = False
-                    self.updateAllGraph()
+                    self.update_all_graph()
                     return
-                if l.focus == False and focus == False:
-                    l.focus = True
-                    focus = True
-                    cur_info = l.getMaterialInformations()
-                    self.csShape.setLayerInformation(cur_info[0], cur_info[1], cur_info[
-                        2], cur_info[3], cur_info[4], l.h / self.ch)
+                if rectangle.focus == False and one_is_already_focus == False:
+                    rectangle.focus = True
+                    one_is_already_focus = True
+                    cur_info = rectangle.get_material_informations()
+                    self.cross_section.set_layer_information(cur_info[0], cur_info[1], cur_info[
+                                                             2], cur_info[3], cur_info[4], rectangle._height / self.cross_section_height)
                     changed = True
             else:
-                if l.focus == True:
-                    l.focus = False
+                if rectangle.focus == True:
+                    rectangle.focus = False
                     changed = True
         # update just when something has change
         if changed:
-            self.updateAllGraph()
+            self.update_all_graph()
 
-    # not yet so relevant. maybe when we have time, we can finished it
+    # not yet so relevant. maybe we have time, we can finished it
     '''
-    def collide(self,x,y,_width,h):
+    def collide(self,x,y,_width,_height):
         for rectangle in self.layers:
-            if not rectangle.equals(x, y, _width, h):
+            if not rectangle.equals(x, y, _width, _height):
                 #Case:1
-                if y+h/2>rectangle.y-rectangle.h/2 and y+h/2<rectangle.y-rectangle.h/2:
+                if y+_height/2>rectangle.y_coordinate-rectangle._height/2 and y+_height/2<rectangle.y_coordinate-rectangle._height/2:
                     print('Fall:1')
-                    return rectangle.h+h
+                    return rectangle._height+_height
                 #Case:2
-                elif y-h/2<rectangle.y+rectangle.h/2 and y+h/2>rectangle.y+rectangle.h/2:
+                elif y-_height/2<rectangle.y_coordinate+rectangle._height/2 and y+_height/2>rectangle.y_coordinate+rectangle._height/2:
                     print('Fall:2')
-                    return -rectangle.h-h
+                    return -rectangle._height-_height
         return 0
     '''
 
     '''
-    the method addLayer was developed to add new layer at the cross section
+    the method add_layer was developed to add new layer at the cross section
     '''
 
-    def addLayer(self, value, material):
-        h = self.ch * value
-        cur = LayerRectangle(self.cw / 2, self.ch - h / 2., h,
-                             self.cw, next(Design.colorcycler), value)
-        cur.setMaterial(material)
-        y = cur.y
-        h = cur.h
-        filledRectCs = FilledRect(xrange=[0., self.cw],
-                                  yrange=[y - h / 2., y + h / 2.],
-                                  color=cur.colors)
-        filledRectAck = FilledRect(xrange=[0., 0.],
-                                   yrange=[y - h / 2., y + h / 2.],
-                                   color=cur.colors)
+    def add_layer(self, value, material):
+        height = self.cross_section_height * value
+        cur = Layer_Rectangle(self.cross_section_width / 2, self.cross_section_height - height / 2., height,
+                              self.cross_section_width, next(colorcycler), value)
+        cur.set_material(material)
+        y = cur.y_coordinate
+        h = cur._height
+        filledRectCs = FilledRect(xrange=[0., self.cross_section_width],
+                                    yrange=[y - h / 2., y + h / 2.],
+                                    color=cur.colors)
+        filledRectAck=FilledRect(xrange=[0.,0.],
+                                 yrange=[y - h / 2., y + h / 2.],
+                                 color=cur.colors)
         self.graph.add_plot(filledRectCs)
         cur.setFilledRectCs(filledRectCs)
         cur.setFilledRectAck(filledRectAck)
         self.layers.append(cur)
-        self.updateAllGraph()
-        self.csShape.calculateStrength()
-        self.updateCrossSectionInformation()
+        self.update_all_graph()
+        self.cross_section.calculate_strength()
+        self.update_cross_section_information()
 
     '''
-    the method deleteLayer was developed to delete layer from the cross section
+    the method delete_layer was developed to delete layer from the cross section
     '''
 
-    def deleteLayer(self):
+    def delete_layer(self):
         for layer in self.layers:
             if layer.focus:
-                layer.filledRectCs.yrange = [0, 0]
-                layer.filledRectAck.yrange = [0, 0]
+                layer.filledRectCs.yrange=[0,0]
+                layer.filledRectAck.yrange=[0,0]
                 self.layers.remove(layer)
-        self.updateAllGraph()
-        self.csShape.calculateStrength()
-        self.updateCrossSectionInformation()
+        self.update_all_graph()
+        self.cross_section.calculate_strength()
+        self.update_cross_section_information()
 
     '''
-    the method updateLayerInformation update the layer information of 
+    the method update_layer_information update the layer information of 
     the view_information
     '''
 
-    def updateLayerInformation(self, name, price, density, stiffness, strength, percent):
-        self.csShape.setLayerInformation(
+    def update_layer_information(self, name, price, density, stiffness, strength, percent):
+        self.cross_section.set_layer_information(
             name, price, density, stiffness, strength, percent)
 
     '''
-    the method updateCrossSectionInformation update the cross section information of 
+    the method update_cross_section_information update the cross section information of 
     the view_information
     '''
 
-    def updateCrossSectionInformation(self):
-        self.csShape.calculateWeightPrice()
-        self.csShape.setCrossSectionInformation()
+    def update_cross_section_information(self):
+        self.cross_section.calculate_weight_price()
+        self.cross_section.set_cross_section_information()
 
     '''
-    the method getFreePlaces return the free-places, 
+    the method get_free_places return the free-places, 
     where is no layer
     '''
 
-    def getFreePlaces(self):
-        self.freePlaces = []
+    def get_free_places(self):
+        self.free_places = []
         # running index
-        y = 0
+        cur_y = 0
         # if the cross section contains layers
         if not len(self.layers) == 0:
-            while y < self.ch:
-                # layerExist is a switch to proofs whether
-                # a l exist over the runnning index or not
-                layerExist = False
-                minValue = self.ch
-                for l in self.layers:
-                    if l.y >= y and l.y < minValue:
-                        layerExist = True
-                        minValue = l.y - l.h / 2.
-                        nextMinValue = l.y + l.h / 2.
+            while cur_y < self.cross_section_height:
+                # layer_exist is a switch to proofs whether
+                # a layer exist over the runnning index or not
+                layer_exist = False
+                min_value = self.cross_section_height
+                for layer in self.layers:
+                    if layer.y_coordinate >= cur_y and layer.y_coordinate < min_value:
+                        layer_exist = True
+                        min_value = layer.y_coordinate - layer._height / 2.
+                        nextMinValue = layer.y_coordinate + layer._height / 2.
                         # if the running index is equals the min, means that there's no
                         # area
-                        if not y == minValue:
-                            self.freePlaces.append((y, minValue))
-                        y = nextMinValue
-                # if no l exist over the running index then that's the last
+                        if not cur_y == min_value:
+                            self.free_places.append((cur_y, min_value))
+                        cur_y = nextMinValue
+                # if no layer exist over the running index then that's the last
                 # area which is free.
-                if not layerExist:
-                    self.freePlaces.append((y, self.ch))
-                    return self.freePlaces
-        # if no l exist,all area of the cross section is free
+                if not layer_exist:
+                    self.free_places.append((cur_y, self.cross_section_height))
+                    return self.free_places
+        # if no layer exist,all area of the cross section is free
         else:
-            self.freePlaces.append((0, self.ch))
-        return self.freePlaces
+            self.free_places.append((0, self.cross_section_height))
+        return self.free_places
 
     ##########################################################################
     #                                Setter && Getter                        #
     ##########################################################################
     '''
-    the method setPercent change the percent shape of the selected rectangle
+    the method set_percent change the percent shape of the selected rectangle
     '''
 
-    def setPercent(self, value):
+    def set_percent(self, value):
         self.percent_change = True
         for rectangle in self.layers:
             if rectangle.focus:
-                rectangle.setHeight(self.ch * value)
-                rectangle.setPercentage(value)
-                self.updateAllGraph()
-                self.csShape.calculateStrength()
-                self.updateCrossSectionInformation()
+                rectangle.set_height(self.cross_section_height * value)
+                rectangle.set_percentage(value)
+                self.update_all_graph()
+                self.cross_section.calculate_strength()
+                self.update_cross_section_information()
                 return
 
     '''
-    the method setHeight change the height of the cross section shape
+    the method set_height change the height of the cross section shape
     and update the layers
     '''
 
-    def setHeight(self, value):
-        for l in self.layers:
-            l.setYCoordinate(l.y / self.ch * value)
-            l.setHeight(l.h / self.ch * value)
-            self.updateAllGraph()
-        self.ch = value
-        self.graph.ymax = self.ch
-        self.updateCrossSectionInformation()
-        self.updateGraph()
+    def set_height(self, value):
+        for layer in self.layers:
+            layer.set_y_coordinate(
+                layer.y_coordinate / self.cross_section_height * value)
+            layer.set_height(
+                layer._height / self.cross_section_height * value)
+            self.update_all_graph()
+        self.cross_section_height = value
+        self.graph.ymax = self.cross_section_height
+        self.update_cross_section_information()
 
     '''
-    the method setWidth change the width of the cross section shape
+    the method set_width change the width of the cross section shape
     and update the layers
     '''
 
-    def setWidth(self, value):
-        self.cw = value
-        self.graph.xmax = self.cw
+    def set_width(self, value):
+        self.cross_section_width = value
+        self.graph.xmax = self.cross_section_width
         for rectangle in self.layers:
-            rectangle.setWidth(value)
-        self.updateAllGraph()
-        self.updateCrossSectionInformation()
-        self.updateGraph()
+            rectangle.set_width(value)
+        self.update_all_graph()
+        self.update_cross_section_information()
 
     '''
-    the method setCrossSection was developed to say the view, 
+    the method set_cross_section was developed to say the view, 
     which cross section should it use
     '''
 
-    def setCrossSection(self, cs):
-        self.csShape = cs
+    def set_cross_section(self, cross_section):
+        self.cross_section = cross_section
 
     '''
     return all layers 
     '''
 
-    def getLayers(self):
+    def get_layers(self):
         return self.layers

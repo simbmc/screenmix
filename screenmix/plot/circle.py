@@ -5,9 +5,10 @@ Created on 18.04.2016
 '''
 from math import log10
 
+from kivy.graphics import Line
 from kivy.graphics.texture import Texture
 from kivy.properties import ListProperty, ObjectProperty, NumericProperty
-from kivy.graphics import Line
+
 from kivy.garden.graph import Plot
 
 

@@ -1,10 +1,8 @@
 '''
 Created on 14.04.2016
-
 @author: mkennert
 '''
 from kivy.app import App
-from kivy.core.window import Window
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.popup import Popup
@@ -12,14 +10,10 @@ from kivy.uix.scrollview import ScrollView
 
 from ackModel.ack import Ack
 from crossSection.cs import CrossSection
+from materialEditor.editor import Material_Editor
+from kivy.core.window import Window
 from designClass.design import Design
-from materialEditor.editor import MaterialEditor
-from crossSectionEditor.editor import CrossSectionEditor
-from reinforcementEditor.editor import ReinforcementEditor
-
-
-Window.size = (900, 600)
-#Window.clearcolor = (1, 1, 1, 1)
+Window.size = (720, 500)
 
 
 class MainWindow(GridLayout):
@@ -28,51 +22,42 @@ class MainWindow(GridLayout):
     def __init__(self, **kwargs):
         super(MainWindow, self).__init__(**kwargs)
         self.cols = 1
-        self.btnSize = Design.btnSize
-        self.crossSection = CrossSection()
-        self.csShape = self.crossSection.getCSRectangle()
+        self.btnSize=Design.btnSize
+        self.create_popup()
+        self.create_menu_bar()
+        self.create_componets()
         # Cross Section is the default view
-        self.content = self.crossSection
-        self.createPopup()
-        self.createMenuBar()
-        self.createComponets()
+        self.content = self.cross_section
 
     '''
     create all components of the Scrollview root
     '''
 
-    def createComponets(self):
-        self.createAckView()
-        self.createMaterialEditor()
-        self.createReinforcementEditor()
-        self.createCrossSectionEditor()
+    def create_componets(self):
+        self.create_cross_section_view()
+        self.create_ack_view()
+        self.create_material_editor()
 
     '''
     create the list_view. here you can add more menu-options for the app
     '''
 
-    def createListView(self):
+    def create_list_view(self):
         layout = GridLayout(cols=1, spacing=10, size_hint_y=None)
         # Make sure the height is such that there is something to scroll.
         layout.bind(minimum_height=layout.setter('height'))
-        # cross section editor
-        csEditor = Button(text='cross section editor',
-                          size_hint_y=None, height=self.btnSize)
-        csEditor.bind(on_press=self.showCrossSectionEditor)
-        layout.add_widget(csEditor)
-        # reEditor
-        reEditor = Button(text='reinforcement editor',
-                          size_hint_y=None, height=self.btnSize)
-        reEditor.bind(on_press=self.showReinforcementEditor)
-        layout.add_widget(reEditor)
+        # CrossSection
+        cross_section = Button(
+            text='cross section', size_hint_y=None, height=self.btnSize)
+        cross_section.bind(on_press=self.show_cross_section_view)
+        layout.add_widget(cross_section)
         # ack-view
-        ackView = Button(text='ack', size_hint_y=None, height=self.btnSize)
-        ackView.bind(on_press=self.showAckView)
-        layout.add_widget(ackView)
+        ack_view = Button(text='ack', size_hint_y=None, height=self.btnSize)
+        ack_view.bind(on_press=self.show_ack_view)
+        layout.add_widget(ack_view)
         # material-editor
-        me = Button(
-            text='material editor', size_hint_y=None, height=self.btnSize)
-        me.bind(on_press=self.showMaterialEditor)
+        me = Button(text='material editor', size_hint_y=None, height=self.btnSize)
+        me.bind(on_press=self.show_material_editor)
         layout.add_widget(me)
         ##################################################################
         #Here you can add more menu-parts                                #
@@ -86,8 +71,8 @@ class MainWindow(GridLayout):
     create the popup with the menu options
     '''
 
-    def createPopup(self):
-        self.createListView()
+    def create_popup(self):
+        self.create_list_view()
         self.popup = Popup(title='Menu', content=self.root, size_hint=(None, None), size=(
             300, 400), pos_hint=({'x': 0, 'top': 1}), pos=(0, 0))
 
@@ -96,108 +81,67 @@ class MainWindow(GridLayout):
     menu button to show the menu
     '''
 
-    def createMenuBar(self):
+    def create_menu_bar(self):
         bar = GridLayout(cols=3, row_force_default=True,
                          row_default_height=self.btnSize, size_hint_y=None, height=self.btnSize)
-        menuButton = Button(
+        menu_button = Button(
             text='menu', size_hint_y=None, height=self.btnSize, size_hint_x=None, width=100)
-        menuButton.bind(on_press=self.popup.open)
-        bar.add_widget(menuButton)
+        menu_button.bind(on_press=self.popup.open)
+        bar.add_widget(menu_button)
         self.add_widget(bar)
+
+    '''
+    create the cross section
+    '''
+
+    def create_cross_section_view(self):
+        self.cross_section = CrossSection()
+        self.add_widget(self.cross_section)
 
     '''
     create the ask_view
     '''
 
-    def createAckView(self):
-        self.ackView = Ack()
-        self.csShape.setAck(self.ackView)
+    def create_ack_view(self):
+        self.ack_view = Ack()
+        self.cross_section.set_ack(self.ack_view)
         # sign in by the cross section
-        self.ackView.setCrossSection(self.csShape)
+        self.ack_view.set_cross_section(self.cross_section)
 
     '''
     create the material-editor
     '''
 
-    def createMaterialEditor(self):
-        self.materialEditor = MaterialEditor()
+    def create_material_editor(self):
+        self.material_editor = Material_Editor()
         # sign in by the cross section
-        self.materialEditor.setCrossSection(self.crossSection)
-
-    '''
-    create the cross section-editor
-    '''
-
-    def createCrossSectionEditor(self):
-        self.csEditor = CrossSectionEditor()
-        self.csEditor.setCrossSection(self.crossSection)
-        self.csEditor.addView()
-        self.add_widget(self.csEditor)
-        self.content = self.csEditor
-
-    '''
-    create the reinforcement-editor
-    '''
-
-    def createReinforcementEditor(self):
-        self.reEditor = ReinforcementEditor()
-        self.reEditor.setCrossSection(self.crossSection)
-        # self.reEditor.addView(self.csShape.view)
+        self.material_editor.set_cross_section(self.cross_section)
 
     ##########################################################################
     #Attention:When you want write a new show-method than you must make sure    #
     #that actually component is remove from the widget and set                  #
     #the content to the showed component                                        #
     ##########################################################################
-
-    '''
-    show the ack-view
-    '''
-
-    def showAckView(self, button):
-        self.ackView.update()
+    
+    def show_ack_view(self, button):
+        self.ack_view.update()
         self.remove_widget(self.content)
-        self.add_widget(self.ackView)
-        self.content = self.ackView
-        self.ackView.update()
+        self.add_widget(self.ack_view)
+        self.content = self.ack_view
+        self.ack_view.update()
         self.popup.dismiss()
 
-    '''
-    show the material-editor
-    '''
-
-    def showMaterialEditor(self, btn):
+    def show_cross_section_view(self, button):
         self.remove_widget(self.content)
-        self.add_widget(self.materialEditor)
-        self.content = self.materialEditor
+        self.add_widget(self.cross_section)
+        self.content = self.cross_section
         self.popup.dismiss()
 
-    '''
-    show the crossSection editor
-    '''
-
-    def showCrossSectionEditor(self, btn):
-        self.reEditor.removeView()
-        if not self.csEditor.containsView:
-            self.csEditor.addView()
+    def show_material_editor(self, button):
         self.remove_widget(self.content)
-        self.add_widget(self.csEditor)
-        self.content = self.csEditor
+        self.add_widget(self.material_editor)
+        self.content = self.material_editor
         self.popup.dismiss()
-
-    '''
-    show the reinforcement-editor
-    '''
-
-    def showReinforcementEditor(self, btn):
-        self.csEditor.removeView()
-        if not self.reEditor.containsView:
-            self.reEditor.addView()
-        self.remove_widget(self.content)
-        self.add_widget(self.reEditor)
-        self.content = self.reEditor
-        self.popup.dismiss()
-
 
 class CSIApp(App):
     def build(self):
