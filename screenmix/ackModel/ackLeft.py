@@ -25,8 +25,8 @@ class AckLeft(GridLayout):
         self.btnSize=Design.btnSize
         self.create_graph()
         self.create_option_layout()
-        self.createFocusPoint()
-        self.cur_plot=None
+        self.create_focus_point()
+        self.curPlot=None
         
     '''
     the method create_graph create the graph
@@ -63,7 +63,7 @@ class AckLeft(GridLayout):
         self.plot = MeshLinePlot(
             color=[random.random(), random.random(), random.random(), 1])
         self.plot.points = self.calculate_points()
-        self.cur_plot=self.plot
+        self.curPlot=self.plot
         self.graph.add_plot(self.plot)
 
     '''
@@ -74,35 +74,35 @@ class AckLeft(GridLayout):
     def calculate_points(self):
         points = [(0, 0)]
         points.append(
-            (self.cross_section.min_of_maxstrain, self.cross_section.strength))
-        if self.cross_section.view.layers:
+            (self.cs.minOfMaxstrain, self.cs.strength))
+        if self.cs.view.layers:
             # calculate the second points
             # calculate the stiffness of the reinforcement layers according to
             # mixture rule
-            percent_of_layers = 0.  # the sum of the percentage of the reinforcement layers
-            for layer in self.cross_section.view.layers:
-                percent_of_layers += layer.percentage
+            percent_of_layers = 0.  # the sum of the p of the reinforcement layers
+            for layer in self.cs.view.layers:
+                percent_of_layers += layer.p
             # stiffness of the section
-            E_s = self.cross_section.strength / \
-                self.cross_section.min_of_maxstrain
+            E_s = self.cs.strength / \
+                self.cs.minOfMaxstrain
             E_r = 0.  # the stiffness of the reinforement mixture
-            for layer in self.cross_section.view.layers:
+            for layer in self.cs.view.layers:
                 E_r += layer.material.stiffness * \
-                    layer.percentage / percent_of_layers
+                    layer.p / percent_of_layers
             # the reinforcement strain at the crack postion
-            eps_r_max = self.cross_section.min_of_maxstrain * \
+            eps_r_max = self.cs.minOfMaxstrain * \
                 E_s / (E_r * percent_of_layers)
             # the minimum reinforcement strain
             eps_r_min = eps_r_max - 0.6685 * \
-                (1 - percent_of_layers) * self.cross_section.concrete_strength / \
+                (1 - percent_of_layers) * self.cs.concreteStrength / \
                 (percent_of_layers * E_r)
             eps_r_avg = (eps_r_max + eps_r_min) / 2.
-            points.append((eps_r_avg, self.cross_section.strength))
+            points.append((eps_r_avg, self.cs.strength))
             self.secondpoint=points[2]
             # calculate the third points
             # the maximum reinforcement strain
             max_strain_r = 1e8
-            for layer in self.cross_section.view.layers:
+            for layer in self.cs.view.layers:
                 cur_strain = layer.get_strain()
                 max_strain_r = min(cur_strain, max_strain_r)
             # maximum composite strength
@@ -114,33 +114,37 @@ class AckLeft(GridLayout):
         # setting the maximum of the graph
         self.graph.xmax = points[-1][0] * 1.2
         self.graph.ymax = points[-1][1] * 1.2
-        self.ack.setMaxStrain(points[-1][0])
+        self.ack.set_maxStrain(points[-1][0])
         self.graph.x_ticks_major = np.round(
             self.graph.xmax / 6., decimals=int(-np.log10(self.graph.xmax / 6)) + 1)
         self.graph.y_ticks_major = np.round(
             self.graph.ymax / 6., decimals=int(-np.log10(self.graph.ymax / 6)) + 1)
         return points
 
-    # not finished yet
+    '''
+    delete the plots which aren't the curPlot and the focusplot
+    '''
     def clear(self, button):
-        for plot in self.graph.plots:
-            if not plot==self.focus and not plot==self.cur_plot:
-                self.graph.remove_plot(plot)
-        self.graph._clear_buffer()
+        while len(self.graph.plots)>2:
+            print('plots: '+str(len(self.graph.plots)))
+            for plot in self.graph.plots:
+                if not plot==self.curPlot and not plot==self.focus:
+                    self.graph.remove_plot(plot)
+            self.graph._clear_buffer()
 
     '''
     the method set_cross_section was developed to say the view, 
     which cross section should it use
     '''
 
-    def set_cross_section(self, cross_section):
-        self.cross_section = cross_section
+    def set_cross_section(self, cs):
+        self.cs = cs
     
     '''
     ack_left sign in by ack left
     '''
     def set_ack_right(self, ack_right):
-        self.ack_right=ack_right
+        self.ackRight=ack_right
     
     '''
     set the ack
@@ -151,17 +155,17 @@ class AckLeft(GridLayout):
     '''
     set the position of the focuspoint.
     the point is dependet from the strainvalue 
-    of ack_right
+    of ackRight
     '''
-    def set_FocusPosition(self, value):
+    def set_focus_position(self, value):
         eps_x=self.graph.xmax/self.delta
         eps_y=self.graph.ymax/self.delta
         self.focus.xrange=[value-eps_x,value+eps_x]
         #calculation when the value is smaller then
         #the x-coordinate of the first point
-        if value<=self.cross_section.min_of_maxstrain:
+        if value<=self.cs.minOfMaxstrain:
             #f(x)=mx => m=y1-0/x1-0
-            m=self.cross_section.strength/self.cross_section.min_of_maxstrain
+            m=self.cs.strength/self.cs.minOfMaxstrain
             self.focus.yrange=[value*m-eps_y,value*m+eps_y]
         #calculation when the value is between the  second and the third point
         elif value>self.secondpoint[0]:
@@ -178,26 +182,29 @@ class AckLeft(GridLayout):
         #calculation when the value is between the first- and secondpoint
         else:
             #m=0 => independet from the x-value
-            b=self.cross_section.strength
+            b=self.cs.strength
             self.focus.yrange=[-eps_y+b,+eps_y+b]
             
     '''
     create the focus point of the graph
     '''
-    def createFocusPoint(self):
+    def create_focus_point(self):
         self.delta=50.
         self.focus=FilledEllipse(color=[255,0,0])
         self.focus.xrange = [0,0]
         self.focus.yrange = [0,0]
         self.graph.add_plot(self.focus)
     
+    '''
+    update the plot
+    '''
     def plot_update(self):
         self.plot = MeshLinePlot(
             color=Design.focusColor)
-        if not self.cur_plot==None:
-            self.cur_plot.color=[random.random(), random.random(), random.random(), 1]
+        if not self.curPlot==None:
+            self.curPlot.color=[random.random(), random.random(), random.random(), 1]
         self.plot.points = self.calculate_points()
-        self.cur_plot=self.plot
+        self.curPlot=self.plot
         self.allPlots.append(self.plot)
         self.graph.add_plot(self.plot)
         

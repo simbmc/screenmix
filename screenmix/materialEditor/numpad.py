@@ -18,7 +18,7 @@ class Numpad(GridLayout):
         self.createNumfield()
         self.cols=1
         self.add_widget(self.layout)
-        self._parent=None
+        self.p=None
     
     '''
     the method createNumfield create the gui
@@ -77,11 +77,11 @@ class Numpad(GridLayout):
         self.textinput.text=''
     
     '''
-    the method signInParent to set the parent of 
+    the method sign_in_parent to set the parent of 
     the object. the parent must have the method finishedNumpad
     '''
-    def signInParent(self, parent):
-        self._parent=parent
+    def sign_in_parent(self, parent):
+        self.p=parent
     
     '''
     the method finished close the popup when the user
@@ -89,12 +89,12 @@ class Numpad(GridLayout):
     '''
     def finished(self,button):
         if len(self.textinput.text)>0:
-            self._parent.finishedNumpad()
+            self.p.finishedNumpad()
         self.resetText()
     
     '''
     cancel the numpad input
     '''
     def cancel(self,btn):
-        self._parent.closeNumpad()
+        self.p.closeNumpad()
         self.resetText()

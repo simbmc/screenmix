@@ -9,7 +9,7 @@ from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.uix.scrollview import ScrollView
 
-from materialEditor.creater import Material_Creater
+from materialEditor.creater import MaterialCreater
 from designClass.design import Design
 
 
@@ -27,13 +27,13 @@ class Material_Editor(ScrollView):
         self.material_layout=GridLayout(cols=1,spacing=2, size_hint_y=None)
         # Make sure the height is such that there is something to scroll.
         self.material_layout.bind(minimum_height=self.material_layout.setter('height'))
-        for i in self.all_materials.all_materials:
+        for i in self.allMaterials.allMaterials:
             btn=Button(text=i.name,size_hint_y=None, height=self.btnSize)
             btn.bind(on_press=self.show_material_information)
             self.material_layout.add_widget(btn)
-        self.btn_material_editor=Button(text='create material',size_hint_y=None, height=self.btnSize)
-        self.btn_material_editor.bind(on_press=self.create_material)
-        self.material_layout.add_widget(self.btn_material_editor)
+        self.btnMaterialEditor=Button(text='create material',size_hint_y=None, height=self.btnSize)
+        self.btnMaterialEditor.bind(on_press=self.create_material)
+        self.material_layout.add_widget(self.btnMaterialEditor)
         self.add_widget(self.material_layout)
     
     '''
@@ -42,7 +42,7 @@ class Material_Editor(ScrollView):
     popup_create to create new material
     '''
     def create_popups(self):
-        creater=Material_Creater()
+        creater=MaterialCreater()
         creater.sign_in_parent(self)
         self.popup_info=Popup(title='material',content=self.content)
         self.popup_create=Popup(title='create new material', content=creater)
@@ -77,13 +77,13 @@ class Material_Editor(ScrollView):
     set the labeltext with the materialproperties
     '''
     def show_material_information(self,button):
-        for i in range(0,self.cross_section.all_materials.get_length()):
-            if self.all_materials.all_materials[i].name==button.text:
-                self.name.text=self.all_materials.all_materials[i].name
-                self.price.text=str(self.all_materials.all_materials[i].price)
-                self.density.text=str(self.all_materials.all_materials[i].density)
-                self.stiffness.text=str(self.all_materials.all_materials[i].stiffness)
-                self.strenght.text=str(self.all_materials.all_materials[i].strength)
+        for i in range(0,self.cs.allMaterials.get_length()):
+            if self.allMaterials.allMaterials[i].name==button.text:
+                self.name.text=self.allMaterials.allMaterials[i].name
+                self.price.text=str(self.allMaterials.allMaterials[i].price)
+                self.density.text=str(self.allMaterials.allMaterials[i].density)
+                self.stiffness.text=str(self.allMaterials.allMaterials[i].stiffness)
+                self.strenght.text=str(self.allMaterials.allMaterials[i].strength)
                 self.popup_info.open()
     
     '''
@@ -105,11 +105,11 @@ class Material_Editor(ScrollView):
     of the gridlayout
     '''
     def update(self):
-        self.material_layout.remove_widget(self.btn_material_editor)
-        btn_material_A=Button(text=self.all_materials.all_materials[-1].name,size_hint_y=None, height=40)
+        self.material_layout.remove_widget(self.btnMaterialEditor)
+        btn_material_A=Button(text=self.allMaterials.allMaterials[-1].name,size_hint_y=None, height=40)
         btn_material_A.bind(on_press=self.show_material_information)
         self.material_layout.add_widget(btn_material_A)
-        self.material_layout.add_widget(self.btn_material_editor)
+        self.material_layout.add_widget(self.btnMaterialEditor)
         
     '''
     cancel the create-process. this method 
@@ -124,9 +124,9 @@ class Material_Editor(ScrollView):
     the method set_cross_section was developed to say the view, 
     which cross section should it use
     '''
-    def set_cross_section(self,cross_section):
-        self.cross_section=cross_section
-        self.all_materials=self.cross_section.all_materials
-        self.all_materials.add_listener(self)
+    def set_cross_section(self,cs):
+        self.cs=cs
+        self.allMaterials=self.cs.allMaterials
+        self.allMaterials.add_listener(self)
         self.create_gui()
         

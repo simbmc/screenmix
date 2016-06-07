@@ -20,7 +20,7 @@ class Keyboard(GridLayout):
         self.createSmallKeyboard()
         self.cols=1
         self.add_widget(self.layout)
-        self._parent=None
+        self.p=None
         
     '''
     the method createSmallKeyboard create the
@@ -61,7 +61,7 @@ class Keyboard(GridLayout):
     is finished and press the button 'ok'
     '''
     def finished(self,button):
-        self._parent.finishedKeyboard()
+        self.p.finishedKeyboard()
     
     '''
     the method resetText reset the text of the label
@@ -72,9 +72,9 @@ class Keyboard(GridLayout):
         self.textinput.text=''
     
     '''
-    the method signInParent to set the parent of 
+    the method sign_in_parent to set the parent of 
     the object. the parent must have the method finishedKeyboard
     '''
-    def signInParent(self, parent):
-        self._parent=parent
+    def sign_in_parent(self, parent):
+        self.p=parent
         

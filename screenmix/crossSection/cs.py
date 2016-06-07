@@ -5,8 +5,8 @@ Created on 15.03.2016
 
 
 from kivy.uix.gridlayout import GridLayout
-from crossSectionView.rectangleView import CS_Rectangle_View 
-from crossSectionView.csInformation import Cross_Section_Information
+from crossSectionView.rectangleView import CSRectangleView 
+from crossSectionView.csInformation import CrossSectionInformation
 from materialEditor.materiallist import MaterialList
 
 '''
@@ -16,15 +16,15 @@ class CrossSection(GridLayout):
     #Constructor
     def __init__(self, **kwargs):
         super(CrossSection, self).__init__(**kwargs)
-        self.cross_section_height = 0.5
-        self.cross_section_width = 0.25
-        self.all_materials=MaterialList()
-        self.view=CS_Rectangle_View()
-        self.concrete_density=2300.
-        self.concrete_price=0.065
-        self.concrete_stiffness= 30000.
-        self.concrete_strength= 3. 
-        self.information=Cross_Section_Information()
+        self.h = 0.5
+        self.w = 0.25
+        self.allMaterials=MaterialList()
+        self.view=CSRectangleView()
+        self.concreteDensity=2300.
+        self.concretePrice=0.065
+        self.concreteStiffness= 30000.
+        self.concreteStrength= 3. 
+        self.information=CrossSectionInformation()
         self.cols=2
         self.add_widget(self.view)
         self.add_widget(self.information)
@@ -77,14 +77,14 @@ class CrossSection(GridLayout):
     '''
     def set_height(self,value):
         self.view.set_height(value)
-        self.cross_section_height=value
+        self.h=value
     
     '''
     the method set_width change the width of the view
     ''' 
     def set_width(self,value):
         self.view.set_width(value)
-        self.cross_section_width=value
+        self.w=value
         
     '''
     the method set_percent change the percentage share of the selected materials
@@ -96,18 +96,18 @@ class CrossSection(GridLayout):
     calculate the weight and the price of the cross section
     '''
     def calculate_weight_price(self):
-        weight=price=percent_of_layers=0.
+        weight=price=percentOfLayers=0.
         #go trough all layers and
         #get the weight of them
         for layer in self.view.layers:
             cur=layer.get_weight()
             weight+=cur
             price+=cur*layer.material.price
-            percent_of_layers+=layer._height/self.cross_section_height
-        #if the percent_of_layers is not 1 there is a matrix
+            percentOfLayers+=layer.h/self.h
+        #if the percentOfLayers is not 1 there is a matrix
         #with concrete as material
-        weight+=(1-percent_of_layers)*self.cross_section_width*self.concrete_density
-        price+=(1-percent_of_layers)*self.cross_section_height*self.cross_section_width*self.concrete_price
+        weight+=(1-percentOfLayers)*self.w*self.concreteDensity
+        price+=(1-percentOfLayers)*self.h*self.w*self.concretePrice
         self.weight=weight
         self.price=price
     
@@ -118,37 +118,37 @@ class CrossSection(GridLayout):
     def calculate_strength(self):
         strength=0.
         #cur supremum
-        self.min_of_maxstrain=10000000.
+        self.minOfMaxstrain=1e6
         #max strain is necessary for other calculations
-        self.max_of_maxstrain=0
-        percent_of_layers=0.
+        self.maxOfMaxstrain=0
+        percentOfLayers=0.
         #find the minimum max_strain and the maximum max_strain
         for layer in self.view.layers:
-            percent_of_layers+=layer._height/self.cross_section_height
-            cur_strain=layer.get_strain()
-            #proof whether the cur_strain is smaller as the min
-            if cur_strain<self.min_of_maxstrain:
-                self.min_of_maxstrain=cur_strain
-            #proof whether the cur_strain is bigger as the max
-            if cur_strain>self.max_of_maxstrain:
-                self.max_of_maxstrain=cur_strain
-        #if the percent_of_layers is not 1 there is a matrix
+            percentOfLayers+=layer.h/self.h
+            curStrain=layer.get_strain()
+            #proof whether the curStrain is smaller as the min
+            if curStrain<self.minOfMaxstrain:
+                self.minOfMaxstrain=curStrain
+            #proof whether the curStrain is bigger as the max
+            if curStrain>self.maxOfMaxstrain:
+                self.maxOfMaxstrain=curStrain
+        #if the percentOfLayers is not 1 there is a matrix
         #with concrete as material
-        if 1.-percent_of_layers>0:
-            cur_value=self.concrete_strength/self.concrete_stiffness
-            if self.min_of_maxstrain>cur_value:
-                self.min_of_maxstrain=cur_value
-            if self.max_of_maxstrain<cur_value:
-                self.max_of_maxstrain=cur_value
+        if 1.-percentOfLayers>0:
+            curValue=self.concreteStrength/self.concreteStiffness
+            if self.minOfMaxstrain>curValue:
+                self.minOfMaxstrain=curValue
+            if self.maxOfMaxstrain<curValue:
+                self.maxOfMaxstrain=curValue
         #calculate the strength
         for layer in self.view.layers:
-            strength+=self.min_of_maxstrain*layer.material.stiffness*layer._height/self.cross_section_height
-        if 1.-percent_of_layers>0:
-            strength+=self.min_of_maxstrain*(1.-percent_of_layers)*self.concrete_stiffness
+            strength+=self.minOfMaxstrain*layer.material.stiffness*layer.h/self.h
+        if 1.-percentOfLayers>0:
+            strength+=self.minOfMaxstrain*(1.-percentOfLayers)*self.concreteStiffness
         self.strength=strength
     
     '''
     calculate the strain of concrete
     '''
     def calculate_strain_of_concrete(self):
-        return self.concrete_strength/self.concrete_stiffness
+        return self.concreteStrength/self.concreteStiffness
