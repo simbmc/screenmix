@@ -95,8 +95,8 @@ class AckRight(GridLayout):
                 layer_stress = layer.material.stiffness * eps1 + \
                     layer.material.stiffness * (self.ack.get_currentStrain() - eps2)
             max_stress = max(max_stress, layer_stress)
-            layer.filledRectAck.xrange=[0, layer_stress]
-            self.graph.add_plot(layer.filledRectAck)
+            layer.layerAck.xrange=[0, layer_stress]
+            self.graph.add_plot(layer.layerAck)
         '''
         # delete the old plots
         for plot in list:

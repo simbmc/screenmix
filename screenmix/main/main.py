@@ -18,7 +18,6 @@ Window.size = (720, 500)
 
 class Main(GridLayout):
     # Constructor
-
     def __init__(self, **kwargs):
         super(Main, self).__init__(**kwargs)
         self.cols = 1

@@ -7,7 +7,7 @@ from abc import abstractmethod
 
 class IObserver:
     '''
-    update the gui when the materiallist
+    update the listen when the materiallist
     has changed
     '''
     @abstractmethod

@@ -5,9 +5,10 @@ Created on 15.03.2016
 
 
 from kivy.uix.gridlayout import GridLayout
-from crossSectionView.rectangleView import CSRectangleView 
+from crossSectionView.csView import CSRectangleView 
 from crossSectionView.csInformation import CrossSectionInformation
 from materialEditor.materiallist import MaterialList
+from materials.concrete import Concrete
 
 '''
 the cross_Section was developed to undock the cs_information from the view
@@ -20,10 +21,11 @@ class CrossSection(GridLayout):
         self.w = 0.25
         self.allMaterials=MaterialList()
         self.view=CSRectangleView()
-        self.concreteDensity=2300.
-        self.concretePrice=0.065
-        self.concreteStiffness= 30000.
-        self.concreteStrength= 3. 
+        concrete=Concrete()
+        self.concreteDensity=concrete.density
+        self.concretePrice=concrete.price
+        self.concreteStiffness= concrete.stiffness
+        self.concreteStrength= concrete.strength
         self.information=CrossSectionInformation()
         self.cols=2
         self.add_widget(self.view)
@@ -96,18 +98,19 @@ class CrossSection(GridLayout):
     calculate the weight and the price of the cross section
     '''
     def calculate_weight_price(self):
-        weight=price=percentOfLayers=0.
+        weight=price=0.
+        freeplaces=self.view.get_free_places()
         #go trough all layers and
         #get the weight of them
         for layer in self.view.layers:
             cur=layer.get_weight()
             weight+=cur
             price+=cur*layer.material.price
-            percentOfLayers+=layer.h/self.h
-        #if the percentOfLayers is not 1 there is a matrix
-        #with concrete as material
-        weight+=(1-percentOfLayers)*self.w*self.concreteDensity
-        price+=(1-percentOfLayers)*self.h*self.w*self.concretePrice
+        #get the free places, where the material is concrete
+        for layer in freeplaces:
+            w=(layer[1]-layer[0])*self.w*self.concreteDensity
+            weight+=w
+            price+=w*self.concretePrice
         self.weight=weight
         self.price=price
     
@@ -121,10 +124,8 @@ class CrossSection(GridLayout):
         self.minOfMaxstrain=1e6
         #max strain is necessary for other calculations
         self.maxOfMaxstrain=0
-        percentOfLayers=0.
         #find the minimum max_strain and the maximum max_strain
         for layer in self.view.layers:
-            percentOfLayers+=layer.h/self.h
             curStrain=layer.get_strain()
             #proof whether the curStrain is smaller as the min
             if curStrain<self.minOfMaxstrain:
@@ -134,7 +135,8 @@ class CrossSection(GridLayout):
                 self.maxOfMaxstrain=curStrain
         #if the percentOfLayers is not 1 there is a matrix
         #with concrete as material
-        if 1.-percentOfLayers>0:
+        freePlaces=self.view.get_free_places()
+        if len(freePlaces)>0:
             curValue=self.concreteStrength/self.concreteStiffness
             if self.minOfMaxstrain>curValue:
                 self.minOfMaxstrain=curValue
@@ -143,8 +145,8 @@ class CrossSection(GridLayout):
         #calculate the strength
         for layer in self.view.layers:
             strength+=self.minOfMaxstrain*layer.material.stiffness*layer.h/self.h
-        if 1.-percentOfLayers>0:
-            strength+=self.minOfMaxstrain*(1.-percentOfLayers)*self.concreteStiffness
+        for layer in freePlaces:
+            strength+=self.minOfMaxstrain*(layer[1]-layer[0])/self.h*self.concreteStiffness
         self.strength=strength
     
     '''

@@ -39,7 +39,9 @@ class CrossSectionInformation(BoxLayout):
     # The following part of code create only the graphical user interface                                  #
     ##########################################################################
 
-    # not finished yet
+    '''
+    create the gui
+    '''
     def create_gui(self):
         self.create_numpad()
         self.create_scale_area()
@@ -322,18 +324,14 @@ class CrossSectionInformation(BoxLayout):
     finish the numpad
     '''
 
-    def finishedNumpad(self):
+    def finished_numpad(self):
         self.focusBtn.text = self.numpad.textinput.text
         if self.focusBtn.text == self.btnHeight:
             self.cs.set_height(float(self.focusBtn.text))
         else:
             self.cs.set_width(float(self.focusBtn.text))
         self.popupNumpad.dismiss()
-
-    ##########################################################################
-    #                                Setter && Getter                        #
-    ##########################################################################
-
+    
     '''
     the method will be called when the user selected a material
     the popup will be closed and the button text change to the material
@@ -343,6 +341,11 @@ class CrossSectionInformation(BoxLayout):
     def select_material(self, Button):
         self.popup.dismiss()
         self.materialOption.text = Button.text
+
+    ##########################################################################
+    #                                Setter && Getter                        #
+    ##########################################################################
+
 
     '''
     the method set_height change the height of the cs_view

@@ -137,8 +137,8 @@ class MaterialCreater(GridLayout):
     the materials
     '''
     def create_material(self,button):
-        cur_material=OwnMaterial(self.nameBtn.text,self.priceBtn.text,self.densityBtn.text,self.stiffnessBtn.text,self.strengthBtn.text)
-        self.p.allMaterials.add_Material(cur_material)
+        material=OwnMaterial(self.nameBtn.text,self.priceBtn.text,self.densityBtn.text,self.stiffnessBtn.text,self.strengthBtn.text)
+        self.p.allMaterials.add_material(material)
         self.p.cancel_edit_material()
     
     '''

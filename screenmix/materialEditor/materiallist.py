@@ -43,7 +43,7 @@ class MaterialList:
     update all listeners
     '''
 
-    def add_Material(self, material):
+    def add_material(self, material):
         self.allMaterials.append(material)
         self.update()
 

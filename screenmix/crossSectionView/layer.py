@@ -9,7 +9,7 @@ Created on 14.04.2016
 '''
 
 
-class LayerRectangle:
+class Layer:
     # Constructor
 
     def __init__(self, x, y, h, w, colors, p):
@@ -20,8 +20,8 @@ class LayerRectangle:
         self.colors = colors
         self.focus = False
         self.p = p
-        self.filledRectCs=None
-        self.filledRectAck=None
+        self.layerCs=None
+        self.layerAck=None
         
     '''
     check if the mouse is in the rectangle
@@ -35,7 +35,7 @@ class LayerRectangle:
             return False
     
     
-    def mouse_within_just_x_coordinate(self, x):
+    def mouse_within_x(self, x):
         if x > 0. and x < self.w:
             return True
         else:
@@ -100,20 +100,20 @@ class LayerRectangle:
         return self.material.strength / self.material.stiffness
     
     '''
-    set the filledRectCs
+    set the layerCs
     '''
-    def set_filledrect_cs(self, filledRect):
-        self.filledRectCs=filledRect
+    def set_layer_cs(self, filledRect):
+        self.layerCs=filledRect
     
     '''
-    set the filledRectAck
+    set the layerAck
     '''
-    def set_filledrect_Ack(self, filledRect):
-        self.filledRectAck=filledRect
+    def set_layer_ack(self, filledRect):
+        self.layerAck=filledRect
     
     '''
     set the yrange
     '''
     def set_yrange(self,values):
-        self.filledRectAck.yrange=values
-        self.filledRectCs.yrange=values
+        self.layerAck.yrange=values
+        self.layerCs.yrange=values

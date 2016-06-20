@@ -64,11 +64,11 @@ class Keyboard(GridLayout):
         self.p.finishedKeyboard()
     
     '''
-    the method resetText reset the text of the label
+    the method reset_text reset the text of the label
     the method must be called from the developer when
     the text must be deleted
     '''
-    def resetText(self):
+    def reset_text(self):
         self.textinput.text=''
     
     '''

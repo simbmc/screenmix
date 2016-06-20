@@ -4,12 +4,15 @@ Created on 14.03.2016
 '''
 
 
-from kivy.garden.graph import Graph, MeshLinePlot
-from kivy.uix.boxlayout import BoxLayout
+import copy
 from itertools import cycle
-from crossSectionView.layerRectangle import LayerRectangle
-from plot.filled_rect import FilledRect
+
+from kivy.uix.boxlayout import BoxLayout
+
+from crossSectionView.layer import Layer
 from designClass.design import Design
+from kivy.garden.graph import Graph, MeshLinePlot
+from plot.filled_rect import FilledRect
 colors = [[255, 102, 102], [255, 255, 102], [140, 255, 102], [102, 255, 217],
           [102, 102, 255], [255, 102, 102], [179, 179, 179], [102, 71, 133]]
 colorcycler = cycle(colors)
@@ -39,12 +42,12 @@ class CSRectangleView(BoxLayout):
         for layer in self.layers:
             y = layer.y
             h = layer.h
-            layer.filledRectCs.xrange =[0., self.w]
-            layer.filledRectCs.yrange=[y - h / 2., y + h / 2.]
+            layer.layerCs.xrange =[0., self.w]
+            layer.layerCs.yrange=[y - h / 2., y + h / 2.]
             if layer.focus:
-                layer.filledRectCs.color = Design.focusColor
+                layer.layerCs.color = Design.focusColor
             else:
-                layer.filledRectCs.color=layer.colors
+                layer.layerCs.color=layer.colors
         if len(self.layers) == 0:
             self.graph._clear_buffer()
             
@@ -71,7 +74,7 @@ class CSRectangleView(BoxLayout):
         x = (touch.x - x0) / gw * self.w
         y = (touch.y - y0) / gh * self.h
         for layer in self.layers:
-            if layer.focus and layer.mouse_within_just_x_coordinate(x):
+            if layer.focus and layer.mouse_within_x(x):
                 # case:1 the layer don't collide with the border of the cross
                 # section
                 if y > layer.h / 2 and y < self.h - layer.h / 2:
@@ -135,7 +138,7 @@ class CSRectangleView(BoxLayout):
 
     def add_layer(self, value, material):
         h = self.h * value
-        cur = LayerRectangle(self.w / 2, self.h - h / 2., h,
+        cur = Layer(self.w / 2, self.h - h / 2., h,
                               self.w, next(colorcycler), value)
         cur.set_material(material)
         y = cur.y
@@ -147,8 +150,8 @@ class CSRectangleView(BoxLayout):
                                  yrange=[y - h / 2., y + h / 2.],
                                  color=cur.colors)
         self.graph.add_plot(filledRectCs)
-        cur.set_filledrect_cs(filledRectCs)
-        cur.set_filledrect_Ack(filledRectAck)
+        cur.set_layer_cs(filledRectCs)
+        cur.set_layer_ack(filledRectAck)
         self.layers.append(cur)
         self.update_all_graph()
         self.cs.calculate_strength()
@@ -161,8 +164,8 @@ class CSRectangleView(BoxLayout):
     def delete_layer(self):
         for layer in self.layers:
             if layer.focus:
-                layer.filledRectCs.yrange=[0,0]
-                layer.filledRectAck.yrange=[0,0]
+                layer.layerCs.yrange=[0,0]
+                layer.layerAck.yrange=[0,0]
                 self.layers.remove(layer)
         self.update_all_graph()
         self.cs.calculate_strength()
@@ -190,37 +193,47 @@ class CSRectangleView(BoxLayout):
     the method get_free_places return the free-places, 
     where is no layer
     '''
-
     def get_free_places(self):
         self.free_places = []
+        layers=copy.deepcopy(self.layers)
         # running index
-        y = 0
+        y = 0.
         # if the cross section contains layers
         if not len(self.layers) == 0:
-            while y < self.h:
-                # layerExist is a switch to proofs whether
-                # a layer exist over the runnning index or not
-                layerExist = False
+            self.switch=1
+            while self.switch > 0:
                 minValue = self.h
-                for layer in self.layers:
-                    if layer.y >= y and layer.y < minValue:
-                        layerExist = True
-                        minValue = layer.y - layer.h / 2.
-                        nextMinValue = layer.y + layer.h / 2.
-                        # if the running index is equals the min, means that there's no
-                        # area
-                        if not y == minValue:
-                            self.free_places.append((y, minValue))
-                        y = nextMinValue
-                # if no layer exist over the running index then that's the last
-                # area which is free.
-                if not layerExist:
-                    self.free_places.append((y, self.h))
-                    return self.free_places
+                cur=self.findMin(layers)
+                if self.switch>0:
+                    minValue = cur.y - cur.h / 2.
+                    nextMinValue = cur.y + cur.h / 2.
+                    self.free_places.append((y, minValue))
+                    y = nextMinValue
+            self.free_places.append((y, self.h))
+            return self.free_places
         # if no layer exist,all area of the cross section is free
         else:
             self.free_places.append((0, self.h))
         return self.free_places
+    
+    '''
+    find the layer which is the lowest
+    '''
+    def findMin(self,layers):
+        if len(layers)==0:
+            self.switch=-1
+        else:
+            #for the beginning minY=cross-section-height
+            minY=self.h
+            #go through all layers
+            for layer in layers:
+                y=layer.y-layer.h/2.
+                if y<minY:
+                    minY=y
+                    cur=layer
+            layers.remove(cur)
+            return cur
+            
 
     ##########################################################################
     #                                Setter && Getter                        #

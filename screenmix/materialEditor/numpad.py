@@ -69,16 +69,16 @@ class Numpad(GridLayout):
         self.textinput.text=self.textinput.text[:-1]
     
     '''
-    the method resetText reset the text of the label
+    the method reset_text reset the text of the label
     the method must be called from the developer when
     the text must be deleted
     '''
-    def resetText(self):
+    def reset_text(self):
         self.textinput.text=''
     
     '''
     the method sign_in_parent to set the parent of 
-    the object. the parent must have the method finishedNumpad
+    the object. the parent must have the method finished_numpad
     '''
     def sign_in_parent(self, parent):
         self.p=parent
@@ -89,12 +89,12 @@ class Numpad(GridLayout):
     '''
     def finished(self,button):
         if len(self.textinput.text)>0:
-            self.p.finishedNumpad()
-        self.resetText()
+            self.p.finished_numpad()
+        self.reset_text()
     
     '''
     cancel the numpad input
     '''
     def cancel(self,btn):
         self.p.closeNumpad()
-        self.resetText()
+        self.reset_text()
