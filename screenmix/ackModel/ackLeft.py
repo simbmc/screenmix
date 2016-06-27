@@ -13,6 +13,10 @@ import numpy as np
 from plot.filled_ellipse import FilledEllipse
 from designClass.design import Design
 
+import matplotlib.pyplot as plt
+import numpy as np
+import matplotlib.patches as mpatches
+
 class AckLeft(GridLayout):
     colors = [0.8, 0.3, 0.5, 0.2, 0.1, 0.7, 0.1]
     colorcycler = cycle(colors)
@@ -67,7 +71,7 @@ class AckLeft(GridLayout):
         self.graph.add_plot(self.plot)
 
     '''
-    the method alculate_points calculate the points for 
+    the method calculate_points calculate the points for 
     the graphh 
     '''
 
@@ -117,10 +121,20 @@ class AckLeft(GridLayout):
         self.ack.set_maxStrain(points[-1][0])
         self.graph.x_ticks_major = np.round(
             self.graph.xmax / 6., decimals=int(-np.log10(self.graph.xmax / 6)) + 1)
+        self.graph.x_ticks_major=self.graph.xmax/3
         self.graph.y_ticks_major = np.round(
             self.graph.ymax / 6., decimals=int(-np.log10(self.graph.ymax / 6)) + 1)
+        #AckLeft.plot_task6(points, self.graph.xmax, self.graph.ymax)
         return points
-
+    
+    @staticmethod 
+    def plot_task6(points,xmax,ymax):
+        xrange_1=np.array([x[0] for x in points])
+        yrange_1=np.array([x[1] for x in points])
+        plt.plot(xrange_1, yrange_1)
+        plt.axis([0, xmax, 0, ymax])
+        plt.show()
+    
     '''
     delete the plots which aren't the curPlot and the focusplot
     '''

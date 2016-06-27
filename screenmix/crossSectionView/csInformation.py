@@ -8,7 +8,7 @@ Created on 10.03.2016
 @author: mkennert
 '''
 '''
-the class CrossSectionInformation was developed to show 
+the class CSInformation was developed to show 
 the information of the cs_view
 '''
 
@@ -26,11 +26,11 @@ from materialEditor.editor import Material_Editor
 from materialEditor.numpad import Numpad
 
 
-class CrossSectionInformation(BoxLayout):
+class CSInformation(BoxLayout):
 
     # Constructor
     def __init__(self, **kwargs):
-        super(CrossSectionInformation, self).__init__(**kwargs)
+        super(CSInformation, self).__init__(**kwargs)
         self.orientation = 'vertical'
         self.btnSize = Design.btnSize
         self.focusBtn = None

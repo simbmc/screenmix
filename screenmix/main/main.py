@@ -155,7 +155,6 @@ class Main(GridLayout):
         self.content = self.materialEditor
         self.popup.dismiss()
 
-
 class CSIApp(App):
 
     def build(self):

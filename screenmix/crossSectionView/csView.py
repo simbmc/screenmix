@@ -19,16 +19,16 @@ colorcycler = cycle(colors)
 
 
 '''
-the class CSRectangleView was developed to show the the cross section,
+the class CSView was developed to show the the cross section,
 which has a rectangle shape
 '''
 
 
-class CSRectangleView(BoxLayout):
+class CSView(BoxLayout):
     # Constructor
 
     def __init__(self, **kwargs):
-        super(CSRectangleView, self).__init__(**kwargs)
+        super(CSView, self).__init__(**kwargs)
         self.h = 0.5
         self.w = 0.25
         self.percentChange = False
@@ -44,6 +44,7 @@ class CSRectangleView(BoxLayout):
             h = layer.h
             layer.layerCs.xrange =[0., self.w]
             layer.layerCs.yrange=[y - h / 2., y + h / 2.]
+            layer.layerAck.yrange=[y - h / 2., y + h / 2.]
             if layer.focus:
                 layer.layerCs.color = Design.focusColor
             else:
@@ -244,11 +245,12 @@ class CSRectangleView(BoxLayout):
 
     def set_percent(self, value):
         self.percentChange = True
-        for rectangle in self.layers:
-            if rectangle.focus:
-                rectangle.set_height(self.h * value)
-                rectangle.set_percent(value)
+        for layer in self.layers:
+            if layer.focus:
+                layer.set_height(self.h * value)
+                layer.set_percent(value)
                 self.update_all_graph()
+                self.cs.calculate_weight_price()
                 self.cs.calculate_strength()
                 self.update_cross_section_information()
                 return
@@ -259,11 +261,12 @@ class CSRectangleView(BoxLayout):
     '''
 
     def set_height(self, value):
+        a=value/self.h
         for layer in self.layers:
             layer.set_y(
-                layer.y / self.h * value)
+                layer.y*a)
             layer.set_height(
-                layer.h / self.h * value)
+                layer.h*a)
             self.update_all_graph()
         self.h = value
         self.graph.ymax = self.h

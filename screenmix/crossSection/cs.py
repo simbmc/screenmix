@@ -5,8 +5,8 @@ Created on 15.03.2016
 
 
 from kivy.uix.gridlayout import GridLayout
-from crossSectionView.csView import CSRectangleView 
-from crossSectionView.csInformation import CrossSectionInformation
+from crossSectionView.csView import CSView 
+from crossSectionView.csInformation import CSInformation
 from materialEditor.materiallist import MaterialList
 from materials.concrete import Concrete
 
@@ -20,13 +20,13 @@ class CrossSection(GridLayout):
         self.h = 0.5
         self.w = 0.25
         self.allMaterials=MaterialList()
-        self.view=CSRectangleView()
+        self.view=CSView()
         concrete=Concrete()
         self.concreteDensity=concrete.density
         self.concretePrice=concrete.price
         self.concreteStiffness= concrete.stiffness
         self.concreteStrength= concrete.strength
-        self.information=CrossSectionInformation()
+        self.information=CSInformation()
         self.cols=2
         self.add_widget(self.view)
         self.add_widget(self.information)
