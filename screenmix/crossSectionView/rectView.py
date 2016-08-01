@@ -4,61 +4,59 @@ Created on 14.03.2016
 '''
 
 
-import copy
-from itertools import cycle
-
-from kivy.uix.boxlayout import BoxLayout
-
-from crossSectionView.layer import Layer
-from designClass.design import Design
-from kivy.garden.graph import Graph, MeshLinePlot
-from plot.filled_rect import FilledRect
-colors = [[255, 102, 102], [255, 255, 102], [140, 255, 102], [102, 255, 217],
-          [102, 102, 255], [255, 102, 102], [179, 179, 179], [102, 71, 133]]
-colorcycler = cycle(colors)
-
-
 '''
-the class CSView was developed to show the the cross section,
+the class RectView was developed to show the the cross section,
 which has a rectangle shape
 '''
 
+import copy
 
-class CSView(BoxLayout):
-    # Constructor
+from kivy.properties import ObjectProperty, NumericProperty
+from kivy.uix.boxlayout import BoxLayout
+
+from crossSectionView.iView import IView
+from layers.rectLayer import RectLayer
+from ownComponents.design import Design
+from ownComponents.ownGraph import OwnGraph
+from plot.filled_rect import FilledRect
+
+
+class RectView(BoxLayout, IView):
+    cs = ObjectProperty()
+    w, h = NumericProperty(), NumericProperty()
+    
+    #constructor
 
     def __init__(self, **kwargs):
-        super(CSView, self).__init__(**kwargs)
-        self.h = 0.5
-        self.w = 0.25
+        super(RectView, self).__init__(**kwargs)
+        self.h, self.w = 0.5, 0.25
         self.percentChange = False
-        self.layers = []
         self.create_graph()
-    
+
     '''
     update the layers in the graph
     '''
+
     def update_all_graph(self):
-        for layer in self.layers:
-            y = layer.y
-            h = layer.h
-            layer.layerCs.xrange =[0., self.w]
-            layer.layerCs.yrange=[y - h / 2., y + h / 2.]
-            layer.layerAck.yrange=[y - h / 2., y + h / 2.]
+        for layer in self.cs.layers:
+            y, h = layer.y, layer.h
+            layer.layerCs.xrange = [0., self.w]
+            layer.layerCs.yrange = [y - h / 2., y + h / 2.]
+            layer.layerAck.yrange = [y - h / 2., y + h / 2.]
             if layer.focus:
                 layer.layerCs.color = Design.focusColor
             else:
-                layer.layerCs.color=layer.colors
-        if len(self.layers) == 0:
+                layer.layerCs.color = layer.colors
+        if len(self.cs.layers) == 0:
             self.graph._clear_buffer()
-            
+
     '''
     the method create_graph create the graph, where you can add 
     the layers. the method should be called only once at the beginning
     '''
 
     def create_graph(self):
-        self.graph = Graph(
+        self.graph = OwnGraph(
             x_ticks_major=0.05, y_ticks_major=0.05,
             y_grid_label=True, x_grid_label=True, padding=5,
             xmin=0, xmax=self.w, ymin=0, ymax=self.h)
@@ -74,28 +72,27 @@ class CSView(BoxLayout):
         gw, gh = self.graph._plot_area.size  # graph size
         x = (touch.x - x0) / gw * self.w
         y = (touch.y - y0) / gh * self.h
-        for layer in self.layers:
+        for layer in self.cs.layers:
             if layer.focus and layer.mouse_within_x(x):
                 # case:1 the layer don't collide with the border of the cross
                 # section
-                if y > layer.h / 2 and y < self.h - layer.h / 2:
+                if y > layer.h / 2. and y < self.h - layer.h / 2.:
                     layer.set_yrange([
-                        y - layer.h / 2., y + layer.h / 2.])
-                    layer.set_y(y)
+                        y - layer.h, y ])
+                    layer.y = y - layer.h / 2.
                     return
                 # case:2 the layer collide with the bottom border of the cross section
                 #       the user can't move the layer down
-                elif y < layer.h / 2:
+                elif y < layer.h / 2.:
                     layer.set_yrange([0., layer.h])
-                    layer.set_y(layer.h / 2)
+                    layer.y = layer.h / 2.
                     return
                 # case:3 the layer collide with the top border of the cross section
                 #       the user can't move the layer up
-                elif y > self.h - layer.h / 2:
+                elif y > self.h - layer.h / 2.:
                     layer.set_yrange([
                         self.h - layer.h, self.h])
-                    layer.set_y(
-                        self.h - layer.h / 2)
+                    layer.y = self.h - layer.h / 2.
                     return
 
     '''
@@ -111,7 +108,7 @@ class CSView(BoxLayout):
         y = (touch.y - y0) / gh * self.h
         changed = False
         curFocus = False
-        for layer in self.layers:
+        for layer in self.cs.layers:
             if layer.mouse_within(x, y):
                 if layer.focus == True and self.percentChange:
                     self.percentChange = False
@@ -122,7 +119,7 @@ class CSView(BoxLayout):
                     curFocus = True
                     cur = layer.get_material_informations()
                     self.cs.set_layer_information(cur[0], cur[1], cur[
-                                                             2], cur[3], cur[4], layer.h / self.h)
+                        2], cur[3], cur[4], layer.h / self.h)
                     changed = True
             else:
                 if layer.focus == True:
@@ -132,61 +129,60 @@ class CSView(BoxLayout):
         if changed:
             self.update_all_graph()
 
-
     '''
     the method add_layer was developed to add new layer at the cross section
     '''
 
     def add_layer(self, value, material):
         h = self.h * value
-        cur = Layer(self.w / 2, self.h - h / 2., h,
-                              self.w, next(colorcycler), value)
+        y = self.h - h / 2.
+        cur = RectLayer(self.w / 2, y, h,
+                        self.w, material.color, value)
         cur.set_material(material)
-        y = cur.y
-        h = cur.h
         filledRectCs = FilledRect(xrange=[0., self.w],
-                                    yrange=[y - h / 2., y + h / 2.],
-                                    color=cur.colors)
-        filledRectAck=FilledRect(xrange=[0.,0.],
-                                 yrange=[y - h / 2., y + h / 2.],
-                                 color=cur.colors)
+                                  yrange=[y - h / 2., y + h / 2.],
+                                  color=cur.colors)
+        filledRectAck = FilledRect(xrange=[0., 0.],
+                                   yrange=[y - h / 2., y + h / 2.],
+                                   color=cur.colors)
         self.graph.add_plot(filledRectCs)
         cur.set_layer_cs(filledRectCs)
         cur.set_layer_ack(filledRectAck)
-        self.layers.append(cur)
+        self.cs.layers.append(cur)
         self.update_all_graph()
         self.cs.calculate_strength()
-        self.update_cross_section_information()
+        self.update_cs_information()
 
     '''
     the method delete_layer was developed to delete layer from the cross section
     '''
 
     def delete_layer(self):
-        for layer in self.layers:
+        for layer in self.cs.layers:
             if layer.focus:
-                layer.layerCs.yrange=[0,0]
-                layer.layerAck.yrange=[0,0]
-                self.layers.remove(layer)
+                layer.layerCs.yrange = [0, 0]
+                layer.layerAck.yrange = [0, 0]
+                self.cs.layers.remove(layer)
         self.update_all_graph()
         self.cs.calculate_strength()
-        self.update_cross_section_information()
+        self.update_cs_information()
 
     '''
     the method update_layer_information update the layer information of 
     the view_information
     '''
 
-    def update_layer_information(self, name, price, density, stiffness, strength, percent):
-        self.cs.set_layer_information(
-            name, price, density, stiffness, strength, percent)
+    def update_layer_information(self, name, price, density, stiffness,
+                                 strength, percent):
+        self.cs.set_layer_information(name, price, density,
+                                      stiffness, strength, percent)
 
     '''
-    the method update_cross_section_information update the cross section information of 
+    the method update_cs_information update the cross section information of 
     the view_information
     '''
 
-    def update_cross_section_information(self):
+    def update_cs_information(self):
         self.cs.calculate_weight_price()
         self.cs.set_cross_section_information()
 
@@ -194,18 +190,19 @@ class CSView(BoxLayout):
     the method get_free_places return the free-places, 
     where is no layer
     '''
+
     def get_free_places(self):
         self.free_places = []
-        layers=copy.deepcopy(self.layers)
+        layers = copy.deepcopy(self.cs.layers)
         # running index
         y = 0.
         # if the cross section contains layers
-        if not len(self.layers) == 0:
-            self.switch=1
+        if not len(self.cs.layers) == 0:
+            self.switch = 1
             while self.switch > 0:
                 minValue = self.h
-                cur=self.findMin(layers)
-                if self.switch>0:
+                cur = self.findMin(layers)
+                if self.switch > 0:
                     minValue = cur.y - cur.h / 2.
                     nextMinValue = cur.y + cur.h / 2.
                     self.free_places.append((y, minValue))
@@ -216,25 +213,25 @@ class CSView(BoxLayout):
         else:
             self.free_places.append((0, self.h))
         return self.free_places
-    
+
     '''
     find the layer which is the lowest
     '''
-    def findMin(self,layers):
-        if len(layers)==0:
-            self.switch=-1
+
+    def findMin(self, layers):
+        if len(layers) == 0:
+            self.switch = -1
         else:
-            #for the beginning minY=cross-section-height
-            minY=self.h
-            #go through all layers
+            # for the beginning minY=cross-section-height
+            minY = self.h
+            # go through all layers
             for layer in layers:
-                y=layer.y-layer.h/2.
-                if y<minY:
-                    minY=y
-                    cur=layer
+                y = layer.y - layer.h / 2.
+                if y < minY:
+                    minY = y
+                    cur = layer
             layers.remove(cur)
             return cur
-            
 
     ##########################################################################
     #                                Setter && Getter                        #
@@ -245,14 +242,13 @@ class CSView(BoxLayout):
 
     def set_percent(self, value):
         self.percentChange = True
-        for layer in self.layers:
+        for layer in self.cs.layers:
             if layer.focus:
-                layer.set_height(self.h * value)
-                layer.set_percent(value)
+                layer.h, layer.p = self.h * value, value
                 self.update_all_graph()
                 self.cs.calculate_weight_price()
                 self.cs.calculate_strength()
-                self.update_cross_section_information()
+                self.update_cs_information()
                 return
 
     '''
@@ -261,17 +257,13 @@ class CSView(BoxLayout):
     '''
 
     def set_height(self, value):
-        a=value/self.h
-        for layer in self.layers:
-            layer.set_y(
-                layer.y*a)
-            layer.set_height(
-                layer.h*a)
+        a, self.h = value / self.h, value
+        for layer in self.cs.layers:
+            layer.y, layer.h = layer.y * a, layer.h * a
             self.update_all_graph()
-        self.h = value
         self.graph.ymax = self.h
-        self.graph.y_ticks_major=self.h/5.
-        self.update_cross_section_information()
+        self.graph.y_ticks_major = self.h / 5.
+        self.update_cs_information()
 
     '''
     the method set_width change the width of the cross section shape
@@ -280,12 +272,12 @@ class CSView(BoxLayout):
 
     def set_width(self, value):
         self.w = value
-        self.graph.x_ticks_major=self.w/5.
+        self.graph.x_ticks_major = self.w / 5.
         self.graph.xmax = self.w
-        for layer in self.layers:
-            layer.set_width(value)
+        for layer in self.cs.layers:
+            layer.w = value
         self.update_all_graph()
-        self.update_cross_section_information()
+        self.update_cs_information()
 
     '''
     the method set_cross_section was developed to say the view, 
@@ -295,9 +287,3 @@ class CSView(BoxLayout):
     def set_cross_section(self, cs):
         self.cs = cs
 
-    '''
-    return all layers 
-    '''
-
-    def get_layers(self):
-        return self.layers

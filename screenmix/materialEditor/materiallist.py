@@ -2,11 +2,6 @@
 Created on 18.04.2016
 @author: mkennert
 '''
-from materials.steel import Steel
-from materials.carbonFiber import CarbonFiber
-from materials.concrete import Concrete
-from materials.glassFiber import GlassFiber
-
 '''
 the class MaterialList was developed to make it possible
 to use only one materiallist and update the observerclasses
@@ -15,14 +10,22 @@ Attention: if you add a new observer, make sure that the observer
            implements a update-method.
 '''
 
+from materialEditor.singleton import Singleton
+from materials.carbonFiber import CarbonFiber
+from materials.glassFiber import GlassFiber
+from materials.steel import Steel
 
+
+@Singleton
 class MaterialList:
+    allMaterials = None
+    
     # constuctor
-
     def __init__(self):
-        self.allMaterials = [Steel(), CarbonFiber(), Concrete(), GlassFiber()]
+        print('create materiallist')
+        self.allMaterials = [Steel(), CarbonFiber(), GlassFiber()]
         self.listeners = []
-
+    
     '''
     update all listeners when a new material was added
     '''

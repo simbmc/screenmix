@@ -1,0 +1,18 @@
+<AppActionBar>:
+    pos_hint: {'top':1}
+    size_hint: (1., 0.1)
+    ActionView:
+        use_separator: True
+        ActionMenu:
+            title: 'Screenmix'
+            with_previous: False
+        ActionOverflow:
+        ActionButton:
+            text: 'cross section'
+            on_press:app.show_cross_section_view()
+        ActionButton:
+            text: 'ack'
+            on_press:app.show_ack_view()
+        ActionButton:
+            text: 'material editor'
+            on_press:app.show_material_editor()
