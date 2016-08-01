@@ -124,4 +124,3 @@ class ShapeRectangle(GridLayout, IShape):
         self.calculate_strength()
         self.set_cross_section_information()
     
-    

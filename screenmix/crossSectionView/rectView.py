@@ -76,14 +76,14 @@ class RectView(BoxLayout, IView):
             if layer.focus and layer.mouse_within_x(x):
                 # case:1 the layer don't collide with the border of the cross
                 # section
-                if y > layer.h / 2. and y < self.h - layer.h / 2.:
+                if y > layer.h and y < self.h - layer.h / 2.:
                     layer.set_yrange([
                         y - layer.h, y ])
                     layer.y = y - layer.h / 2.
                     return
                 # case:2 the layer collide with the bottom border of the cross section
                 #       the user can't move the layer down
-                elif y < layer.h / 2.:
+                elif y < layer.h:
                     layer.set_yrange([0., layer.h])
                     layer.y = layer.h / 2.
                     return
