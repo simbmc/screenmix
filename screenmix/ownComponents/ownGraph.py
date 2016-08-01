@@ -16,3 +16,4 @@ class OwnGraph(Graph):
         self.color=[0.25,0.25,0.25,1]
         self.label_options.color=Design.foregroundColor
         
+        

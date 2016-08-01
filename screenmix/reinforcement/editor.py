@@ -33,8 +33,6 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.containsInformation = False
         self.error = False
         
-    
-
     '''
     create the gui
     '''

@@ -86,11 +86,17 @@ class AckLeftRect(GridLayout):
         self.graph.xmax = points[-1][0] * 1.2
         self.graph.ymax = points[-1][1] * 1.2
         self.ack.set_maxStrain(points[-1][0])
-        self.graph.x_ticks_major = np.round(
-            self.graph.xmax / 6., decimals=int(-np.log10(self.graph.xmax / 6)) + 1)
-        self.graph.x_ticks_major = self.graph.xmax / 3.
+        #self.graph.x_ticks_major = np.round(
+        #    self.graph.xmax / 6., decimals=int(-np.log10(self.graph.xmax / 6)) + 1)
+        if self.cs.layers:
+            s=float(format(self.graph.xmax / 5., '.1g'))
+            self.graph.x_ticks_major=s
+            print('s: '+str(s))
+        else:
+            self.graph.x_ticks_major=self.graph.xmax/4.
+        #self.graph.x_ticks_major = self.graph.xmax / 3.
         self.graph.y_ticks_major = np.round(
-            self.graph.ymax / 6., decimals=int(-np.log10(self.graph.ymax / 6)) + 1)
+            self.graph.ymax / 5., decimals=int(-np.log10(self.graph.ymax / 6)) + 1)
         return points
 
     

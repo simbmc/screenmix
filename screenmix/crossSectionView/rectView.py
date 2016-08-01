@@ -158,6 +158,8 @@ class RectView(BoxLayout, IView):
     '''
 
     def delete_layer(self):
+        if len(self.cs.layers)==0:
+            return
         for layer in self.cs.layers:
             if layer.focus:
                 layer.layerCs.yrange = [0, 0]

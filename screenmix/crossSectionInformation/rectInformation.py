@@ -46,8 +46,6 @@ class RectangleInformation(GridLayout):
         self.btnheight.bind(on_press=self.show_numpad)
         self.btnwidth.bind(on_press=self.show_numpad)
         
-
-
     '''
     create the numpad
     '''
