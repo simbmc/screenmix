@@ -3,20 +3,24 @@ Created on 01.03.2016
 
 @author: mkennert
 '''
+from kivy.properties import ObjectProperty
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 
 from ownComponents.design import Design
 from ownComponents.ownLabel import OwnLabel
 
-
 class Numpad(GridLayout):
+    '''
+    the class keyboard was developed to give the user the possibility
+    to input a value
+    '''
+    p = ObjectProperty()
     # construktor
 
     def __init__(self, **kwargs):
         super(Numpad, self).__init__(**kwargs)
         self.cols=1
-        self.btnHeight = Design.btnHeight
         self.createNumfield()
 
     '''
@@ -43,11 +47,11 @@ class Numpad(GridLayout):
         cur = GridLayout(cols=1)
         layout = GridLayout(cols=2, spacing=10,
                             row_force_default=True,
-                            row_default_height=self.btnHeight)
-        btnOK = Button(text='ok', size_hint_y=None, height=self.btnHeight)
+                            row_default_height=Design.btnHeight)
+        btnOK = Button(text='ok', size_hint_y=None, height=Design.btnHeight)
         btnOK.bind(on_press=self.finished)
-        btnCancel = Button(
-            text='cancel', size_hint_y=None, height=self.btnHeight)
+        btnCancel = Button(text='cancel', size_hint_y=None, 
+                           height=Design.btnHeight)
         btnCancel.bind(on_press=self.cancel)
         layout.add_widget(btnOK)
         layout.add_widget(btnCancel)
@@ -80,13 +84,6 @@ class Numpad(GridLayout):
 
     def reset_text(self):
         self.lblTextinput.text = ''
-
-    '''
-    the method sign_in_parent to set the parent of 
-    the object. the parent must have the method finished_numpad
-    '''
-    def sign_in_parent(self, parent):
-        self.p = parent
 
     '''
     the method finished close the popup when the user

@@ -3,6 +3,7 @@ Created on 26.07.2016
 
 @author: mkennert
 '''
+__version__ = '1.0'
 from kivy.app import App
 from kivy.core.window import Window
 from kivy.uix.actionbar import ActionBar, ActionPrevious
@@ -11,11 +12,10 @@ from kivy.uix.gridlayout import GridLayout
 from ackModel.ack import Ack
 from crossSection.crossSection import CrossSection
 from materialEditor.editor import Material_Editor
+from ownComponents.design import Design
 
 
-Window.size = (720, 500)
-Window.clearcolor = (1, 1, 1, 0.5)
-
+Window.clearcolor = (1, 1, 1, 1)
 '''
 create the Actionbar in the mainMenu with the kv.file screenmixapp
 '''
@@ -29,15 +29,13 @@ class ActionMenu(ActionPrevious):
     pass
 
 '''
-starts the application
+Build the application
 '''
-Window.clearcolor = (1, 1, 1, 0.5)
 class ScreenmixApp(App):
     def build(self):
-        self.content = GridLayout(cols=1, spacing=5)
         bar = AppActionBar()
+        self.content = GridLayout(cols=1, padding=Design.padding, spacing=Design.spacing)
         self.content.add_widget(bar)
-        self.content.cols = 1
         self.create_componets()
         # Cross Section is the default view
         self.contentLayout = self.cs
@@ -51,7 +49,6 @@ class ScreenmixApp(App):
         self.create_cross_section_view()
         self.create_ack_view()
         self.create_material_editor()
-
 
     '''
     create the cross section
@@ -67,8 +64,9 @@ class ScreenmixApp(App):
 
     def create_ack_view(self):
         self.ackView = Ack()
-        self.cs.shapeRectangle.set_ack(self.ackView.ackRect)
-        self.ackView.ackRect.set_cross_section(self.cs.shapeRectangle)
+        self.cs.shapeRectangle.ack = self.ackView.ackRect
+        self.ackView.ackRect.cs = self.cs.shapeRectangle
+        self.ackView.ackRect.create_gui()
         # when you add more shapes, make sure that the
         # shapes has a ownAck
 
@@ -113,6 +111,9 @@ class ScreenmixApp(App):
         self.content.remove_widget(self.contentLayout)
         self.content.add_widget(self.materialEditor)
         self.contentLayout = self.materialEditor
-    
+
+'''
+start the application
+'''
 if __name__ == '__main__':
     ScreenmixApp().run()

@@ -9,9 +9,13 @@ from materials.amaterial import AMaterial
 
 
 class OwnMaterial(AMaterial):
-    #constructor
-    def __init__(self,name,price,density,stiffness,strength):
-        c=[random.randint(0, 255) for i in range(3)]
-        print(c)
-        super(OwnMaterial,self,).__init__(name, price,density,
-                                          stiffness,strength,c)
+    '''
+    database for ownmaterials. the values must given the 
+    constructor. the own-material get a random-color
+    '''
+    
+    # constructor
+    def __init__(self, name, price, density, stiffness, strength):
+        super(OwnMaterial, self,).__init__(name, price, density,
+                                          stiffness, strength, 
+                                          [random.randint(0, 255) for i in range(3)])

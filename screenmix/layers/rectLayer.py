@@ -10,8 +10,11 @@ from iLayer import ILayer
 class RectLayer(ILayer):
     x, y = NumericProperty(), NumericProperty()
     h, w, p = NumericProperty(), NumericProperty(), NumericProperty()
+    strain=NumericProperty()
     colors = ListProperty([255, 255, 255])
     material = ObjectProperty()
+    layerCs, layerAck = ObjectProperty(), ObjectProperty()
+    
     # Constructor
     def __init__(self, x, y, h, w, colors, p):
         self.x, self.y = x, y
@@ -46,22 +49,6 @@ class RectLayer(ILayer):
 
     def get_strain(self):
         return self.material.strength / self.material.stiffness
-    
-    '''
-    the method set_material was developed to set the small_keyboard the materials
-    '''
-
-    def set_material(self, material):
-        self.material = material
-    
-    '''
-    return the materials information
-    '''
-
-    def get_material_informations(self):
-        return [self.material.name, self.material.price,
-                self.material.density, self.material.stiffness,
-                self.material.strength]
         
     '''
     return the weight of the layer
@@ -73,23 +60,9 @@ class RectLayer(ILayer):
         return weight
 
     '''
-    set the layerCs
-    '''
-
-    def set_layer_cs(self, filledRect):
-        self.layerCs = filledRect
-
-    '''
-    set the layerAck
-    '''
-
-    def set_layer_ack(self, filledRect):
-        self.layerAck = filledRect
-
-    '''
     set the yrange
     '''
 
-    def set_yrange(self, values):
+    def update_yrange(self, values):
         self.layerAck.yrange = values
         self.layerCs.yrange = values

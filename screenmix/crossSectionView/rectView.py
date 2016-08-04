@@ -3,12 +3,6 @@ Created on 14.03.2016
 @author: mkennert
 '''
 
-
-'''
-the class RectView was developed to show the the cross section,
-which has a rectangle shape
-'''
-
 import copy
 
 from kivy.properties import ObjectProperty, NumericProperty
@@ -22,17 +16,31 @@ from plot.filled_rect import FilledRect
 
 
 class RectView(BoxLayout, IView):
+    '''
+    the class RectView was developed to show the the cross section,
+    which has a rectangle shape
+    '''
     cs = ObjectProperty()
-    w, h = NumericProperty(), NumericProperty()
+    w, h = NumericProperty(0.25), NumericProperty(0.5)
     
-    #constructor
+    # constructor
 
     def __init__(self, **kwargs):
         super(RectView, self).__init__(**kwargs)
-        self.h, self.w = 0.5, 0.25
         self.percentChange = False
         self.create_graph()
+        
+    '''
+    the method create_graph create the graph, where you can add 
+    the layers. the method should be called only once at the beginning
+    '''
 
+    def create_graph(self):
+        self.graph = OwnGraph(x_ticks_major=0.05, y_ticks_major=0.05,
+                              y_grid_label=True, x_grid_label=True,
+                            xmin=0, xmax=self.w, ymin=0, ymax=self.h)
+        self.add_widget(self.graph)
+    
     '''
     update the layers in the graph
     '''
@@ -51,18 +59,6 @@ class RectView(BoxLayout, IView):
             self.graph._clear_buffer()
 
     '''
-    the method create_graph create the graph, where you can add 
-    the layers. the method should be called only once at the beginning
-    '''
-
-    def create_graph(self):
-        self.graph = OwnGraph(
-            x_ticks_major=0.05, y_ticks_major=0.05,
-            y_grid_label=True, x_grid_label=True, padding=5,
-            xmin=0, xmax=self.w, ymin=0, ymax=self.h)
-        self.add_widget(self.graph)
-
-    '''
     the method on_touch_move is invoked after the user touch within a rectangle and move it.
     it changes the position of the rectangle
     '''
@@ -76,21 +72,21 @@ class RectView(BoxLayout, IView):
             if layer.focus and layer.mouse_within_x(x):
                 # case:1 the layer don't collide with the border of the cross
                 # section
-                if y > layer.h and y < self.h - layer.h / 2.:
-                    layer.set_yrange([
+                if y > layer.h and y < self.h :
+                    layer.update_yrange([
                         y - layer.h, y ])
                     layer.y = y - layer.h / 2.
                     return
                 # case:2 the layer collide with the bottom border of the cross section
                 #       the user can't move the layer down
                 elif y < layer.h:
-                    layer.set_yrange([0., layer.h])
+                    layer.update_yrange([0., layer.h])
                     layer.y = layer.h / 2.
                     return
                 # case:3 the layer collide with the top border of the cross section
                 #       the user can't move the layer up
                 elif y > self.h - layer.h / 2.:
-                    layer.set_yrange([
+                    layer.update_yrange([
                         self.h - layer.h, self.h])
                     layer.y = self.h - layer.h / 2.
                     return
@@ -118,7 +114,7 @@ class RectView(BoxLayout, IView):
                     layer.focus = True
                     curFocus = True
                     cur = layer.get_material_informations()
-                    self.cs.set_layer_information(cur[0], cur[1], cur[
+                    self.cs.update_layer_information(cur[0], cur[1], cur[
                         2], cur[3], cur[4], layer.h / self.h)
                     changed = True
             else:
@@ -138,27 +134,24 @@ class RectView(BoxLayout, IView):
         y = self.h - h / 2.
         cur = RectLayer(self.w / 2, y, h,
                         self.w, material.color, value)
-        cur.set_material(material)
-        filledRectCs = FilledRect(xrange=[0., self.w],
+        cur.material = material
+        cur.layerCs = FilledRect(xrange=[0., self.w],
                                   yrange=[y - h / 2., y + h / 2.],
                                   color=cur.colors)
-        filledRectAck = FilledRect(xrange=[0., 0.],
+        cur.layerAck = FilledRect(xrange=[0., 0.],
                                    yrange=[y - h / 2., y + h / 2.],
                                    color=cur.colors)
-        self.graph.add_plot(filledRectCs)
-        cur.set_layer_cs(filledRectCs)
-        cur.set_layer_ack(filledRectAck)
+        self.graph.add_plot(cur.layerCs)
         self.cs.layers.append(cur)
         self.update_all_graph()
-        self.cs.calculate_strength()
         self.update_cs_information()
-
+        
     '''
     the method delete_layer was developed to delete layer from the cross section
     '''
 
     def delete_layer(self):
-        if len(self.cs.layers)==0:
+        if len(self.cs.layers) == 0:
             return
         for layer in self.cs.layers:
             if layer.focus:
@@ -170,23 +163,13 @@ class RectView(BoxLayout, IView):
         self.update_cs_information()
 
     '''
-    the method update_layer_information update the layer information of 
-    the view_information
-    '''
-
-    def update_layer_information(self, name, price, density, stiffness,
-                                 strength, percent):
-        self.cs.set_layer_information(name, price, density,
-                                      stiffness, strength, percent)
-
-    '''
     the method update_cs_information update the cross section information of 
     the view_information
     '''
 
     def update_cs_information(self):
         self.cs.calculate_weight_price()
-        self.cs.set_cross_section_information()
+        self.cs.update_cs_information()
 
     '''
     the method get_free_places return the free-places, 
@@ -234,15 +217,12 @@ class RectView(BoxLayout, IView):
                     cur = layer
             layers.remove(cur)
             return cur
-
-    ##########################################################################
-    #                                Setter && Getter                        #
-    ##########################################################################
+        
     '''
-    the method set_percent change the percent shape of the selected rectangle
+    the method update_percent change the percent shape of the selected rectangle
     '''
 
-    def set_percent(self, value):
+    def update_percent(self, value):
         self.percentChange = True
         for layer in self.cs.layers:
             if layer.focus:
@@ -254,11 +234,11 @@ class RectView(BoxLayout, IView):
                 return
 
     '''
-    the method set_height change the height of the cross section shape
+    the method update_height change the height of the cross section shape
     and update the layers
     '''
 
-    def set_height(self, value):
+    def update_height(self, value):
         a, self.h = value / self.h, value
         for layer in self.cs.layers:
             layer.y, layer.h = layer.y * a, layer.h * a
@@ -268,11 +248,11 @@ class RectView(BoxLayout, IView):
         self.update_cs_information()
 
     '''
-    the method set_width change the width of the cross section shape
+    the method update_width change the width of the cross section shape
     and update the layers
     '''
 
-    def set_width(self, value):
+    def update_width(self, value):
         self.w = value
         self.graph.x_ticks_major = self.w / 5.
         self.graph.xmax = self.w
@@ -280,12 +260,4 @@ class RectView(BoxLayout, IView):
             layer.w = value
         self.update_all_graph()
         self.update_cs_information()
-
-    '''
-    the method set_cross_section was developed to say the view, 
-    which cross section should it use
-    '''
-
-    def set_cross_section(self, cs):
-        self.cs = cs
 

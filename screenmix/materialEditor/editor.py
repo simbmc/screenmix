@@ -14,12 +14,16 @@ from ownComponents.ownPopup import OwnPopup
 
 
 class Material_Editor(ScrollView):
+    '''
+    the material-edit is the component, where the user 
+    can see the materials and create new material with 
+    the material-creater
+    '''
     cs = ObjectProperty()
     # Constructor
 
     def __init__(self, **kwargs):
         super(Material_Editor, self).__init__(**kwargs)
-        self.btnHeight = Design.btnHeight
 
     '''
     the method create gui create the gui of 
@@ -28,8 +32,8 @@ class Material_Editor(ScrollView):
 
     def create_gui(self):
         self.create_material_information()
-        self.materialLayout = GridLayout(cols=1, spacing=2, size_hint_y=None)
-        self.materialLayout.padding=[10,10,10,10]
+        self.materialLayout = GridLayout(cols=1, spacing=Design.spacing, size_hint_y=None)
+        self.materialLayout.padding = Design.padding
         # Make sure the height is such that there is something to scroll.
         self.materialLayout.bind(
             minimum_height=self.materialLayout.setter('height'))
@@ -37,8 +41,7 @@ class Material_Editor(ScrollView):
             btn = OwnButton(text=i.name)
             btn.bind(on_press=self.show_material_information)
             self.materialLayout.add_widget(btn)
-        self.btnMaterialEditor = OwnButton(
-            text='create material', size_hint_y=None, height=self.btnHeight)
+        self.btnMaterialEditor = OwnButton(text='create material')
         self.btnMaterialEditor.bind(on_press=self.create_material)
         self.materialLayout.add_widget(self.btnMaterialEditor)
         self.add_widget(self.materialLayout)
@@ -50,7 +53,7 @@ class Material_Editor(ScrollView):
 
     def create_popups(self):
         creater = MaterialCreater()
-        creater.sign_in_parent(self)
+        creater.p = self
         self.popupInfo = OwnPopup(title='material', content=self.contentLayout)
         self.popupCreate = OwnPopup(title='create new material', content=creater)
 
@@ -74,7 +77,7 @@ class Material_Editor(ScrollView):
         self.contentLayout.add_widget(self.lblStiffness)
         self.contentLayout.add_widget(OwnLabel(text='strength[MPa]:'))
         self.contentLayout.add_widget(self.lblStrenght)
-        btn_back = OwnButton(text='back', size_hint_y=None, height=self.btnHeight)
+        btn_back = OwnButton(text='back')
         btn_back.bind(on_press=self.cancel_show)
         self.contentLayout.add_widget(btn_back)
         self.create_popups()
@@ -86,14 +89,13 @@ class Material_Editor(ScrollView):
     def show_material_information(self, button):
         for i in range(0, self.cs.allMaterials.get_length()):
             if self.allMaterials.allMaterials[i].name == button.text:
-                self.lblName.text = self.allMaterials.allMaterials[i].name
+                name=self.allMaterials.allMaterials[i].name
+                self.lblName.text = name
                 self.lblPrice.text = str(self.allMaterials.allMaterials[i].price)
-                self.lblDensity.text = str(
-                    self.allMaterials.allMaterials[i].density)
-                self.lblStiffness.text = str(
-                    self.allMaterials.allMaterials[i].stiffness)
-                self.lblStrenght.text = str(
-                    self.allMaterials.allMaterials[i].strength)
+                self.lblDensity.text = str(self.allMaterials.allMaterials[i].density)
+                self.lblStiffness.text = str(self.allMaterials.allMaterials[i].stiffness)
+                self.lblStrenght.text = str(self.allMaterials.allMaterials[i].strength)
+                self.popupInfo.title=name
                 self.popupInfo.open()
 
     '''

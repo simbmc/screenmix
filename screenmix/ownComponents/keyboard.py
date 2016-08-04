@@ -3,12 +3,9 @@ Created on 07.04.2016
 
 @author: mkennert
 '''
-'''
-The class Keyboard was developed to give the user the possibility
-to write words with a keyboard. 
-the keyboard-object is a popup
-'''
 
+
+from kivy.properties import ObjectProperty
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 
@@ -16,6 +13,11 @@ from ownComponents.ownLabel import OwnLabel
 
 
 class Keyboard(GridLayout):
+    '''
+    the class keyboard was developed to give the user the possibility
+    to write words with a keyboard.
+    '''
+    p = ObjectProperty()
     # constructor
 
     def __init__(self, **kwargs):
@@ -23,8 +25,7 @@ class Keyboard(GridLayout):
         self.cols, self.p = 1, None
         self.alphabet = 'qwertzuiopasdfghjkl_.yxcvbnm'
         self.createKeyboard()
-        self.add_widget(self.layout)
-
+        
     '''
     the method createKeyboard create the
     gui of the keyboard
@@ -46,6 +47,8 @@ class Keyboard(GridLayout):
         self.smallKeyboard.add_widget(btnDelete)
         self.smallKeyboard.add_widget(btnFinished)
         self.layout.add_widget(self.smallKeyboard)
+        self.add_widget(self.layout)
+        
     '''
     the method appending appends character at the end.
     the method is called when the user use the keyboard
@@ -68,7 +71,7 @@ class Keyboard(GridLayout):
     '''
 
     def finished(self, button):
-        if len(self.lblTextinput.text)>0:
+        if len(self.lblTextinput.text) > 0:
             self.p.finished_keyboard()
 
     '''
@@ -79,11 +82,3 @@ class Keyboard(GridLayout):
 
     def reset_text(self):
         self.lblTextinput.text = ''
-
-    '''
-    the method sign_in_parent to set the parent of 
-    the object. the parent must have the method finishedKeyboard
-    '''
-
-    def sign_in_parent(self, parent):
-        self.p = parent

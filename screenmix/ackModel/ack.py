@@ -5,10 +5,14 @@ Created on 01.08.2016
 '''
 from kivy.uix.gridlayout import GridLayout
 from ackModel.ackRect import AckRect
-
+from kivy.properties import ObjectProperty
 
 class Ack(GridLayout):
-
+    '''
+    ack contains all acks from the differnt shapes. it manage which ack-should
+    show in the ack-menu
+    '''
+    ackRect= ObjectProperty()
     # constructor
     def __init__(self, **kwargs):
         super(Ack, self).__init__(**kwargs)

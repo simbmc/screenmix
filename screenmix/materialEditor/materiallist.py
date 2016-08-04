@@ -2,13 +2,6 @@
 Created on 18.04.2016
 @author: mkennert
 '''
-'''
-the class MaterialList was developed to make it possible
-to use only one materiallist and update the observerclasses
-when something has changed. the class implements the observer-pattern.
-Attention: if you add a new observer, make sure that the observer
-           implements a update-method.
-'''
 
 from materialEditor.singleton import Singleton
 from materials.carbonFiber import CarbonFiber
@@ -18,6 +11,14 @@ from materials.steel import Steel
 
 @Singleton
 class MaterialList:
+    '''
+    the class MaterialList was developed to make it possible
+    to use only one materiallist and update the observerclasses
+    when something has changed. the class implements the observer- and the singleton-pattern
+    Attention: 
+    if you add a new observer, make sure that the observer
+    implements the interface iobserver
+    '''
     allMaterials = None
     
     # constuctor

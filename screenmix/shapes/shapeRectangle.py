@@ -3,49 +3,52 @@ Created on 25.07.2016
 
 @author: mkennert
 '''
+from kivy.properties import ListProperty, NumericProperty, ObjectProperty
 from kivy.uix.gridlayout import GridLayout
+
+from crossSectionInformation.rectInformation import RectangleInformation
 from crossSectionView.rectView import RectView
 from materialEditor.materiallist import MaterialList
 from materials.concrete import Concrete
-from crossSectionInformation.rectInformation import RectangleInformation
-from kivy.properties import ListProperty, NumericProperty, ObjectProperty
 from shapes.ishape import IShape
 
 
 class ShapeRectangle(GridLayout, IShape):
-    h, w = NumericProperty(), NumericProperty()
+    '''
+    represents a cross section which has the shape 
+    of a rectangle
+    '''
+    h, w = NumericProperty(0.5), NumericProperty(0.25)
     weight, price = NumericProperty(), NumericProperty()
     strength = NumericProperty()
     view, information = ObjectProperty(), ObjectProperty()
     ack = ObjectProperty()
     layers = ListProperty([])
 
-    # Constructor
+    # constructor
     def __init__(self, **kwargs):
         super(ShapeRectangle, self).__init__(**kwargs)
-        self.h, self.w = 0.5, 0.25
         self.cols = 2
-        self.allMaterials, concrete = MaterialList.get_instance(), Concrete()
+        self.allMaterials, concrete = MaterialList.Instance(), Concrete()
         self.concreteDensity, self.concretePrice = concrete.density, concrete.price
         self.concreteStiffness, self.concreteStrength = concrete.stiffness, concrete.strength
         self.information, self.view = RectangleInformation(), RectView()
 
     '''
-    the method set_height changes the height of the view
+    the method update_height changes the height of the view
     '''
 
-    def set_height(self, value):
-        self.view.set_height(value)
+    def update_height(self, value):
+        self.view.update_height(value)
         self.h = value
 
     '''
-    the method set_width change the width of the view
+    the method update_width change the width of the view
     '''
 
-    def set_width(self, value):
-        self.view.set_width(value)
+    def update_width(self, value):
+        self.view.update_width(value)
         self.w = value
-
 
     '''
     calculate the weight and the lblPrice of the cross section
@@ -118,9 +121,9 @@ class ShapeRectangle(GridLayout, IShape):
 
     def set_reinforcement_editor(self, editor):
         self.refEdit = editor
-        self.information.set_cross_section(self)
-        self.view.set_cross_section(self)
+        self.information.cs = self
+        self.information.create_gui()
+        self.view.cs = self
         self.calculate_weight_price()
         self.calculate_strength()
-        self.set_cross_section_information()
-    
+        self.update_cs_information()

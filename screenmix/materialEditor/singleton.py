@@ -4,12 +4,11 @@ Created on 31.07.2016
 @author: mkennert
 '''
 
-'''
-represents the singleton-pattern. 
-if you want use this, set a annotation @Singleton over your class
-'''
 class Singleton:
-
+    '''
+    represents the singleton-pattern. 
+    if you want use this, set a annotation @Singleton over your class
+    '''
     def __init__(self, decorated):
         self._decorated = decorated
     
@@ -18,7 +17,7 @@ class Singleton:
     yes=> return this instance
     no=> create the first instance a return this
     '''
-    def get_instance(self):
+    def Instance(self):
         try:
             return self._instance
         except AttributeError:
@@ -30,4 +29,4 @@ class Singleton:
     with a other methodname
     '''
     def __call__(self):
-        raise TypeError('Singletons must be accessed through `get_instance()`')
+        raise TypeError('Singletons must be accessed through `Instance()`')

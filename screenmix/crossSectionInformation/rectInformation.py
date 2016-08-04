@@ -4,6 +4,7 @@ Created on 26.07.2016
 @author: mkennert
 '''
 
+from kivy.properties import ObjectProperty
 from kivy.uix.gridlayout import GridLayout
 
 from ownComponents.design import Design
@@ -14,13 +15,17 @@ from ownComponents.ownPopup import OwnPopup
 
 
 class RectangleInformation(GridLayout):
+    '''
+    create the component, where you can change the height and 
+    the width of the cross-section-rectangle
+    '''
+    cs = ObjectProperty()
+    
     # constructor
-
     def __init__(self, **kwargs):
         super(RectangleInformation, self).__init__(**kwargs)
         self.cols = 2
-        self.btnHeight = Design.btnHeight
-        self.spacing = 2
+        self.spacing = Design.spacing
         self.focusbtn = None
 
     '''
@@ -51,8 +56,8 @@ class RectangleInformation(GridLayout):
     '''
 
     def create_numpad(self):
-        self.numpad = Numpad()
-        self.numpad.sign_in_parent(self)
+        self.numpad = Numpad(p=self)
+        # self.numpad.p=self
         self.popupNumpad = OwnPopup(content=self.numpad)
 
     '''
@@ -62,6 +67,10 @@ class RectangleInformation(GridLayout):
     def show_numpad(self, btn):
         self.popupNumpad.open()
         self.btnFocus = btn
+        if self.btnFocus==self.btnheight:
+            self.popupNumpad.title='set height'
+        else:
+            self.popupNumpad.title='set width'
 
     '''
     close the numpad 
@@ -77,33 +86,25 @@ class RectangleInformation(GridLayout):
     def finished_numpad(self):
         self.btnFocus.text = self.numpad.lblTextinput.text
         if self.btnFocus == self.btnheight:
-            self.cs.set_height(float(self.btnFocus.text))
+            self.cs.update_height(float(self.btnFocus.text))
         else:
-            self.cs.set_width(float(self.btnFocus.text))
+            self.cs.update_width(float(self.btnFocus.text))
         self.popupNumpad.dismiss()
 
     '''
-    the method set_height change the height of the cs_view
+    the method update_height change the height of the cs_view
     '''
 
-    def set_height(self, instance, value):
-        self.cs.set_height(value)
+    def update_height(self, instance, value):
+        self.cs.update_height(value)
         value = int(value * 100)
         self.lblHeight.text = 'height: 0.' + str(value) + ' m'
 
     '''
-    the method set_width change the width of the cs_view
+    the method update_width change the width of the cs_view
     '''
 
-    def set_width(self, instance, value):
-        self.cs.set_width(value)
+    def update_width(self, instance, value):
+        self.cs.update_width(value)
         value = int(value * 100)
         self.lblWidth.text = 'width: 0.' + str(value) + ' m'
-
-    '''
-    sign in by the cross section
-    '''
-    def set_cross_section(self, cs):
-        self.cs = cs
-        self.create_gui()
-        

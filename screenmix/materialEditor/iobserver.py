@@ -5,6 +5,11 @@ Created on 11.05.2016
 '''
 from abc import abstractmethod
 
+'''
+iobserver must implement by the components, which contains
+the materiallist. so when the materiallist has changed the 
+oberserver must update the view
+'''
 class IObserver:
     '''
     update the listen when the materiallist

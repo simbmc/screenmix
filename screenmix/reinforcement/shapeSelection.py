@@ -3,7 +3,7 @@ Created on 13.05.2016
 
 @author: mkennert
 '''
-from kivy.core.window import Window
+from kivy.properties import ObjectProperty
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.scrollview import ScrollView
 
@@ -11,18 +11,20 @@ from ownComponents.design import Design
 from ownComponents.ownButton import OwnButton
 from ownComponents.ownGraph import OwnGraph
 from plot.line import LinePlot
-from kivy.properties import ObjectProperty
 
-Window.clearcolor = (1, 1, 1, 0.5)
+
 class ShapeSelection(GridLayout):
+    '''
+    the shape-selection-component make it possible to change 
+    the cross-section-shape
+    '''
     information = ObjectProperty()
-    #constructor
+    # constructor
 
     def __init__(self, **kwargs):
         super(ShapeSelection, self).__init__(**kwargs)
-        self.padding = [10, 10, 10, 10]
-        self.cols = 2
-        self.spacing = 5
+        self.padding = Design.padding
+        self.cols, self.spacing = 2, Design.spacing
         self.btnHeight = Design.btnHeight
     '''
     create the gui
@@ -51,7 +53,6 @@ class ShapeSelection(GridLayout):
 
     def create_graph_rectangle(self):
         self.graphRectangle = OwnGraph(
-            border_color=[0.5, 0.5, 0.5, 0],
             x_ticks_major=0.1, y_ticks_major=0.05,
             y_grid_label=True, x_grid_label=True,
             xmin=0, xmax=0.5, ymin=0, ymax=0.25)
@@ -77,7 +78,7 @@ class ShapeSelection(GridLayout):
         self.create_btns()
         self.contentRight = GridLayout(cols=1)
         # self.contentRight.add_widget(self.focusShape)
-        self.btns = GridLayout(cols=1, spacing=10, size_hint_y=None)
+        self.btns = GridLayout(cols=1, spacing=Design.spacing, size_hint_y=None)
         # self.contentRight.add_widget(self.btns)
         # Make sure the height is such that there is something to scroll.
         self.btns.bind(minimum_height=self.btns.setter('height'))
@@ -86,7 +87,7 @@ class ShapeSelection(GridLayout):
         # here you can add more shapes.                                    #
         # implement the button in the create_btns method                   #
         ###################################################################
-        layout = GridLayout(cols=2, spacing=15)
+        layout = GridLayout(cols=2, spacing=Design.spacing)
         layout.add_widget(self.btnOK)
         layout.add_widget(self.btnCancel)
         self.btns.add_widget(layout)
@@ -100,18 +101,15 @@ class ShapeSelection(GridLayout):
     '''
 
     def create_btns(self):
-        self.btnOK = OwnButton(text='ok', size_hint_y=None, height=self.btnHeight)
+        self.btnOK = OwnButton(text='ok')
         self.btnOK.bind(on_press=self.finished)
-        self.btnCancel = OwnButton(
-            text='cancel', size_hint_y=None, height=self.btnHeight)
+        self.btnCancel = OwnButton(text='cancel')
         self.btnCancel.bind(on_press=self.cancel)
-        # default-shape=plot
-        self.focusShape = OwnButton(
-            text='plot', size_hint_y=None, height=self.btnHeight)
+        # default-shape=rectangle
+        self.focusShape = OwnButton(text='rectangle')
         self.focusShape.bind(on_press=self.show_shapes_btn)
         # btns
-        self.plot = OwnButton(
-            text='rectangle', size_hint_y=None, height=self.btnHeight)
+        self.plot = OwnButton(text='rectangle')
         self.plot.bind(on_press=self.show_rectangle)
         #######################################################################
         # here you can add more shapes                                         #
@@ -158,11 +156,3 @@ class ShapeSelection(GridLayout):
     def cancel(self, btn):
         self.information.cancel_shape_selection()
 
-    '''
-    set the information
-    '''
-
-    def set_information(self, information):
-        self.information = information
-        self.create_gui()
-    

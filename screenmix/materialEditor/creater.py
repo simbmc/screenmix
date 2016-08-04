@@ -2,7 +2,7 @@
 Created on 04.04.2016
 @author: mkennert
 '''
-from kivy.properties import ObjectProperty
+from kivy.properties import ObjectProperty, StringProperty
 from kivy.uix.gridlayout import GridLayout
 
 from materials.ownMaterial import OwnMaterial
@@ -15,15 +15,19 @@ from ownComponents.ownPopup import OwnPopup
 
 
 class MaterialCreater(GridLayout):
-    #p=parent
+    '''
+    the material-creater is the component, where the user 
+    can add new material
+    '''
+    # p=parent
     p = ObjectProperty()
-    #constructor
+    sdensity, sstiffness = StringProperty('density'), StringProperty('stiffness')
+    sprice, sstrength = StringProperty('price'), StringProperty('strength')
+    
+    # constructor
     def __init__(self, **kwargs):
         super(MaterialCreater, self).__init__(**kwargs)
-        self.cols = 2
-        self.btnHeight = Design.btnHeight
-        self.spacing = 5
-        self.btnFocus, self.p = None, None
+        self.cols, self.spacing = 2, Design.spacing
         self.create_gui()
     
     '''
@@ -84,6 +88,14 @@ class MaterialCreater(GridLayout):
     def use_numpad(self, btn):
         self.btnFocus = btn
         self.numpad.lblTextinput.text = btn.text
+        if self.btnFocus == self.btnDensity:
+            self.popupNumpad.title = self.sdensity
+        elif self.btnFocus == self.btnPrice:
+            self.popupNumpad.title = self.sprice
+        elif self.btnFocus == self.btnStiffness:
+            self.popupNumpad.title = self.sstiffness
+        elif self.btnFocus == self.btnStrength:
+            self.popupNumpad.title = self.sstrength
         self.popupNumpad.open()
         
     '''
@@ -95,9 +107,8 @@ class MaterialCreater(GridLayout):
         self.keyboard = Keyboard()
         self.popupKeyboard = OwnPopup(title='name:', content=self.keyboard)
         self.popupNumpad = OwnPopup(title='numpad', content=self.numpad)
-        self.numpad.sign_in_parent(self)
-        self.keyboard.sign_in_parent(self)
-    
+        self.numpad.p = self
+        self.keyboard.p = self
     
     '''
     the method finished_keyboard close the keyboard_popup
@@ -114,13 +125,6 @@ class MaterialCreater(GridLayout):
         self.btnFocus.text = self.numpad.lblTextinput.text
         self.popupNumpad.dismiss()
         self.numpad.reset_text()
-    
-    '''
-    the method sign_in_parent to set the parent of 
-    the object. the parent must have the method update_materials
-    '''
-    def sign_in_parent(self, parent):
-        self.p = parent
     
     '''
     the method reset_editor reset the values of the editor

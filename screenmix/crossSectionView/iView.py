@@ -7,7 +7,10 @@ from abc import abstractmethod
 
 
 class IView:
-
+    '''
+    iview is a interface which the views must implement. 
+    '''
+    
     @abstractmethod
     def add_layer(self, x, y, material):
         raise NotImplemented('not implemented')
@@ -26,10 +29,6 @@ class IView:
         raise NotImplemented('not implemented')
     
     @abstractmethod
-    def set_cross_section(self, cs):
-        raise NotImplemented('not implemented')
-    
-    @abstractmethod
     def update_cs_information(self):
         raise NotImplemented('not implemented')
     
@@ -38,7 +37,7 @@ class IView:
         raise NotImplemented('not implemented')
     
     @abstractmethod
-    def set_percent(self, value):
+    def update_percent(self, value):
         raise NotImplemented('not implemented')
     
     @abstractmethod

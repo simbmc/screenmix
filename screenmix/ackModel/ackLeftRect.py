@@ -16,6 +16,10 @@ from plot.line import LinePlot
 
 
 class AckLeftRect(GridLayout):
+    '''
+    left-compontent of the ackrect. it shows the strain-stress-behavior 
+    of the cross-section-shape rectangle by a diagram
+    '''
     cs = ObjectProperty()
     ack, ackRight = ObjectProperty(), ObjectProperty()
     allPlots = ListProperty([])
@@ -25,10 +29,10 @@ class AckLeftRect(GridLayout):
         super(AckLeftRect, self).__init__(**kwargs)
         self.cols, self.btnHeight = 1, Design.btnHeight
         self.create_graph()
-        self.create_focus_point()
         self.curPlot = None
+
     '''
-    the method create_graph create the graph
+    the method create_graph create the graph and the focus-point
     '''
 
     def create_graph(self):
@@ -36,6 +40,9 @@ class AckLeftRect(GridLayout):
                            y_grid_label=True, x_grid_label=True,
                            xmin=0.0, xmax=0.01, ymin=0, ymax=30)
         self.add_widget(self.graph)
+        self.focus, self.delta = FilledEllipse(color=[0, 0, 0]), 50.
+        self.focus.xrange, self.focus.yrange = [0, 0], [0, 0]
+        self.graph.add_plot(self.focus)
 
     '''
     the method calculate_points calculate the points for 
@@ -85,16 +92,12 @@ class AckLeftRect(GridLayout):
         # setting the maximum of the graph
         self.graph.xmax = points[-1][0] * 1.2
         self.graph.ymax = points[-1][1] * 1.2
-        self.ack.set_maxStrain(points[-1][0])
-        #self.graph.x_ticks_major = np.round(
-        #    self.graph.xmax / 6., decimals=int(-np.log10(self.graph.xmax / 6)) + 1)
+        self.ack.sliderStrain.max=points[-1][0]
         if self.cs.layers:
             s=float(format(self.graph.xmax / 5., '.1g'))
             self.graph.x_ticks_major=s
-            print('s: '+str(s))
         else:
             self.graph.x_ticks_major=self.graph.xmax/4.
-        #self.graph.x_ticks_major = self.graph.xmax / 3.
         self.graph.y_ticks_major = np.round(
             self.graph.ymax / 5., decimals=int(-np.log10(self.graph.ymax / 6)) + 1)
         return points
@@ -102,11 +105,10 @@ class AckLeftRect(GridLayout):
     
     '''
     set the position of the focuspoint.
-    the point is dependet from the strainvalue 
-    of ackRight
+    the point is dependet from the strainvalue of ackRight
     '''
 
-    def set_focus_position(self, value):
+    def move_position(self, value):
         eps_x = self.graph.xmax / self.delta
         eps_y = self.graph.ymax / self.delta
         self.focus.xrange = [value - eps_x, value + eps_x]
@@ -137,53 +139,12 @@ class AckLeftRect(GridLayout):
             self.focus.yrange = [-eps_y + b, +eps_y + b]
 
     '''
-    create the focus point of the graph
-    '''
-
-    def create_focus_point(self):
-        self.focus, self.delta = FilledEllipse(color=[0, 0, 0]), 50.
-        self.focus.xrange, self.focus.yrange = [0, 0], [0, 0]
-        self.graph.add_plot(self.focus)
-
-    '''
     update the plot
     '''
 
-    def plot_update(self):
-        self.plot = LinePlot(
-            color=Design.focusColor)
-        if not self.curPlot == None:
-            self.curPlot.color = [
-                random.random(), random.random(), random.random(), 1]
+    def update(self):
+        self.plot = LinePlot(color=Design.focusColor)
         self.plot.points = self.calculate_points()
         self.curPlot = self.plot
         self.allPlots.append(self.plot)
         self.graph.add_plot(self.plot)
-
-    '''
-    update the ack_left side
-    '''
-
-    def update(self):
-        self.plot_update()
-
-    '''
-    sign in by the cross section
-    '''
-
-    def set_cross_section(self, cs):
-        self.cs = cs
-
-    '''
-    ack_left sign in by ack left
-    '''
-
-    def set_ack_right(self, ackRight):
-        self.ackRight = ackRight
-
-    '''
-    set the ack
-    '''
-
-    def set_ack(self, ack):
-        self.ack = ack

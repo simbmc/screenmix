@@ -7,6 +7,9 @@ from abc import abstractmethod
 
 
 class ILayer:
+    '''
+    ilayer is a interface which the layers must implement. 
+    '''
     @abstractmethod
     def mouse_within(self, x, y):
         raise NotImplemented('not implemented')
@@ -16,22 +19,14 @@ class ILayer:
         raise NotImplemented('not implemented')
     
     @abstractmethod
-    def set_layer_ack(self, filledRect):
-        raise NotImplemented('not implemented')
-    
-    @abstractmethod
-    def set_layer_cs(self, filledRect):
-        raise NotImplemented('not implemented')
-    
-    @abstractmethod
-    def get_material_informations(self):
-        raise NotImplemented('not implemented')
-    
-    @abstractmethod
-    def set_material(self, material):
-        raise NotImplemented('not implemented')
-    
-    @abstractmethod
     def get_strain(self):
         raise NotImplemented('not implemented')
-        
+    
+    '''
+    return the materials information
+    '''
+
+    def get_material_informations(self):
+        return [self.material.name, self.material.price,
+                self.material.density, self.material.stiffness,
+                self.material.strength]
