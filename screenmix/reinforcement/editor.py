@@ -89,7 +89,7 @@ class ReinforcementEditor(GridLayout, IObserver):
         materialLayout.add_widget(self.lblDensity)
         materialLayout.add_widget(OwnLabel(text='stiffness:'))
         materialLayout.add_widget(self.lblStiffness)
-        materialLayout.add_widget(OwnLabel(text='tensile strength:'))
+        materialLayout.add_widget(OwnLabel(text='cracking stress:'))
         materialLayout.add_widget(self.lblStrength)
         materialLayout.add_widget(OwnLabel(text='percent:'))
         materialLayout.add_widget(self.lblPercent)
@@ -115,7 +115,7 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.csLayout.add_widget(self.lblcsPrice)
         self.csLayout.add_widget(OwnLabel(text='weight [kg]:'))
         self.csLayout.add_widget(self.lblcsWeight)
-        self.csLayout.add_widget(OwnLabel(text='tensile strength [MPa]:'))
+        self.csLayout.add_widget(OwnLabel(text='cracking stress[Mpa]:'))
         self.csLayout.add_widget(self.lblcsStrength)
         self.add_widget(self.csLayout)
 

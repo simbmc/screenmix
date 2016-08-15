@@ -74,9 +74,11 @@ class AckRect(GridLayout):
     def create_ack_components(self):
         self.ackRight.ack = self #sign in by the ack
         self.ackLeft.ack = self
-        self.ackLeft.ackRight = self.ackRight#left/right sign in by the component to make 
-        self.ackRight.ackLeft = self.ackLeft #a easier communication between the components 
-        self.ackLeft.cs = self.cs #sign in by the cs-shape
+        #left/right sign in by the component to make 
+        #a easier communication between the components 
+        self.ackLeft.ackRight = self.ackRight
+        self.ackRight.ackLeft = self.ackLeft 
+        self.ackLeft.cs = self.cs 
         self.ackRight.cs = self.cs
         self.ackRight.create_graph()
         self.ackRight.update()
