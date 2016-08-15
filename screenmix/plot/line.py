@@ -1,3 +1,8 @@
+'''
+Created on 26.04.2016
+
+@author: mkennert
+'''
 from kivy.graphics import Line, RenderContext
 
 from kivy.garden.graph import Plot, Color, Mesh

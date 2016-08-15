@@ -11,6 +11,7 @@ from materials.steel import Steel
 
 @Singleton
 class MaterialList:
+    
     '''
     the class MaterialList was developed to make it possible
     to use only one materiallist and update the observerclasses
@@ -19,6 +20,8 @@ class MaterialList:
     if you add a new observer, make sure that the observer
     implements the interface iobserver
     '''
+    
+    #important components
     allMaterials = None
     
     # constuctor

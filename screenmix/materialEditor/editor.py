@@ -14,14 +14,17 @@ from ownComponents.ownPopup import OwnPopup
 
 
 class Material_Editor(ScrollView):
+    
     '''
     the material-edit is the component, where the user 
     can see the materials and create new material with 
     the material-creater
     '''
+    
+    #important components
     cs = ObjectProperty()
-    # Constructor
-
+    
+    #constructor
     def __init__(self, **kwargs):
         super(Material_Editor, self).__init__(**kwargs)
 

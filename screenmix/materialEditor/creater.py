@@ -15,12 +15,14 @@ from ownComponents.ownPopup import OwnPopup
 
 
 class MaterialCreater(GridLayout):
+    
     '''
     the material-creater is the component, where the user 
     can add new material
     '''
-    # p=parent
-    p = ObjectProperty()
+    
+    # important components
+    p = ObjectProperty()#parent
     sdensity, sstiffness = StringProperty('density'), StringProperty('stiffness')
     sprice, sstrength = StringProperty('price'), StringProperty('strength')
     

@@ -2,7 +2,7 @@
 Created on 14.04.2016
 @author: mkennert
 '''
-from kivy.properties import ObjectProperty
+from kivy.properties import ObjectProperty, StringProperty
 from kivy.uix.gridlayout import GridLayout
 
 from ownComponents.ownGraph import OwnGraph
@@ -10,27 +10,32 @@ from plot.filled_rect import FilledRect
 
 
 class AckRightRect(GridLayout):
+    
     '''
     right-component of the ack-rect. this component show the 
-    stress-behavior of the single layers
+    stress-behavior of the single layers and the matrix
     '''
+    
+    # important components
     cs = ObjectProperty()
     ack, ackLeft = ObjectProperty(), ObjectProperty()
+    # strings
+    xlabelStr = StringProperty('stress [MPa]')  # string-xlabel of the graph
+    ylabelStr = StringProperty('height [m]')  # string-ylabel of the graph
     
     # constructor
-
     def __init__(self, **kwargs):
         super(AckRightRect, self).__init__(**kwargs)
         self.cols = 1
 
     '''
-    the method create_graph create the graph
+    the method create_graph create the graph. the graph shows
+    the strain behaviour of the layers
     '''
 
     def create_graph(self):
-        self.graph = OwnGraph(xlabel='stress [MPa]', ylabel='height [m]',
-                           y_grid_label=True, x_grid_label=True,
-                           xmin=0.0, xmax=0.0005, ymin=0, ymax=self.cs.h)
+        self.graph = OwnGraph(xlabel=self.xlabelStr, ylabel=self.ylabelStr,
+                           y_grid_label=True, x_grid_label=True)
         self.add_widget(self.graph)
 
     '''
@@ -38,20 +43,21 @@ class AckRightRect(GridLayout):
     '''
 
     def update(self):
-        self.graph.ymax = self.cs.h
-        self.graph.y_ticks_major=self.cs.h/5.
+        self.graph.ymax = self.cs.h  # update the height of the cs
+        self.graph.y_ticks_major = self.cs.h / 5.
         self.find_max_stress()
+        # remove all plots from the graph
         for plot in self.graph.plots:
             self.graph.remove_plot(plot)
             self.graph._clear_buffer()
-        self.concreteLayers = []
-        free_places = self.cs.view.get_free_places()
-        for layer in free_places:
-            filledRect = FilledRect(xrange=[0., 1e-5],
+        self.concreteLayers = []  # reset the concreteLayers
+        free_places = self.cs.view.get_free_places()  # get the places where are no layer
+        for layer in free_places:  # create the filled-rects of the free-places
+            filledRect = FilledRect(xrange=[0., 1e-10],
                                     yrange=[layer[0], layer[1]],
                                     color=[255, 255, 255])
             self.concreteLayers.append(filledRect)
-            self.graph.add_plot(filledRect)
+            self.graph.add_plot(filledRect)  # add the filled-graphs to the graph
         self.update_plots()
 
     '''
@@ -118,7 +124,7 @@ class AckRightRect(GridLayout):
         self.graph.x_ticks_major = int(self.maxStress / 5.)
         
     '''
-    find the max lblStiffness
+    find the max lblStiffness of the layers
     '''
 
     def find_max_stiffness(self):

@@ -8,7 +8,9 @@ from abc import abstractmethod
 
 class IShape:
     '''
-    ishape is the interface which the shapes must implement
+    ishape is the interface which the shapes must implement. it makes sure,
+    that the shapes has the neceassary methods, which the other components
+    are uses
     '''
     
     #############################################################################

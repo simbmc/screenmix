@@ -7,8 +7,11 @@ from abc import abstractmethod
 
 
 class IView:
+    
     '''
-    iview is a interface which the views must implement. 
+    iview is a interface which the views must implement. it makes sure,
+    that the view has the neceassary methods, which the other components
+    are uses
     '''
     
     @abstractmethod
@@ -17,11 +20,6 @@ class IView:
 
     @abstractmethod
     def delete_layer(self):
-        raise NotImplemented('not implemented')
-
-    @abstractmethod
-    def update_layer_information(self, name, price, density,
-                                 stiffness, strength, percent):
         raise NotImplemented('not implemented')
 
     @abstractmethod

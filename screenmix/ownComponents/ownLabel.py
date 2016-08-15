@@ -13,7 +13,7 @@ class OwnLabel(Label):
     this class make sure, that the labels in the application
     has the same properties and make it easier to change lbl-properties
     '''
-    background_color_normal = Design.foregroundColor
+    background_color_normal = Design.popupForeground
     
     def __init__(self, **kwargs):
         super(OwnLabel, self).__init__(**kwargs)

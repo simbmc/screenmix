@@ -5,10 +5,12 @@ Created on 31.07.2016
 '''
 
 class Singleton:
+    
     '''
     represents the singleton-pattern. 
     if you want use this, set a annotation @Singleton over your class
     '''
+    
     def __init__(self, decorated):
         self._decorated = decorated
     

@@ -2,13 +2,11 @@
 Created on 12.04.2016
 @author: mkennert
 '''
-import random
 
-from kivy.properties import ListProperty
+from kivy.properties import ListProperty, StringProperty
 from kivy.properties import ObjectProperty
 from kivy.uix.gridlayout import GridLayout
 
-import numpy as np
 from ownComponents.design import Design
 from ownComponents.ownGraph import OwnGraph
 from plot.filled_ellipse import FilledEllipse
@@ -16,31 +14,37 @@ from plot.line import LinePlot
 
 
 class AckLeftRect(GridLayout):
+    
     '''
     left-compontent of the ackrect. it shows the strain-stress-behavior 
     of the cross-section-shape rectangle by a diagram
     '''
+    
+    # important components
     cs = ObjectProperty()
     ack, ackRight = ObjectProperty(), ObjectProperty()
     allPlots = ListProperty([])
-
+    # strings
+    ylabelStr = StringProperty('stress [MPa]')
+    xlabelStr = StringProperty('strain')
+    
     # constructor
     def __init__(self, **kwargs):
         super(AckLeftRect, self).__init__(**kwargs)
         self.cols, self.btnHeight = 1, Design.btnHeight
         self.create_graph()
-        self.curPlot = None
 
     '''
     the method create_graph create the graph and the focus-point
     '''
-
     def create_graph(self):
-        self.graph = OwnGraph(xlabel='strain', ylabel='stress [MPa]',
-                           y_grid_label=True, x_grid_label=True,
-                           xmin=0.0, xmax=0.01, ymin=0, ymax=30)
+        self.graph = OwnGraph(xlabel=self.xlabelStr, ylabel=self.ylabelStr,
+                           y_grid_label=True, x_grid_label=True,)
         self.add_widget(self.graph)
-        self.focus, self.delta = FilledEllipse(color=[0, 0, 0]), 50.
+        # create the focus-point. the focus-point is a ellipse
+        # you can find the class in the plot-package
+        self.focus = FilledEllipse(color=[0, 0, 0])
+        # set width and height of the ellipse
         self.focus.xrange, self.focus.yrange = [0, 0], [0, 0]
         self.graph.add_plot(self.focus)
 
@@ -48,11 +52,11 @@ class AckLeftRect(GridLayout):
     the method calculate_points calculate the points for 
     the graphh 
     '''
-
     def calculate_points(self):
+        # the strain-stress-behavior beginning 
+        # always with the points (0,0)
         points = [(0, 0)]
-        points.append(
-            (self.cs.minOfMaxstrain, self.cs.strength))
+        points.append((self.cs.minOfMaxstrain, self.cs.strength))
         if self.cs.layers:
             # calculate the second points
             # calculate the lblStiffness of the reinforcement layers according to
@@ -92,14 +96,12 @@ class AckLeftRect(GridLayout):
         # setting the maximum of the graph
         self.graph.xmax = points[-1][0] * 1.2
         self.graph.ymax = points[-1][1] * 1.2
-        self.ack.sliderStrain.max=points[-1][0]
+        self.ack.sliderStrain.max = points[-1][0]
         if self.cs.layers:
-            s=float(format(self.graph.xmax / 5., '.1g'))
-            self.graph.x_ticks_major=s
+            self.graph.x_ticks_major = float(format(self.graph.xmax / 5., '.1g'))
         else:
-            self.graph.x_ticks_major=self.graph.xmax/4.
-        self.graph.y_ticks_major = np.round(
-            self.graph.ymax / 5., decimals=int(-np.log10(self.graph.ymax / 6)) + 1)
+            self.graph.x_ticks_major = self.graph.xmax / 4.
+        self.graph.y_ticks_major = float(format(self.graph.ymax / 5., '.1g'))
         return points
 
     
@@ -107,10 +109,9 @@ class AckLeftRect(GridLayout):
     set the position of the focuspoint.
     the point is dependet from the strainvalue of ackRight
     '''
-
     def move_position(self, value):
-        eps_x = self.graph.xmax / self.delta
-        eps_y = self.graph.ymax / self.delta
+        eps_x = self.graph.xmax / Design.deltaCircle
+        eps_y = self.graph.ymax / Design.deltaCircle
         self.focus.xrange = [value - eps_x, value + eps_x]
         # calculation when the value is smaller then
         # the x-coordinate of the first point
@@ -141,10 +142,12 @@ class AckLeftRect(GridLayout):
     '''
     update the plot
     '''
-
     def update(self):
         self.plot = LinePlot(color=Design.focusColor)
         self.plot.points = self.calculate_points()
+        # safe the cur-plot for the delete-method
         self.curPlot = self.plot
+        # safe the plot in the allplot list. it's necessary for 
+        # the update
         self.allPlots.append(self.plot)
         self.graph.add_plot(self.plot)

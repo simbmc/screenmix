@@ -16,15 +16,17 @@ from plot.filled_rect import FilledRect
 
 
 class RectView(BoxLayout, IView):
+    
     '''
     the class RectView was developed to show the the cross section,
     which has a rectangle shape
     '''
+    
+    #important components
     cs = ObjectProperty()
     w, h = NumericProperty(0.25), NumericProperty(0.5)
     
     # constructor
-
     def __init__(self, **kwargs):
         super(RectView, self).__init__(**kwargs)
         self.percentChange = False
@@ -32,7 +34,7 @@ class RectView(BoxLayout, IView):
         
     '''
     the method create_graph create the graph, where you can add 
-    the layers. the method should be called only once at the beginning
+    the layers. the method should be called only once at the beginning.
     '''
 
     def create_graph(self):
@@ -42,15 +44,17 @@ class RectView(BoxLayout, IView):
         self.add_widget(self.graph)
     
     '''
-    update the layers in the graph
+    update the layers in the graph.
     '''
 
     def update_all_graph(self):
         for layer in self.cs.layers:
+            #update the height and the width of the layers
             y, h = layer.y, layer.h
             layer.layerCs.xrange = [0., self.w]
             layer.layerCs.yrange = [y - h / 2., y + h / 2.]
             layer.layerAck.yrange = [y - h / 2., y + h / 2.]
+            #update the focus-color
             if layer.focus:
                 layer.layerCs.color = Design.focusColor
             else:
@@ -102,23 +106,27 @@ class RectView(BoxLayout, IView):
         gw, gh = self.graph._plot_area.size  # graph size
         x = (touch.x - x0) / gw * self.w
         y = (touch.y - y0) / gh * self.h
-        changed = False
-        curFocus = False
+        #change is a switch to make sure, that the view just update,
+        #when something has changed
+        changed = False 
         for layer in self.cs.layers:
+            #if the touch is in the layer
             if layer.mouse_within(x, y):
-                if layer.focus == True and self.percentChange:
-                    self.percentChange = False
+                # when the layer has already the focus
+                if layer.focus:
                     self.update_all_graph()
                     return
-                if layer.focus == False and curFocus == False:
+                #when the layer has not the focus
+                if not layer.focus:
                     layer.focus = True
-                    curFocus = True
                     cur = layer.get_material_informations()
                     self.cs.update_layer_information(cur[0], cur[1], cur[
                         2], cur[3], cur[4], layer.h / self.h)
                     changed = True
+            #if the touch is not in the layer and the the layer has the focus then
+            #the focus disappears
             else:
-                if layer.focus == True:
+                if layer.focus:
                     layer.focus = False
                     changed = True
         # update just when something has change
@@ -130,19 +138,17 @@ class RectView(BoxLayout, IView):
     '''
 
     def add_layer(self, value, material):
-        h = self.h * value
-        y = self.h - h / 2.
-        cur = RectLayer(self.w / 2, y, h,
-                        self.w, material.color, value)
+        h = self.h * value #value is the percent of the layer
+        y = self.h - h / 2.#y-coordinate
+        cur = RectLayer(self.w / 2, y, h,self.w, material.color, value)
         cur.material = material
-        cur.layerCs = FilledRect(xrange=[0., self.w],
-                                  yrange=[y - h / 2., y + h / 2.],
-                                  color=cur.colors)
-        cur.layerAck = FilledRect(xrange=[0., 0.],
-                                   yrange=[y - h / 2., y + h / 2.],
-                                   color=cur.colors)
+        #create the filled-rect for the cs-view and the ack-right
+        cur.layerCs = FilledRect(xrange=[0., self.w],color=cur.colors,
+                                  yrange=[y - h / 2., y + h / 2.])
+        cur.layerAck = FilledRect(xrange=[0., 0.],color=cur.colors,
+                                   yrange=[y - h / 2., y + h / 2.])
         self.graph.add_plot(cur.layerCs)
-        self.cs.layers.append(cur)
+        self.cs.layers.append(cur) #safe the layer in the list
         self.update_all_graph()
         self.update_cs_information()
         
@@ -159,6 +165,7 @@ class RectView(BoxLayout, IView):
                 layer.layerAck.yrange = [0, 0]
                 self.cs.layers.remove(layer)
         self.update_all_graph()
+        #update the cs-information
         self.cs.calculate_strength()
         self.update_cs_information()
 
@@ -239,6 +246,7 @@ class RectView(BoxLayout, IView):
     '''
 
     def update_height(self, value):
+        #a is the multiplicator for the old values
         a, self.h = value / self.h, value
         for layer in self.cs.layers:
             layer.y, layer.h = layer.y * a, layer.h * a
@@ -260,4 +268,3 @@ class RectView(BoxLayout, IView):
             layer.w = value
         self.update_all_graph()
         self.update_cs_information()
-

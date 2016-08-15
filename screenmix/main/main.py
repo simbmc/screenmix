@@ -28,10 +28,10 @@ create the ActionMenu in the mainMenu with the kv.file screenmixapp
 class ActionMenu(ActionPrevious):
     pass
 
-'''
-Build the application
-'''
 class ScreenmixApp(App):
+    '''
+    Build the application
+    '''
     def build(self):
         bar = AppActionBar()
         self.content = GridLayout(cols=1, padding=Design.padding, spacing=Design.spacing)

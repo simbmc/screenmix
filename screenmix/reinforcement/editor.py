@@ -21,21 +21,22 @@ from reinforcement.shapeSelection import ShapeSelection
 
 
 class ReinforcementEditor(GridLayout, IObserver):
+    
     '''
     the reinforcement-editor is the component, where you can 
     edit the layers of a shape
     the shape-information is given by the cross-section-shape
     '''
+    
+    #important components
     cs = ObjectProperty()
+    
     # constructor
-
     def __init__(self, **kwargs):
         super(ReinforcementEditor, self).__init__(**kwargs)
         self.cols, self.spacing = 1, Design.spacing
         self.padding = Design.padding
-        self.btnSize = Design.btnHeight
-        self.containsInformation = False
-        self.error = False
+        self.containsInformation, self.error = False, False
         
     '''
     create the gui
@@ -79,7 +80,7 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.lblStrength, self.lblPercent = OwnLabel(text='-'), OwnLabel(text='10 %')
         materialLayout = GridLayout(cols=4, row_force_default=True,
                                     row_default_height=2 * Design.lblHeight,
-                                    height=self.btnSize)
+                                    height=Design.btnHeight)
         materialLayout.add_widget(OwnLabel(text='name:'))
         materialLayout.add_widget(self.lblName)
         materialLayout.add_widget(OwnLabel(text='price:'))
@@ -131,7 +132,7 @@ class ReinforcementEditor(GridLayout, IObserver):
         btnCancel.bind(on_press=self.cancel_adding)
         self.addLayout = GridLayout(cols=2, spacing=Design.spacing, row_force_default=True,
                                     row_default_height=Design.btnHeight,
-                                    height=self.btnSize)
+                                    height=Design.btnHeight)
         self.addLayout.add_widget(OwnLabel(text='material:'))
         self.btnMaterialOption = OwnButton(text='steel')
         self.btnMaterialOption.bind(on_release=self.popup.open)
