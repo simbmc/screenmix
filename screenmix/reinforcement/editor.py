@@ -263,8 +263,7 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.finished_adding()
         for i in range(0, self.allMaterials.get_length()):
             if self.allMaterials.allMaterials[i].name == self.btnMaterialOption.text:
-                self.cs.add_layer(
-                    self.sliderLayerPercent.value, self.allMaterials.allMaterials[i])
+                self.cs.add_layer(self.sliderLayerPercent.value, self.allMaterials.allMaterials[i])
                 return
 
     '''
@@ -301,6 +300,9 @@ class ReinforcementEditor(GridLayout, IObserver):
     '''
 
     def update_cs_information(self, price, weight, strength):
+        print(price)
+        print(weight)
+        print(strength)
         self.lblcsPrice.text = '%.2E' % Decimal(str(price))
         self.lblcsWeight.text = '%.2E' % Decimal(str(weight))
         self.lblcsStrength.text = '%.2E' % Decimal(str(strength))

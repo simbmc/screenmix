@@ -38,8 +38,7 @@ class Material_Editor(ScrollView):
         self.materialLayout = GridLayout(cols=1, spacing=Design.spacing, size_hint_y=None)
         self.materialLayout.padding = Design.padding
         # Make sure the height is such that there is something to scroll.
-        self.materialLayout.bind(
-            minimum_height=self.materialLayout.setter('height'))
+        self.materialLayout.bind(minimum_height=self.materialLayout.setter('height'))
         for i in self.allMaterials.allMaterials:
             btn = OwnButton(text=i.name)
             btn.bind(on_press=self.show_material_information)

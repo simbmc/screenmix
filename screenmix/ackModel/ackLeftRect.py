@@ -24,6 +24,7 @@ class AckLeftRect(GridLayout):
     cs = ObjectProperty()
     ack, ackRight = ObjectProperty(), ObjectProperty()
     allPlots = ListProperty([])
+    
     # strings
     ylabelStr = StringProperty('stress [MPa]')
     xlabelStr = StringProperty('strain')
