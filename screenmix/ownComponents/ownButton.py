@@ -23,7 +23,6 @@ class OwnButton(Button):
         super(OwnButton, self).__init__(**kwargs)
         self.size_hint_y = None
         self.height = Design.btnHeight
-        self.pos_hint = (0.9, 1)
         self.background_normal = ""
         self.background_down = ""
         self.background_color = self.background_color_normal

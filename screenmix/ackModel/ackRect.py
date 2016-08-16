@@ -23,12 +23,12 @@ class AckRect(GridLayout):
     the cross section
     '''
     
-    #important components
+    # important components
     cs = ObjectProperty()
     ackLeft = ObjectProperty(AckLeftRect())
     ackRight = ObjectProperty(AckRightRect())
-    #strings
-    strainStr=StringProperty('strain: ')
+    # strings
+    strainStr = StringProperty('strain: ')
     
     # constructor
     def __init__(self, **kwargs):
@@ -39,27 +39,28 @@ class AckRect(GridLayout):
     create the gui of the ackRect-object. the gui contains the ack-left/right,
     the clear-btn and the slider.
     '''
+        
     def create_gui(self):
-        #slider to change the strain of the diagram
+        # slider to change the strain of the diagram
         self.sliderStrain = Slider(min=1e-10, max=0.1, value=1e-5)
         self.sliderStrain.bind(value=self.update_strain)
-        #clear-btn to delete the plots, whichs has no focus
+        # clear-btn to delete the plots, whichs has no focus
         self.btnClear = OwnButton(text='clear')
         self.btnClear.bind(on_press=self.clear)
-        self.create_ack_components()#create the necessary ack-components
-        self.contentLayout = GridLayout(cols=2)#create the layout for the ack-left/right
+        self.create_ack_components()  # create the necessary ack-components
+        self.contentLayout = GridLayout(cols=2)  # create the layout for the ack-left/right
         self.contentLayout.add_widget(self.ackLeft)
         self.contentLayout.add_widget(self.ackRight)
         self.add_widget(self.contentLayout)
-        #create the area, for the clear-btn and the strainSlider
-        #sliderlayout was used to make sure, that the 
-        #height of the area is small
+        # create the area, for the clear-btn and the strainSlider
+        # sliderlayout was used to make sure, that the 
+        # height of the area is small
         sliderLayout = GridLayout(cols=2, row_force_default=True,
                                   row_default_height=Design.btnHeight, size_hint_y=None,
                                   height=Design.btnHeight)
-        #lbl to show the cur-strain
+        # lbl to show the cur-strain
         self.lblStrain = OwnLabel(text=self.strainStr)
-        #hlp is used to to save space for the slider
+        # hlp is used to to save space for the slider
         self.hlp = GridLayout(cols=2)
         self.hlp.add_widget(self.btnClear)
         self.hlp.add_widget(self.lblStrain)
@@ -71,11 +72,12 @@ class AckRect(GridLayout):
     '''
     create all ackRect-components
     '''
+        
     def create_ack_components(self):
-        self.ackRight.ack = self #sign in by the ack
+        self.ackRight.ack = self  # sign in by the ack
         self.ackLeft.ack = self
-        #left/right sign in by the component to make 
-        #a easier communication between the components 
+        # left/right sign in by the component to make 
+        # a easier communication between the components 
         self.ackLeft.ackRight = self.ackRight
         self.ackRight.ackLeft = self.ackLeft 
         self.ackLeft.cs = self.cs 
@@ -88,17 +90,18 @@ class AckRect(GridLayout):
     this method was developed in order to avoid that the graph has 
     to much plots. so the user can always on time delete the plots
     '''
+        
     def clear(self, btn):
-        #while there is a plot, which is not the focus-point
-        #or the cur-plot
+        # while there is a plot, which is not the focus-point
+        # or the cur-plot
         while len(self.ackLeft.graph.plots) > 2:
-            #go through all plots
+            # go through all plots
             for plot in self.ackLeft.graph.plots:
-                #if the plot is not the focus-point or the cur-plot
-                #delete the plot
+                # if the plot is not the focus-point or the cur-plot
+                # delete the plot
                 if not plot == self.ackLeft.curPlot and not plot == self.ackLeft.focus:
                     self.ackLeft.graph.remove_plot(plot)
-            #clear the graph
+            # clear the graph
             self.ackLeft.graph._clear_buffer()
             
     '''
@@ -108,10 +111,9 @@ class AckRect(GridLayout):
 
     def update(self):
         self.sliderStrain.value = 0
-        #update the graphs of the ack components
+        # update the graphs of the ack components
         self.ackRight.update()
         self.ackLeft.update()
-
 
     '''
     set the label-text to the current value of 
@@ -120,9 +122,9 @@ class AckRect(GridLayout):
     '''
 
     def update_strain(self, instance, value):
-        #make a sci-notation. it's necessary to avoid that the 
-        #value is too long
+        # make a sci-notation. it's necessary to avoid that the 
+        # value is too long
         self.lblStrain.text = self.strainStr + str('%.2E' % Decimal(str(value)))
-        #update the ackRight/Left after with new value
+        # update the ackRight/Left after with new value
         self.ackRight.update_plots()
         self.ackLeft.move_position(value)

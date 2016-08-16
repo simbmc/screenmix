@@ -58,4 +58,15 @@ class CrossSection(GridLayout):
         self.reinforcmentEditor.show_information(self.shapeRectangle.information)
         self.ack.show_ack_rect()
     
+    '''
+    update the informations of the shapes when the user
+    edit the material
+    '''
+    def update_informations(self):
+        self.shapeRectangle.view.update_cs_information()
     
+    '''
+    update the concrete-properties
+    '''
+    def update_concrete_information(self,density,price,stiffness,strength):
+        self.shapeRectangle.update_concrete_information(density,price,stiffness,strength)

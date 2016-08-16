@@ -43,7 +43,8 @@ class AckRightRect(GridLayout):
     '''
 
     def update(self):
-        self.graph.ymax = self.cs.h  # update the height of the cs
+        # update the height of the cs
+        self.graph.ymax = self.cs.h  
         self.graph.y_ticks_major = self.cs.h / 5.
         self.find_max_stress()
         # remove all plots from the graph
@@ -51,13 +52,16 @@ class AckRightRect(GridLayout):
             self.graph.remove_plot(plot)
             self.graph._clear_buffer()
         self.concreteLayers = []  # reset the concreteLayers
-        free_places = self.cs.view.get_free_places()  # get the places where are no layer
-        for layer in free_places:  # create the filled-rects of the free-places
+        # get the places where are no layer
+        free_places = self.cs.view.get_free_places()  
+        # create the filled-rects of the free-places
+        for layer in free_places:  
             filledRect = FilledRect(xrange=[0., 1e-10],
                                     yrange=[layer[0], layer[1]],
                                     color=[255, 255, 255])
             self.concreteLayers.append(filledRect)
-            self.graph.add_plot(filledRect)  # add the filled-graphs to the graph
+            # add the filled-graphs to the graph
+            self.graph.add_plot(filledRect)  
         self.update_plots()
 
     '''

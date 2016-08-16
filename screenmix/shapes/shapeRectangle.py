@@ -29,11 +29,19 @@ class ShapeRectangle(GridLayout, IShape):
     def __init__(self, **kwargs):
         super(ShapeRectangle, self).__init__(**kwargs)
         self.cols = 2
-        self.allMaterials, concrete = MaterialList.Instance(), Concrete()
+        self.allMaterials = MaterialList.Instance()
+        concrete = Concrete()
         self.concreteDensity, self.concretePrice = concrete.density, concrete.price
         self.concreteStiffness, self.concreteStrength = concrete.stiffness, concrete.strength
         self.information, self.view = RectangleInformation(), RectView()
-
+    
+    '''
+    update the concrete-properties
+    '''
+    def update_concrete_information(self,density,price,stiffness,strength):
+        self.concreteDensity, self.concretePrice = density, price
+        self.concreteStiffness, self.concreteStrength = stiffness, strength
+        
     '''
     the method update_height changes the height of the view
     '''

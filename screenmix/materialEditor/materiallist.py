@@ -5,6 +5,7 @@ Created on 18.04.2016
 
 from materialEditor.singleton import Singleton
 from materials.carbonFiber import CarbonFiber
+from materials.concrete import Concrete
 from materials.glassFiber import GlassFiber
 from materials.steel import Steel
 
@@ -26,8 +27,7 @@ class MaterialList:
     
     # constuctor
     def __init__(self):
-        print('create materiallist')
-        self.allMaterials = [Steel(), CarbonFiber(), GlassFiber()]
+        self.allMaterials = [Steel(), CarbonFiber(), GlassFiber(),Concrete()]
         self.listeners = []
     
     '''

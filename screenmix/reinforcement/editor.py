@@ -35,7 +35,6 @@ class ReinforcementEditor(GridLayout, IObserver):
     def __init__(self, **kwargs):
         super(ReinforcementEditor, self).__init__(**kwargs)
         self.cols, self.spacing = 1, Design.spacing
-        self.padding = Design.padding
         self.containsInformation, self.error = False, False
         
     '''
@@ -130,9 +129,10 @@ class ReinforcementEditor(GridLayout, IObserver):
         btnCancel = OwnButton(text='cancel')
         btnConfirm.bind(on_press=self.add_layer)
         btnCancel.bind(on_press=self.cancel_adding)
-        self.addLayout = GridLayout(cols=2, spacing=Design.spacing, row_force_default=True,
+        self.addLayout = GridLayout(cols=2, row_force_default=True,
                                     row_default_height=Design.btnHeight,
-                                    height=Design.btnHeight)
+                                    size_hint_y=None, height=5.15*Design.btnHeight,
+                                    spacing=Design.spacing)
         self.addLayout.add_widget(OwnLabel(text='material:'))
         self.btnMaterialOption = OwnButton(text='steel')
         self.btnMaterialOption.bind(on_release=self.popup.open)
@@ -161,7 +161,7 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.materialEditor.p = self
         self.popupMaterialEditor = OwnPopup(
             title='editor', content=self.materialEditor)
-        for i in range(0, self.allMaterials.get_length()):
+        for i in range(0, self.allMaterials.get_length()-1):
             btnMaterialA = OwnButton(text=self.allMaterials.allMaterials[i].name)
             btnMaterialA.bind(on_press=self.select_material)
             self.materialSelectionLayout.add_widget(btnMaterialA)
@@ -194,7 +194,7 @@ class ReinforcementEditor(GridLayout, IObserver):
 
     def create_popup_shape(self):
         shapeContent = ShapeSelection()
-        shapeContent.information = self  # set_information(self)
+        shapeContent.information = self
         shapeContent.create_gui()
         self.shapeSelection = OwnPopup(title='shape', content=shapeContent)
     
@@ -300,9 +300,6 @@ class ReinforcementEditor(GridLayout, IObserver):
     '''
 
     def update_cs_information(self, price, weight, strength):
-        print(price)
-        print(weight)
-        print(strength)
         self.lblcsPrice.text = '%.2E' % Decimal(str(price))
         self.lblcsWeight.text = '%.2E' % Decimal(str(weight))
         self.lblcsStrength.text = '%.2E' % Decimal(str(strength))

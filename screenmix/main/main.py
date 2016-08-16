@@ -76,7 +76,7 @@ class ScreenmixApp(App):
 
     def create_material_editor(self):
         self.materialEditor = Material_Editor()
-        self.materialEditor.set_cross_section(self.cs.shapeRectangle)
+        self.materialEditor.set_cross_section(self.cs)
 
     ##########################################################################
     # Attention:When you want write a new show-method than you must make sure    #
