@@ -30,6 +30,7 @@ class Material_Editor(ScrollView):
     #constructor
     def __init__(self, **kwargs):
         super(Material_Editor, self).__init__(**kwargs)
+        self.h=dp(50)#height of the btns
 
     '''
     the method create gui create the gui of 
@@ -44,11 +45,11 @@ class Material_Editor(ScrollView):
         self.materialLayout.bind(minimum_height=self.materialLayout.setter('height'))
         for i in self.allMaterials.allMaterials:
             btn = OwnButton(text=i.name)
-            btn.height=dp(55)
+            btn.height=self.h
             btn.bind(on_press=self.show_material_information)
             self.materialLayout.add_widget(btn)
         self.btnMaterialEditor = OwnButton(text='create material')
-        self.btnMaterialEditor.height=dp(55)
+        self.btnMaterialEditor.height=self.h
         self.btnMaterialEditor.bind(on_press=self.create_material)
         self.materialLayout.add_widget(self.btnMaterialEditor)
         self.add_widget(self.materialLayout)
@@ -147,8 +148,8 @@ class Material_Editor(ScrollView):
 
     def update(self):
         self.materialLayout.remove_widget(self.btnMaterialEditor)
-        btn_material_A = OwnButton(
-            text=self.allMaterials.allMaterials[-1].name)
+        btn_material_A = OwnButton(text=self.allMaterials.allMaterials[-1].name)
+        btn_material_A.height=self.h
         btn_material_A.bind(on_press=self.show_material_information)
         self.materialLayout.add_widget(btn_material_A)
         self.materialLayout.add_widget(self.btnMaterialEditor)

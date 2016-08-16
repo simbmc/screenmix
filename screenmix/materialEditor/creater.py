@@ -22,7 +22,9 @@ class MaterialCreater(GridLayout):
     '''
     
     # important components
-    p = ObjectProperty()#parent
+    p = ObjectProperty()  # parent
+    
+    # strings
     sdensity, sstiffness = StringProperty('density'), StringProperty('stiffness')
     sprice, sstrength = StringProperty('price'), StringProperty('strength')
     
@@ -90,6 +92,7 @@ class MaterialCreater(GridLayout):
     def use_numpad(self, btn):
         self.btnFocus = btn
         self.numpad.lblTextinput.text = btn.text
+        # find the property and set the title of the popup
         if self.btnFocus == self.btnDensity:
             self.popupNumpad.title = self.sdensity
         elif self.btnFocus == self.btnPrice:

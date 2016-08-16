@@ -11,7 +11,7 @@ class RectLayer(ILayer):
     x, y = NumericProperty(), NumericProperty()
     h, w, p = NumericProperty(), NumericProperty(), NumericProperty()
     strain=NumericProperty()
-    colors = ListProperty([255, 255, 255])
+    colors = ListProperty()
     material = ObjectProperty()
     layerCs, layerAck = ObjectProperty(), ObjectProperty()
     

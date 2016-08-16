@@ -19,6 +19,7 @@ class AckRightRect(GridLayout):
     # important components
     cs = ObjectProperty()
     ack, ackLeft = ObjectProperty(), ObjectProperty()
+    
     # strings
     xlabelStr = StringProperty('stress [MPa]')  # string-xlabel of the graph
     ylabelStr = StringProperty('height [m]')  # string-ylabel of the graph
@@ -90,6 +91,9 @@ class AckRightRect(GridLayout):
             layer.xrange = [0., concrete_stress]
         # draw the stress of the reinforcing layers
         for layer in self.cs.layers:
+            # if the cross section has layers and the strain is smaller
+            # as the cracking stress show just a part of the graph because then
+            # the user can see the behavior of the concrete
             if self.ack.sliderStrain.value <= eps1:
                 if not len(self.cs.layers) == 0:
                     self.find_max_stiffness()
@@ -97,16 +101,15 @@ class AckRightRect(GridLayout):
                     self.graph.x_ticks_major = int(self.graph.xmax / 5.)
                 layer_stress = layer.material.stiffness * \
                     self.ack.sliderStrain.value
+            # cracking-process
             elif self.ack.sliderStrain.value <= eps2:
                 layer_stress = layer.material.stiffness * eps1
                 self.graph.xmax = self.maxStress
                 self.graph.x_ticks_major = int(self.graph.xmax / 5.)
+            # leaf the cracking-process
             else:
                 layer_stress = layer.material.stiffness * eps1 + \
-                    layer.material.stiffness * \
-                    (self.ack.sliderStrain.value - eps2)
-                self.graph.xmax = self.maxStress
-                self.graph.x_ticks_major = int(self.graph.xmax / 5.)
+                    layer.material.stiffness * (self.ack.sliderStrain.value - eps2)
             max_stress = max(max_stress, layer_stress)
             layer.layerAck.xrange = [0, layer_stress]
             self.graph.add_plot(layer.layerAck)
@@ -118,8 +121,9 @@ class AckRightRect(GridLayout):
     '''
 
     def find_max_stress(self):
-        self.maxStress = self.cs.concreteStiffness * \
-            self.ack.sliderStrain.max
+        # first max-stress
+        self.maxStress = self.cs.concreteStiffness * self.ack.sliderStrain.max
+        # if the cross-section contains layers
         if not len(self.cs.layers) == 0:
             self.find_max_stiffness()
             cur = self.maxStiffness * self.ack.sliderStrain.max
@@ -128,11 +132,11 @@ class AckRightRect(GridLayout):
         self.graph.x_ticks_major = int(self.maxStress / 5.)
         
     '''
-    find the max lblStiffness of the layers
+    find the max-stiffness of the layers
     '''
 
     def find_max_stiffness(self):
-        stiffness = 0.
+        stiffness = 0.  # cur infinimum
         for layer in self.cs.layers:
             if layer.material.stiffness > stiffness:
                 stiffness = layer.material.stiffness

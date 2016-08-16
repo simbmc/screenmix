@@ -18,12 +18,12 @@ class CrossSection(GridLayout):
     will be show
     '''
     
-    #important components
+    # important components
     ack = ObjectProperty()
-    reinforcmentEditor=ObjectProperty(ReinforcementEditor())
-    view=ObjectProperty()
-    allMaterials=ObjectProperty(MaterialList.Instance())
-    shapeRectangle=ObjectProperty(ShapeRectangle())
+    reinforcmentEditor = ObjectProperty(ReinforcementEditor())
+    view = ObjectProperty()
+    allMaterials = ObjectProperty(MaterialList.Instance())
+    shapeRectangle = ObjectProperty(ShapeRectangle())
     ###################################
     # here you can add more shapes    #
     ###################################
@@ -68,5 +68,5 @@ class CrossSection(GridLayout):
     '''
     update the concrete-properties
     '''
-    def update_concrete_information(self,density,price,stiffness,strength):
-        self.shapeRectangle.update_concrete_information(density,price,stiffness,strength)
+    def update_concrete_information(self, density, price, stiffness, strength):
+        self.shapeRectangle.update_concrete_information(density, price, stiffness, strength)

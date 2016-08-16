@@ -7,10 +7,10 @@ from kivy.properties import ListProperty, StringProperty
 from kivy.properties import ObjectProperty
 from kivy.uix.gridlayout import GridLayout
 
+from kivy.garden.graph import  MeshLinePlot
 from ownComponents.design import Design
 from ownComponents.ownGraph import OwnGraph
 from plot.filled_ellipse import FilledEllipse
-from plot.line import LinePlot
 
 
 class AckLeftRect(GridLayout):
@@ -34,6 +34,7 @@ class AckLeftRect(GridLayout):
         super(AckLeftRect, self).__init__(**kwargs)
         self.cols, self.btnHeight = 1, Design.btnHeight
         self.create_graph()
+        self.firstPlot = True
 
     '''
     the method create_graph create the graph and the focus-point
@@ -104,7 +105,6 @@ class AckLeftRect(GridLayout):
             self.graph.x_ticks_major = self.graph.xmax / 4.
         self.graph.y_ticks_major = float(format(self.graph.ymax / 5., '.1g'))
         return points
-
     
     '''
     set the position of the focuspoint.
@@ -127,11 +127,14 @@ class AckLeftRect(GridLayout):
                 (self.thirdpoint[0] - self.secondpoint[0])
             # set the circle in the middle of the line
             # it's dependent from the self.graph.ymax
-            if self.graph.ymax < 70:
+            if self.graph.ymax < 25:
+                self.focus.yrange = [value * m + eps_y, value * m + 3 * eps_y]
+            elif self.graph.ymax < 30:
+                self.focus.yrange = [value * m + 0.5 * eps_y, value * m + 2.5 * eps_y]
+            elif self.graph.ymax < 70:
                 self.focus.yrange = [value * m, value * m + 2 * eps_y]
             elif self.graph.ymax < 100:
-                self.focus.yrange = [
-                    value * m - eps_y * 0.5, value * m + eps_y * 1.5]
+                self.focus.yrange = [value * m - eps_y * 0.5, value * m + eps_y * 1.5]
             else:
                 self.focus.yrange = [value * m - eps_y, value * m + eps_y]
         # calculation when the value is between the first- and secondpoint
@@ -144,11 +147,15 @@ class AckLeftRect(GridLayout):
     update the plot
     '''
     def update(self):
-        self.plot = LinePlot(color=Design.focusColor)
+        self.plot = MeshLinePlot(color=[1, 0, 0, 1])
         self.plot.points = self.calculate_points()
         # safe the cur-plot for the delete-method
-        self.curPlot = self.plot
-        # safe the plot in the allplot list. it's necessary for 
-        # the update
+        if self.firstPlot:
+            self.curPlot = self.plot
+            self.firstPlot = False
+        else:
+            self.curPlot.color = [0, 0, 0, 1]
+            self.curPlot = self.plot
+        # safe the plot in the allplot list. it's necessary for the update
         self.allPlots.append(self.plot)
         self.graph.add_plot(self.plot)

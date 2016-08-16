@@ -246,7 +246,7 @@ class RectView(BoxLayout, IView):
     '''
 
     def update_height(self, value):
-        # a is the multiplicator for the old values
+        #a is the multiplicator for the scale
         a, self.h = value / self.h, value
         for layer in self.cs.layers:
             layer.y, layer.h = layer.y * a, layer.h * a
