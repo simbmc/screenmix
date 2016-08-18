@@ -39,8 +39,8 @@ class RectangleInformation(GridLayout):
     def create_gui(self):
         # create the area where you can scale the height
         # and the width of the cross section
-        self.btnheight = OwnButton(text='0.5')
-        self.btnwidth = OwnButton(text='0.25')
+        self.btnheight = OwnButton(text=str(self.cs.h))
+        self.btnwidth = OwnButton(text=str(self.cs.w))
         self.add_widget(OwnLabel(text=self.heightStr))
         self.add_widget(self.btnheight)
         self.add_widget(OwnLabel(text=self.widthStr))

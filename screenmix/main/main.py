@@ -17,7 +17,7 @@ from ownComponents.design import Design
 
 Window.clearcolor = (1, 1, 1, 1)
 '''
-create the Actionbar in the mainMenu with the kv.file screenmixapp
+create the ActionBar in the mainMenu with the kv.file screenmixapp
 '''
 class AppActionBar(ActionBar):
     pass

@@ -63,9 +63,9 @@ class ReinforcementEditor(GridLayout, IObserver):
 
     def create_add_delete_area(self):
         self.addDeleteLayout = GridLayout(cols=2, row_force_default=True,
-                                    row_default_height=Design.btnHeight,
-                                    size_hint_y=None, height=Design.btnHeight,
-                                    spacing=Design.spacing)
+                                          row_default_height=Design.btnHeight,
+                                          size_hint_y=None, height=Design.btnHeight,
+                                          spacing=Design.spacing)
         btnAdd = OwnButton(text='add layer')
         btnDelete = OwnButton(text='delete layer')
         btnAdd.bind(on_press=self.show_add_layer_area)

@@ -18,7 +18,7 @@ class Design:
     lblHeight = dp(10)
     font_size = sp(13)  # font-size for lbls
     spacing = dp(5)  # spacing between components
-    padding = [dp(0), dp(0), dp(0), dp(5)]
+    padding = [dp(10), dp(0), dp(10), dp(10)]
     deltaCircle = 50.
     # color properties
     focusColor = [0, 0, 0, 1]  # focus-color of the graphs

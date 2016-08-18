@@ -9,6 +9,7 @@ from kivy.uix.gridlayout import GridLayout
 from materialEditor.materiallist import MaterialList
 from reinforcement.editor import ReinforcementEditor
 from shapes.shapeRectangle import ShapeRectangle
+from ownComponents.design import Design
 
 
 class CrossSection(GridLayout):
@@ -32,7 +33,7 @@ class CrossSection(GridLayout):
     # constructor
     def __init__(self, **kwargs):
         super(CrossSection, self).__init__(**kwargs)
-        self.cols = 2
+        self.cols , self.padding = 2, Design.padding
         # default shape is rectangle        
         self.view = self.shapeRectangle.view
         self.reinforcmentEditor.set_cross_section(self.shapeRectangle)

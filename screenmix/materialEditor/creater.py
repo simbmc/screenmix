@@ -25,14 +25,22 @@ class MaterialCreater(GridLayout):
     p = ObjectProperty()  # parent
     
     # strings
+    createStr,cancelStr=StringProperty('create'),StringProperty('cancel')
+    #properties of the material
     densityStr, stiffnessStr = StringProperty('density[kg/m^3]:'), StringProperty('stiffness[MPa]:')
     priceStr, strengthStr = StringProperty('price[euro/kg]:'), StringProperty('strength[MPa]:')
     nameStr, defaultValueStr=StringProperty('name'), StringProperty('1.0')
+    
+    
     
     # constructor
     def __init__(self, **kwargs):
         super(MaterialCreater, self).__init__(**kwargs)
         self.cols, self.spacing = 2, Design.spacing
+        self.row_force_default=True
+        self.row_default_height=Design.btnHeight
+        self.size_hint_y=None
+        self.height=Design.btnHeight
         self.create_gui()
     
     '''
@@ -75,9 +83,9 @@ class MaterialCreater(GridLayout):
         self.btnStrength = OwnButton(text=self.defaultValueStr)
         self.btnStrength.bind(on_press=self.use_numpad)
         # create material and cancel 
-        self.btnCreate = OwnButton(text='create')
+        self.btnCreate = OwnButton(text=self.createStr)
         self.btnCreate.bind(on_press=self.create_material)
-        self.btnCancel = OwnButton(text='cancel')
+        self.btnCancel = OwnButton(text=self.cancelStr)
         self.btnCancel.bind(on_press=self.cancel_creating)
         
     '''

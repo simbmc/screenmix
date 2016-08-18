@@ -73,11 +73,11 @@ class Material_Editor(GridLayout):
         self.numpad,self.keyboard=Numpad(),Keyboard()
         self.numpad.p,self.keyboard.p=self,self
         self.editNumpad=OwnPopup(content=self.numpad)
-        self.editKeyboard=OwnPopup(content=self.keyboard)
+        self.editKeyboard=OwnPopup(title=self.nameStr,content=self.keyboard)
         creater = MaterialCreater()
         creater.p = self
         self.popupInfo = OwnPopup(title='material', content=self.contentLayout)
-        self.popupCreate = OwnPopup(title='create new material', content=creater)
+        self.popupCreate = OwnPopup(title='create material', content=creater)
 
     '''
     create the gui which is necessary for the show of the 
@@ -205,6 +205,14 @@ class Material_Editor(GridLayout):
     def show_numpad(self,btn):
         self.focusBtn=btn
         self.numpad.lblTextinput.text=btn.text
+        if self.focusBtn==self.btnDensity:
+            self.editNumpad.title=self.densityStr
+        elif self.focusBtn==self.btnPrice:
+            self.editNumpad.title=self.priceStr
+        elif self.focusBtn==self.btnStrenght:
+            self.editNumpad.title=self.strengthStr
+        elif self.focusBtn==self.btnStiffness:
+            self.editNumpad.title=self.stiffnessStr
         self.editNumpad.open()
     
     '''

@@ -30,6 +30,7 @@ class AckRect(GridLayout):
     
     # strings
     strainStr = StringProperty('strain: ')
+    clearStr=StringProperty('clear')
     
     # constructor
     def __init__(self, **kwargs):
@@ -46,7 +47,7 @@ class AckRect(GridLayout):
         self.sliderStrain = Slider(min=1e-10, max=0.1, value=1e-5)
         self.sliderStrain.bind(value=self.update_strain)
         # clear-btn to delete the plots, whichs has no focus
-        self.btnClear = OwnButton(text='clear')
+        self.btnClear = OwnButton(text=self.clearStr)
         self.btnClear.bind(on_press=self.clear)
         self.create_ack_components()  # create the necessary ack-components
         self.contentLayout = GridLayout(cols=2)  # create the layout for the ack-left/right

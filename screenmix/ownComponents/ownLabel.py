@@ -18,7 +18,6 @@ class OwnLabel(Label):
     def __init__(self, **kwargs):
         super(OwnLabel, self).__init__(**kwargs)
         self.color = self.background_color_normal
-        self.size_hint = (1., 0.1)
         self.height = Design.lblHeight
         self.font_size = Design.font_size
 
