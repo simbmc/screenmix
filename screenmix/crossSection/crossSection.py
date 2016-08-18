@@ -14,16 +14,15 @@ from shapes.shapeRectangle import ShapeRectangle
 class CrossSection(GridLayout):
     
     '''
-    cross section contains all shapes. it manage which shape-should
-    will be show
+    cross section contains all shapes. it manage which shape should be show
     '''
     
     # important components
     ack = ObjectProperty()
     reinforcmentEditor = ObjectProperty(ReinforcementEditor())
-    view = ObjectProperty()
     allMaterials = ObjectProperty(MaterialList.Instance())
     shapeRectangle = ObjectProperty(ShapeRectangle())
+    view = ObjectProperty()
     ###################################
     # here you can add more shapes    #
     ###################################

@@ -8,8 +8,8 @@ from abc import abstractmethod
 
 class IShape:
     '''
-    ishape is the interface which the shapes must implement. it makes sure,
-    that the shapes has the neceassary methods, which the other components
+    IShape is the interface which the shapes must implement. it makes sure,
+    that the shapes has the necessary methods, which the other components
     are uses
     '''
     
@@ -20,10 +20,14 @@ class IShape:
     
     @abstractmethod
     def calculate_weight_price(self):
+        # calculate the weight and the price of 
+        # the cross-section-shape
         raise NotImplemented('not implemented')
 
     @abstractmethod
     def calculate_strength(self):
+        # calculate the cracking stress of 
+        # the cross-section-shape
         raise NotImplemented('not implemented')
 
     @abstractmethod
@@ -36,10 +40,12 @@ class IShape:
     #############################################################################
     
     '''
-    the method add_layer add new materials in the view
+    the method add_layer add new layer in the view
     '''
 
     def add_layer(self, percent, material):
+        # make sure that the method add_layer is implemented 
+        # in the view
         self.view.add_layer(percent, material)
 
     '''
@@ -47,6 +53,8 @@ class IShape:
     '''
 
     def delete_layer(self):
+        # make sure that the method delete_layer is implemented 
+        # in the view
         self.view.delete_layer()
 
     '''
@@ -55,7 +63,7 @@ class IShape:
     '''
 
     def update_layer_information(self, name, price, density, stiffness, strength, percent):
-        self.refEdit.update_layer_information(name, price,density, stiffness,
+        self.refEdit.update_layer_information(name, price, density, stiffness,
                                               strength, percent)
 
     '''

@@ -16,7 +16,7 @@ from plot.filled_ellipse import FilledEllipse
 class AckLeftRect(GridLayout):
     
     '''
-    left-compontent of the ackrect. it shows the strain-stress-behavior 
+    left-component of the ackrect. it shows the strain-stress-behavior 
     of the cross-section-shape rectangle by a diagram
     '''
     
@@ -41,7 +41,7 @@ class AckLeftRect(GridLayout):
     '''
     def create_graph(self):
         self.graph = OwnGraph(xlabel=self.xlabelStr, ylabel=self.ylabelStr,
-                           y_grid_label=True, x_grid_label=True,)
+                              y_grid_label=True, x_grid_label=True,)
         self.add_widget(self.graph)
         # create the focus-point. the focus-point is a ellipse
         # you can find the class in the plot-package
@@ -154,6 +154,7 @@ class AckLeftRect(GridLayout):
             self.curPlot = self.plot
             self.firstPlot = False
         else:
+            #set the color of the old-focus-plot to black
             self.curPlot.color = [0, 0, 0, 1]
             self.curPlot = self.plot
         # safe the plot in the allplot list. it's necessary for the update

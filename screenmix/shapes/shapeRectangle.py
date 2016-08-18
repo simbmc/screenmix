@@ -14,16 +14,21 @@ from shapes.ishape import IShape
 
 
 class ShapeRectangle(GridLayout, IShape):
+    
     '''
     represents a cross section which has the shape 
     of a rectangle
     '''
-    h, w = NumericProperty(0.5), NumericProperty(0.25)
-    weight, price = NumericProperty(), NumericProperty()
-    strength = NumericProperty()
+    
+    #important components
     view, information = ObjectProperty(), ObjectProperty()
     ack = ObjectProperty()
     layers = ListProperty([])
+    
+    #height, width of the rectangle
+    h, w = NumericProperty(0.5), NumericProperty(0.25)
+    weight, price = NumericProperty(), NumericProperty()
+    strength = NumericProperty()
 
     # constructor
     def __init__(self, **kwargs):
@@ -38,7 +43,7 @@ class ShapeRectangle(GridLayout, IShape):
     '''
     update the concrete-properties
     '''
-    def update_concrete_information(self,density,price,stiffness,strength):
+    def update_concrete_information(self, density, price, stiffness, strength):
         self.concreteDensity, self.concretePrice = density, price
         self.concreteStiffness, self.concreteStrength = stiffness, strength
         
