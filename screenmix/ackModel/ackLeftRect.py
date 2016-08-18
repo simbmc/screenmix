@@ -61,7 +61,7 @@ class AckLeftRect(GridLayout):
         points.append((self.cs.minOfMaxstrain, self.cs.strength))
         if self.cs.layers:
             # calculate the second points
-            # calculate the lblStiffness of the reinforcement layers according to
+            # calculate the stiffness of the reinforcement layers according to
             # mixture rule
             percent_of_layers = 0.  # the sum of the p of the reinforcement layers
             for layer in self.cs.layers:
@@ -125,18 +125,14 @@ class AckLeftRect(GridLayout):
             # f(x)=mx => m=y3-y2/x3-x2
             m = (self.thirdpoint[1] - self.secondpoint[1]) / \
                 (self.thirdpoint[0] - self.secondpoint[0])
+            print('v*m: ' + str(value * m))
+            # y=mx+b =>y-mx=b
+            b = self.secondpoint[1] - m * self.secondpoint[0]
+            y = value * m + b
+            print('v*m+b: ' + str(y))
             # set the circle in the middle of the line
             # it's dependent from the self.graph.ymax
-            if self.graph.ymax < 25:
-                self.focus.yrange = [value * m + eps_y, value * m + 3 * eps_y]
-            elif self.graph.ymax < 30:
-                self.focus.yrange = [value * m + 0.5 * eps_y, value * m + 2.5 * eps_y]
-            elif self.graph.ymax < 70:
-                self.focus.yrange = [value * m, value * m + 2 * eps_y]
-            elif self.graph.ymax < 100:
-                self.focus.yrange = [value * m - eps_y * 0.5, value * m + eps_y * 1.5]
-            else:
-                self.focus.yrange = [value * m - eps_y, value * m + eps_y]
+            self.focus.yrange = [y - eps_y, y + eps_y]
         # calculation when the value is between the first- and secondpoint
         else:
             # m=0 => independet from the x-value
@@ -154,7 +150,7 @@ class AckLeftRect(GridLayout):
             self.curPlot = self.plot
             self.firstPlot = False
         else:
-            #set the color of the old-focus-plot to black
+            # set the color of the old-focus-plot to black
             self.curPlot.color = [0, 0, 0, 1]
             self.curPlot = self.plot
         # safe the plot in the allplot list. it's necessary for the update

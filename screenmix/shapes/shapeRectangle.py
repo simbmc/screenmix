@@ -44,6 +44,8 @@ class ShapeRectangle(GridLayout, IShape):
     update the concrete-properties
     '''
     def update_concrete_information(self, density, price, stiffness, strength):
+        print('update concrete')
+        print('strength: '+str(strength))
         self.concreteDensity, self.concretePrice = density, price
         self.concreteStiffness, self.concreteStrength = stiffness, strength
         

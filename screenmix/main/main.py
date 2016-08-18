@@ -34,7 +34,7 @@ class ScreenmixApp(App):
     '''
     def build(self):
         bar = AppActionBar()
-        self.content = GridLayout(cols=1, padding=Design.padding, spacing=Design.spacing)
+        self.content = GridLayout(cols=1, spacing=Design.spacing)
         self.content.add_widget(bar)
         self.create_componets()
         # Cross Section is the default view

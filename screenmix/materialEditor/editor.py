@@ -16,7 +16,7 @@ from ownComponents.ownLabel import OwnLabel
 from ownComponents.ownPopup import OwnPopup
 
 
-class Material_Editor(ScrollView):
+class Material_Editor(GridLayout):
     
     '''
     the material-edit is the component, where the user 
@@ -30,7 +30,8 @@ class Material_Editor(ScrollView):
     #constructor
     def __init__(self, **kwargs):
         super(Material_Editor, self).__init__(**kwargs)
-        self.h=dp(50)#height of the btns
+        self.cols=1
+        self.h=dp(40)#height of the btns
 
     '''
     the method create gui create the gui of 
@@ -52,7 +53,9 @@ class Material_Editor(ScrollView):
         self.btnMaterialEditor.height=self.h
         self.btnMaterialEditor.bind(on_press=self.create_material)
         self.materialLayout.add_widget(self.btnMaterialEditor)
-        self.add_widget(self.materialLayout)
+        scrollView=ScrollView()
+        scrollView.add_widget(self.materialLayout)
+        self.add_widget(scrollView)
         
 
     '''

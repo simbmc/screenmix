@@ -4,15 +4,16 @@ Created on 15.04.2016
 '''
 from decimal import Decimal
 
+from kivy.metrics import dp
 from kivy.properties import ObjectProperty, StringProperty
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.slider import Slider
 
 from ackModel.ackLeftRect import AckLeftRect
 from ackModel.ackRightRect import AckRightRect
+from ownComponents.design import Design
 from ownComponents.ownButton import OwnButton
 from ownComponents.ownLabel import OwnLabel
-from ownComponents.design import Design
 
 
 class AckRect(GridLayout):
@@ -46,16 +47,17 @@ class AckRect(GridLayout):
         self.sliderStrain.bind(value=self.update_strain)
         # clear-btn to delete the plots, whichs has no focus
         self.btnClear = OwnButton(text='clear')
+        self.btnClear.height=Design.btnHeight*1.1
         self.btnClear.bind(on_press=self.clear)
         self.create_ack_components()  # create the necessary ack-components
         self.contentLayout = GridLayout(cols=2)  # create the layout for the ack-left/right
         self.contentLayout.add_widget(self.ackLeft)
         self.contentLayout.add_widget(self.ackRight)
-        self.add_widget(self.contentLayout)
         # create the area, for the clear-btn and the strainSlider
         # sliderlayout was used to make sure, that the 
         # height of the area is small
-        sliderLayout = GridLayout(cols=2, row_force_default=True,
+        sliderLayout = GridLayout(padding=Design.padding,
+                                  cols=2, row_force_default=True,
                                   row_default_height=Design.btnHeight, size_hint_y=None,
                                   height=Design.btnHeight)
         # lbl to show the cur-strain
@@ -67,6 +69,7 @@ class AckRect(GridLayout):
         sliderLayout.add_widget(self.hlp)
         sliderLayout.add_widget(self.sliderStrain)
         self.add_widget(sliderLayout)
+        self.add_widget(self.contentLayout)
 
     
     '''
