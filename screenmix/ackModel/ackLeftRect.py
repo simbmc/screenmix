@@ -87,7 +87,7 @@ class AckLeftRect(GridLayout):
             # the maximum reinforcement strain
             max_strain_r = 1e8
             for layer in self.cs.layers:
-                cur_strain = layer.get_strain()
+                cur_strain = layer.strain
                 max_strain_r = min(cur_strain, max_strain_r)
             # maximum composite strength
             max_strangth_c = E_r * max_strain_r * percent_of_layers
@@ -125,11 +125,8 @@ class AckLeftRect(GridLayout):
             # f(x)=mx => m=y3-y2/x3-x2
             m = (self.thirdpoint[1] - self.secondpoint[1]) / \
                 (self.thirdpoint[0] - self.secondpoint[0])
-            print('v*m: ' + str(value * m))
-            # y=mx+b =>y-mx=b
             b = self.secondpoint[1] - m * self.secondpoint[0]
             y = value * m + b
-            print('v*m+b: ' + str(y))
             # set the circle in the middle of the line
             # it's dependent from the self.graph.ymax
             self.focus.yrange = [y - eps_y, y + eps_y]
@@ -137,7 +134,7 @@ class AckLeftRect(GridLayout):
         else:
             # m=0 => independet from the x-value
             b = self.cs.strength
-            self.focus.yrange = [-eps_y + b, +eps_y + b]
+            self.focus.yrange = [ b - eps_y , b + eps_y ]
 
     '''
     update the plot

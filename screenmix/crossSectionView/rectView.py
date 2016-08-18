@@ -25,7 +25,7 @@ class RectView(BoxLayout, IView):
     # important components
     cs = ObjectProperty()
     
-    #width, height of the cross section
+    # width, height of the cross section
     w, h = NumericProperty(0.25), NumericProperty(0.5)
     
     # strings
@@ -58,13 +58,14 @@ class RectView(BoxLayout, IView):
         y = self.h - h / 2.  # y-coordinate
         cur = RectLayer(self.w / 2, y, h, self.w, material.color, value)
         cur.material = material
+        cur.strain = material.strength / material.stiffness
         # create the filled-rect for the cs-view and the ack-right
         cur.layerCs = FilledRect(xrange=[0., self.w], color=cur.colors,
                                   yrange=[y - h / 2., y + h / 2.])
         cur.layerAck = FilledRect(xrange=[0., 0.], color=cur.colors,
                                    yrange=[y - h / 2., y + h / 2.])
         self.graph.add_plot(cur.layerCs)
-        #safe the layer in the cross-section-layers-list 
+        # safe the layer in the cross-section-layers-list 
         self.cs.layers.append(cur) 
         self.update_all_graph()
         self.update_cs_information()
@@ -74,8 +75,8 @@ class RectView(BoxLayout, IView):
     '''
 
     def delete_layer(self):
-        #if the cross-section has no layer, 
-        #there's nothing to do
+        # if the cross-section has no layer, 
+        # there's nothing to do
         if not self.cs.layers:
             return
         for layer in self.cs.layers:
@@ -93,11 +94,11 @@ class RectView(BoxLayout, IView):
     '''
 
     def get_free_places(self):
-        self.free_places = [] #reset the free_places 
+        self.free_places = []  # reset the free_places 
         layers = copy.deepcopy(self.cs.layers)
         # if the cross section contains layers
         if self.cs.layers:
-            y = 0.#running index
+            y = 0.  # running index
             self.switch = 1
             while self.switch > 0:
                 minValue = self.h
@@ -119,8 +120,8 @@ class RectView(BoxLayout, IView):
     '''
 
     def findMin(self, layers):
-        #if the layers-list don't contains layers
-        #change the switch of the method get-free-places
+        # if the layers-list don't contains layers
+        # change the switch of the method get-free-places
         if not layers:
             self.switch = -1
         else:
@@ -154,15 +155,15 @@ class RectView(BoxLayout, IView):
     '''
 
     def update_height(self, value):
-        #a is the scalar to scale the layers
+        # a is the scalar to scale the layers
         a, self.h = value / self.h, value
         for layer in self.cs.layers:
             layer.y, layer.h = layer.y * a, layer.h * a
         self.update_all_graph()
-        #update the graph-height 
+        # update the graph-height 
         self.graph.ymax = self.h
         self.graph.y_ticks_major = self.h / 5.
-        #update the information of the cross section
+        # update the information of the cross section
         self.update_cs_information()
 
     '''
@@ -175,22 +176,11 @@ class RectView(BoxLayout, IView):
         for layer in self.cs.layers:
             layer.w = value
         self.update_all_graph()
-        #update the graph-width
+        # update the graph-width
         self.graph.xmax = self.w
         self.graph.x_ticks_major = self.w / 5.
-        #update the information of the cross section
+        # update the information of the cross section
         self.update_cs_information()
-    
-    '''
-    the method update_cs_information update the cross section information of 
-    the view_information. this method must be called when the cross-section-size 
-    or the layers of the cross-section has changed
-    '''
-
-    def update_cs_information(self):
-        self.cs.calculate_strength() #calculate the cracking stress
-        self.cs.calculate_weight_price()
-        self.cs.update_cs_information()
     
     '''
     update the layers in the graph.    

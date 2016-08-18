@@ -38,16 +38,16 @@ class ShapeRectangle(GridLayout, IShape):
         concrete = Concrete()
         self.concreteDensity, self.concretePrice = concrete.density, concrete.price
         self.concreteStiffness, self.concreteStrength = concrete.stiffness, concrete.strength
+        self.concreteStrain=self.concreteStrength / self.concreteStiffness
         self.information, self.view = RectangleInformation(), RectView()
     
     '''
     update the concrete-properties
     '''
     def update_concrete_information(self, density, price, stiffness, strength):
-        print('update concrete')
-        print('strength: '+str(strength))
         self.concreteDensity, self.concretePrice = density, price
         self.concreteStiffness, self.concreteStrength = stiffness, strength
+        self.concreteStrain=self.concreteStrength / self.concreteStiffness
         
     '''
     the method update_height changes the height of the view
@@ -98,7 +98,7 @@ class ShapeRectangle(GridLayout, IShape):
         self.maxOfMaxstrain = 0
         # find the minimum max_strain and the maximum max_strain
         for layer in self.layers:
-            curStrain = layer.get_strain()
+            curStrain = layer.strain
             # proof whether the curStrain is smaller as the min
             if curStrain < self.minOfMaxstrain:
                 self.minOfMaxstrain = curStrain
@@ -123,12 +123,6 @@ class ShapeRectangle(GridLayout, IShape):
                 (layer[1] - layer[0]) / self.h * self.concreteStiffness
         self.strength = strength
 
-    '''
-    calculate the strain of concrete
-    '''
-
-    def calculate_strain_of_concrete(self):
-        return self.concreteStrength / self.concreteStiffness
 
     '''
     set the editor

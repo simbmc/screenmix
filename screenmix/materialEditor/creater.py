@@ -25,8 +25,9 @@ class MaterialCreater(GridLayout):
     p = ObjectProperty()  # parent
     
     # strings
-    sdensity, sstiffness = StringProperty('density'), StringProperty('stiffness')
-    sprice, sstrength = StringProperty('price'), StringProperty('strength')
+    densityStr, stiffnessStr = StringProperty('density[kg/m^3]:'), StringProperty('stiffness[MPa]:')
+    priceStr, strengthStr = StringProperty('price[euro/kg]:'), StringProperty('strength[MPa]:')
+    nameStr, defaultValueStr=StringProperty('name'), StringProperty('1.0')
     
     # constructor
     def __init__(self, **kwargs):
@@ -41,15 +42,15 @@ class MaterialCreater(GridLayout):
     def create_gui(self):
         self.create_popups()
         self.create_buttons()
-        self.add_widget(OwnLabel(text='name: '))
+        self.add_widget(OwnLabel(text=self.nameStr))
         self.add_widget(self.btnName)
-        self.add_widget(OwnLabel(text='price[euro/kg]:'))
+        self.add_widget(OwnLabel(text=self.priceStr))
         self.add_widget(self.btnPrice)
-        self.add_widget(OwnLabel(text='density[kg/m^3]:'))
+        self.add_widget(OwnLabel(text=self.densityStr))
         self.add_widget(self.btnDensity)
-        self.add_widget(OwnLabel(text='stiffness[MPa]:'))
+        self.add_widget(OwnLabel(text=self.stiffnessStr))
         self.add_widget(self.btnStiffness)
-        self.add_widget(OwnLabel(text='strength[MPa]:'))
+        self.add_widget(OwnLabel(text=self.strengthStr))
         self.add_widget(self.btnStrength)
         self.add_widget(self.btnCancel)
         self.add_widget(self.btnCreate)
@@ -59,19 +60,19 @@ class MaterialCreater(GridLayout):
     '''
     def create_buttons(self):
         # materialname
-        self.btnName = OwnButton(text='name')
+        self.btnName = OwnButton(text=self.nameStr)
         self.btnName.bind(on_press=self.use_keyboard)
         # materialprice
-        self.btnPrice = OwnButton(text='1.0')
+        self.btnPrice = OwnButton(text=self.defaultValueStr)
         self.btnPrice.bind(on_press=self.use_numpad)
         # materialdensity
-        self.btnDensity = OwnButton(text='1.0')
+        self.btnDensity = OwnButton(text=self.defaultValueStr)
         self.btnDensity.bind(on_press=self.use_numpad)
         # materialstiffness
-        self.btnStiffness = OwnButton(text='1.0')
+        self.btnStiffness = OwnButton(text=self.defaultValueStr)
         self.btnStiffness.bind(on_press=self.use_numpad)
         # materialstrength
-        self.btnStrength = OwnButton(text='1.0')
+        self.btnStrength = OwnButton(text=self.defaultValueStr)
         self.btnStrength.bind(on_press=self.use_numpad)
         # create material and cancel 
         self.btnCreate = OwnButton(text='create')
@@ -94,13 +95,13 @@ class MaterialCreater(GridLayout):
         self.numpad.lblTextinput.text = btn.text
         # find the property and set the title of the popup
         if self.btnFocus == self.btnDensity:
-            self.popupNumpad.title = self.sdensity
+            self.popupNumpad.title = self.densityStr
         elif self.btnFocus == self.btnPrice:
-            self.popupNumpad.title = self.sprice
+            self.popupNumpad.title = self.priceStr
         elif self.btnFocus == self.btnStiffness:
-            self.popupNumpad.title = self.sstiffness
+            self.popupNumpad.title = self.stiffnessStr
         elif self.btnFocus == self.btnStrength:
-            self.popupNumpad.title = self.sstrength
+            self.popupNumpad.title = self.strengthStr
         self.popupNumpad.open()
         
     '''
@@ -110,8 +111,8 @@ class MaterialCreater(GridLayout):
     def create_popups(self):
         self.numpad = Numpad()
         self.keyboard = Keyboard()
-        self.popupKeyboard = OwnPopup(title='name:', content=self.keyboard)
-        self.popupNumpad = OwnPopup(title='numpad', content=self.numpad)
+        self.popupKeyboard = OwnPopup(title=self.nameStr, content=self.keyboard)
+        self.popupNumpad = OwnPopup(content=self.numpad)
         self.numpad.p = self
         self.keyboard.p = self
     
@@ -137,11 +138,11 @@ class MaterialCreater(GridLayout):
     the material
     '''
     def reset_editor(self):
-        self.btnName.text = 'name'
-        self.btnPrice.text = '1.0'
-        self.btnDensity.text = '1.0'
-        self.btnStiffness.text = '1.0'
-        self.btnStrength.text = '1.0'
+        self.btnName.text = self.nameStr
+        self.btnPrice.text = self.defaultValueStr
+        self.btnDensity.text = self.defaultValueStr
+        self.btnStiffness.text = self.defaultValueStr
+        self.btnStrength.text = self.defaultValueStr
     
     '''
     the method create material create a own_material and update the 

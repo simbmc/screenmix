@@ -3,7 +3,7 @@ Created on 11.04.2016
 @author: mkennert
 '''
 from kivy.metrics import dp
-from kivy.properties import ObjectProperty
+from kivy.properties import ObjectProperty, StringProperty
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.scrollview import ScrollView
 
@@ -26,6 +26,12 @@ class Material_Editor(GridLayout):
     
     #important components
     cs = ObjectProperty()
+    
+    #strings
+    concrete=StringProperty('concrete')
+    densityStr, stiffnessStr = StringProperty('density[kg/m^3]:'), StringProperty('stiffness[MPa]:')
+    priceStr, strengthStr = StringProperty('price[euro/kg]:'), StringProperty('strength[MPa]:')
+    nameStr, defaultValueStr=StringProperty('name'), StringProperty('1.0')
     
     #constructor
     def __init__(self, **kwargs):
@@ -91,15 +97,15 @@ class Material_Editor(GridLayout):
         self.btnStrenght.bind(on_press=self.show_numpad)
         #fill the contentLayout with the components
         self.contentLayout = GridLayout(cols=2,spacing=Design.spacing)
-        self.contentLayout.add_widget(OwnLabel(text='name:'))
+        self.contentLayout.add_widget(OwnLabel(text=self.nameStr))
         self.contentLayout.add_widget(self.btnName)
-        self.contentLayout.add_widget(OwnLabel(text='price[euro/kg]:'))
+        self.contentLayout.add_widget(OwnLabel(text=self.priceStr))
         self.contentLayout.add_widget(self.btnPrice)
-        self.contentLayout.add_widget(OwnLabel(text='density[kg/m^3]:'))
+        self.contentLayout.add_widget(OwnLabel(text=self.densityStr))
         self.contentLayout.add_widget(self.btnDensity)
-        self.contentLayout.add_widget(OwnLabel(text='stiffness[MPa]:'))
+        self.contentLayout.add_widget(OwnLabel(text=self.stiffnessStr))
         self.contentLayout.add_widget(self.btnStiffness)
-        self.contentLayout.add_widget(OwnLabel(text='strength[MPa]:'))
+        self.contentLayout.add_widget(OwnLabel(text=self.strengthStr))
         self.contentLayout.add_widget(self.btnStrenght)
         #btn_back=go back to the materials-view
         btn_back = OwnButton(text='back')
@@ -116,7 +122,7 @@ class Material_Editor(GridLayout):
     '''
 
     def show_material_information(self, button):
-        for i in range(0, self.cs.allMaterials.get_length()):
+        for i in range(0, len(self.cs.allMaterials.allMaterials)):
             material=self.allMaterials.allMaterials[i]
             if material.name == button.text:
                 self.focusMaterial=material
@@ -188,7 +194,7 @@ class Material_Editor(GridLayout):
         self.focusMaterial.price=float(self.btnPrice.text)
         self.focusMaterial.stiffness=float(self.btnStiffness.text)
         self.focusMaterial.strength=float(self.btnStrenght.text)
-        if self.focusMaterial.name=='concrete':
+        if self.focusMaterial.name==self.concrete:
             self.cs.update_concrete_information(self.focusMaterial.density,self.focusMaterial.price,
                                                 self.focusMaterial.stiffness,self.focusMaterial.strength)
         self.cs.update_informations()

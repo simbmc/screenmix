@@ -4,7 +4,6 @@ Created on 15.04.2016
 '''
 from decimal import Decimal
 
-from kivy.metrics import dp
 from kivy.properties import ObjectProperty, StringProperty
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.slider import Slider
@@ -28,6 +27,7 @@ class AckRect(GridLayout):
     cs = ObjectProperty()
     ackLeft = ObjectProperty(AckLeftRect())
     ackRight = ObjectProperty(AckRightRect())
+    
     # strings
     strainStr = StringProperty('strain: ')
     
@@ -47,7 +47,6 @@ class AckRect(GridLayout):
         self.sliderStrain.bind(value=self.update_strain)
         # clear-btn to delete the plots, whichs has no focus
         self.btnClear = OwnButton(text='clear')
-        self.btnClear.height=Design.btnHeight*1.1
         self.btnClear.bind(on_press=self.clear)
         self.create_ack_components()  # create the necessary ack-components
         self.contentLayout = GridLayout(cols=2)  # create the layout for the ack-left/right
@@ -56,20 +55,19 @@ class AckRect(GridLayout):
         # create the area, for the clear-btn and the strainSlider
         # sliderlayout was used to make sure, that the 
         # height of the area is small
-        sliderLayout = GridLayout(padding=Design.padding,
-                                  cols=2, row_force_default=True,
+        sliderLayout = GridLayout(cols=2, row_force_default=True,
                                   row_default_height=Design.btnHeight, size_hint_y=None,
-                                  height=Design.btnHeight)
+                                  height=1.1*Design.btnHeight)
         # lbl to show the cur-strain
         self.lblStrain = OwnLabel(text=self.strainStr)
         # hlp is used to to save space for the slider
-        self.hlp = GridLayout(cols=2)
+        self.hlp = GridLayout(cols=2,padding=Design.padding)
         self.hlp.add_widget(self.btnClear)
         self.hlp.add_widget(self.lblStrain)
         sliderLayout.add_widget(self.hlp)
         sliderLayout.add_widget(self.sliderStrain)
-        self.add_widget(sliderLayout)
         self.add_widget(self.contentLayout)
+        self.add_widget(sliderLayout)
 
     
     '''

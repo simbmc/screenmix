@@ -15,25 +15,20 @@ class ILayer:
     
     @abstractmethod
     def mouse_within(self, x, y):
-        #should proof whether the touch is in 
-        #the layer
+        # should proof whether the touch is in 
+        # the layer
         raise NotImplemented('not implemented')
     
     @abstractmethod    
     def mouse_within_x(self, x):
-        #should proof whether the touch.x is in the graph
-        #this is necessary to improve the move-method of
-        #the layer  
-        raise NotImplemented('not implemented')
-    
-    @abstractmethod
-    def get_strain(self):
-        #should return the strain of layer
+        # should proof whether the touch.x is in the graph
+        # this is necessary to improve the move-method of
+        # the layer  
         raise NotImplemented('not implemented')
     
     @abstractmethod
     def get_weight(self):
-        #should return the weight of the layer
+        # should return the weight of the layer
         raise NotImplemented('not implemented')
     
     '''

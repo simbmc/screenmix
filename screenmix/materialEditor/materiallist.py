@@ -3,6 +3,8 @@ Created on 18.04.2016
 @author: mkennert
 '''
 
+from kivy.properties import ListProperty
+
 from materialEditor.singleton import Singleton
 from materials.carbonFiber import CarbonFiber
 from materials.concrete import Concrete
@@ -22,12 +24,9 @@ class MaterialList:
     implements the interface iobserver
     '''
     
-    #important components
-    allMaterials = None
-    
     # constuctor
     def __init__(self):
-        self.allMaterials = [Steel(), CarbonFiber(), GlassFiber(),Concrete()]
+        self.allMaterials = [Steel(), CarbonFiber(), GlassFiber(), Concrete()]
         self.listeners = []
     
     '''
@@ -54,9 +53,3 @@ class MaterialList:
         self.allMaterials.append(material)
         self.update()
 
-    '''
-    return the length of the materiallist
-    '''
-
-    def get_length(self):
-        return len(self.allMaterials)

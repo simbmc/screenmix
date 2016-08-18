@@ -21,8 +21,10 @@ class CrossSection(GridLayout):
     ack = ObjectProperty()
     reinforcmentEditor = ObjectProperty(ReinforcementEditor())
     allMaterials = ObjectProperty(MaterialList.Instance())
-    shapeRectangle = ObjectProperty(ShapeRectangle())
     view = ObjectProperty()
+    
+    # shapes
+    shapeRectangle = ObjectProperty(ShapeRectangle())
     ###################################
     # here you can add more shapes    #
     ###################################

@@ -8,15 +8,22 @@ from iLayer import ILayer
 
 
 class RectLayer(ILayer):
-    #x-, y-coordinate of the layer
+    
+    '''
+    RectLayer represents a layer which has a shape like
+    a rectangle
+    '''
+    
+    # x-, y-coordinate of the layer
     x, y = NumericProperty(), NumericProperty()
-    #height, width, procent of the layer
+    # height, width, procent of the layer
     h, w, p = NumericProperty(), NumericProperty(), NumericProperty()
-    strain=NumericProperty()
-    #color of the filled-rectangle
+    # strain of the material
+    strain = NumericProperty()
+    # color of the filled-rectangle
     colors = ListProperty()
     material = ObjectProperty()
-    #components to show the layer in the graph
+    # components to show the layer in the graph
     layerCs, layerAck = ObjectProperty(), ObjectProperty()
     
     # Constructor
@@ -24,7 +31,7 @@ class RectLayer(ILayer):
         self.x, self.y = x, y
         self.h, self.w, self.p = h, w, p
         self.colors = colors
-        #default the layer has no focus
+        # default the layer has no focus
         self.focus = False
 
     '''
@@ -47,13 +54,6 @@ class RectLayer(ILayer):
             return True
         else:
             return False
-        
-    '''
-    return the strain of the layer
-    '''
-
-    def get_strain(self):
-        return self.material.strength / self.material.stiffness
         
     '''
     return the weight of the layer

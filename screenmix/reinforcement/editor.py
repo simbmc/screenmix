@@ -6,7 +6,7 @@ Created on 02.06.2016
 '''
 from decimal import Decimal
 
-from kivy.properties import ObjectProperty
+from kivy.properties import ObjectProperty,StringProperty
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.slider import Slider
@@ -31,6 +31,13 @@ class ReinforcementEditor(GridLayout, IObserver):
     #important components
     cs = ObjectProperty()
     
+    #strings
+    densityStr, stiffnessStr = StringProperty('density[kg/m^3]:'), StringProperty('stiffness[MPa]:')
+    priceStr, strengthStr = StringProperty('price[euro/kg]:'), StringProperty('cracking stress [MPa]:')
+    weightStr,percentStr=StringProperty('weight [kg]:'),StringProperty('percent:')
+    nameStr, steelStr=StringProperty('name:'),StringProperty('steel')
+    rectangleStr=StringProperty('rectangle')
+    
     # constructor
     def __init__(self, **kwargs):
         super(ReinforcementEditor, self).__init__(**kwargs)
@@ -43,7 +50,7 @@ class ReinforcementEditor(GridLayout, IObserver):
 
     def create_gui(self):
         # if you add more shapes, uncomment the follow row
-        # self.create_selection_menu()
+        #self.create_selection_menu()
         self.create_cross_section_area()
         self.create_add_delete_area()
         self.create_material_information()
@@ -80,17 +87,17 @@ class ReinforcementEditor(GridLayout, IObserver):
         materialLayout = GridLayout(cols=4, row_force_default=True,
                                     row_default_height=2 * Design.lblHeight,
                                     height=Design.btnHeight)
-        materialLayout.add_widget(OwnLabel(text='name:'))
+        materialLayout.add_widget(OwnLabel(text=self.nameStr))
         materialLayout.add_widget(self.lblName)
-        materialLayout.add_widget(OwnLabel(text='price:'))
+        materialLayout.add_widget(OwnLabel(text=self.priceStr))
         materialLayout.add_widget(self.lblPrice)
-        materialLayout.add_widget(OwnLabel(text='density:'))
+        materialLayout.add_widget(OwnLabel(text=self.densityStr))
         materialLayout.add_widget(self.lblDensity)
-        materialLayout.add_widget(OwnLabel(text='stiffness:'))
+        materialLayout.add_widget(OwnLabel(text=self.stiffnessStr))
         materialLayout.add_widget(self.lblStiffness)
-        materialLayout.add_widget(OwnLabel(text='cracking stress:'))
+        materialLayout.add_widget(OwnLabel(text=self.strengthStr))
         materialLayout.add_widget(self.lblStrength)
-        materialLayout.add_widget(OwnLabel(text='percent:'))
+        materialLayout.add_widget(OwnLabel(text=self.percentStr))
         materialLayout.add_widget(self.lblPercent)
         self.slidePercent = Slider(min=0.05, max=0.2, value=0.1)
         self.slidePercent.bind(value=self.update_percent)
@@ -110,11 +117,11 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.csLayout = GridLayout(cols=2, row_force_default=True,
                                    row_default_height=3 * Design.lblHeight,
                                    height=3 * Design.lblHeight)
-        self.csLayout.add_widget(OwnLabel(text='price [Euro/m]:'))
+        self.csLayout.add_widget(OwnLabel(text=self.priceStr))
         self.csLayout.add_widget(self.lblcsPrice)
-        self.csLayout.add_widget(OwnLabel(text='weight [kg]:'))
+        self.csLayout.add_widget(OwnLabel(text=self.weightStr))
         self.csLayout.add_widget(self.lblcsWeight)
-        self.csLayout.add_widget(OwnLabel(text='cracking stress[Mpa]:'))
+        self.csLayout.add_widget(OwnLabel(text=self.strengthStr))
         self.csLayout.add_widget(self.lblcsStrength)
         self.add_widget(self.csLayout)
 
@@ -134,10 +141,10 @@ class ReinforcementEditor(GridLayout, IObserver):
                                     size_hint_y=None, height=5.15*Design.btnHeight,
                                     spacing=Design.spacing)
         self.addLayout.add_widget(OwnLabel(text='material:'))
-        self.btnMaterialOption = OwnButton(text='steel')
+        self.btnMaterialOption = OwnButton(text=self.steelStr)
         self.btnMaterialOption.bind(on_release=self.popup.open)
         self.addLayout.add_widget(self.btnMaterialOption)
-        self.lblMaterialPercent = OwnLabel(text='percent: 10%')
+        self.lblMaterialPercent = OwnLabel(text=self.percentStr+' 10%')
         self.addLayout.add_widget(self.lblMaterialPercent)
         self.sliderLayerPercent = Slider(min=0.05, max=0.2, value=0.1)
         self.sliderLayerPercent.bind(value=self.set_percenet_while_creating)
@@ -161,7 +168,7 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.materialEditor.p = self
         self.popupMaterialEditor = OwnPopup(
             title='editor', content=self.materialEditor)
-        for i in range(0, self.allMaterials.get_length()-1):
+        for i in range(0, len(self.allMaterials.allMaterials)-1):
             btnMaterialA = OwnButton(text=self.allMaterials.allMaterials[i].name)
             btnMaterialA.bind(on_press=self.select_material)
             self.materialSelectionLayout.add_widget(btnMaterialA)
@@ -170,7 +177,9 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.materialSelectionLayout.add_widget(self.btnMaterialEditor)
         self.root = ScrollView()
         self.root.add_widget(self.materialSelectionLayout)
-        self.popup = OwnPopup(title='materials', content=self.root)
+        popupContent=GridLayout(cols=1)
+        popupContent.add_widget(self.root)
+        self.popup = OwnPopup(title='materials', content=popupContent)
     
     '''
     create the layout where you can select the cross-section-shape
@@ -182,7 +191,7 @@ class ReinforcementEditor(GridLayout, IObserver):
                                       size_hint_y=None, row_force_default=True,
                                       row_default_height=Design.btnHeight,
                                       height=Design.btnHeight)
-        self.btnSelection = OwnButton(text='rectangle')
+        self.btnSelection = OwnButton(text=self.rectangleStr)
         self.btnSelection.bind(on_press=self.show_shape_selection)
         selectionContent.add_widget(OwnLabel(text='shape'))
         selectionContent.add_widget(self.btnSelection)
@@ -210,7 +219,7 @@ class ReinforcementEditor(GridLayout, IObserver):
     '''
 
     def finished_shape_selection(self, btn):
-        if btn.text == 'rectangle':
+        if btn.text == self.rectangleStr:
             self.btnSelection.text = btn.text
             # self.cs.show_rectangle_view()
         self.shapeSelection.dismiss()
@@ -261,7 +270,7 @@ class ReinforcementEditor(GridLayout, IObserver):
 
     def add_layer(self, button):
         self.finished_adding()
-        for i in range(0, self.allMaterials.get_length()):
+        for i in range(0, len(self.allMaterials.allMaterials)):
             if self.allMaterials.allMaterials[i].name == self.btnMaterialOption.text:
                 self.cs.add_layer(self.sliderLayerPercent.value, self.allMaterials.allMaterials[i])
                 return
@@ -343,7 +352,7 @@ class ReinforcementEditor(GridLayout, IObserver):
     '''
 
     def set_percenet_while_creating(self, inst, value):
-        self.lblMaterialPercent.text = 'percent: ' + \
+        self.lblMaterialPercent.text = self.percentStr + \
             str(int(value * 100)) + ' %'
 
     '''

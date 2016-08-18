@@ -13,11 +13,9 @@ class IObserver:
     the materiallist. so when the materiallist has changed the 
     oberserver must update the view
     '''
-    
-    '''
-    update the listen when the materiallist
-    has changed
-    '''
+
     @abstractmethod
     def update(self):
+        #update the listen when the materiallist
+        #has changed
         raise NotImplemented('not implemented')
