@@ -32,12 +32,6 @@ class IView:
         raise NotImplemented('not implemented')
     
     @abstractmethod
-    def update_cs_information(self):
-        # update the cs_information when something has 
-        # changed for example the size of the cross section
-        raise NotImplemented('not implemented')
-    
-    @abstractmethod
     def get_free_places(self):
         # return the places where's no layer. just the concrete
         # layers

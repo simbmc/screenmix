@@ -4,6 +4,8 @@ Created on 28.07.2016
 @author: mkennert
 '''
 
+from kivy.metrics import sp
+
 from kivy.garden.graph import Graph
 from ownComponents.design import Design
 
@@ -21,4 +23,5 @@ class OwnGraph(Graph):
         self.border_color = [0.5, 0.5, 0.5, 1]
         self.color = [0.25, 0.25, 0.25, 1]
         self.label_options.color = Design.popupForeground
+        self.label_options.halign='left'
         

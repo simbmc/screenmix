@@ -3,13 +3,14 @@ Created on 25.07.2016
 
 @author: mkennert
 '''
+from kivy.metrics import dp
 from kivy.properties import ObjectProperty
 from kivy.uix.gridlayout import GridLayout
 
 from materialEditor.materiallist import MaterialList
+from ownComponents.design import Design
 from reinforcement.editor import ReinforcementEditor
 from shapes.shapeRectangle import ShapeRectangle
-from ownComponents.design import Design
 
 
 class CrossSection(GridLayout):
@@ -34,6 +35,7 @@ class CrossSection(GridLayout):
     def __init__(self, **kwargs):
         super(CrossSection, self).__init__(**kwargs)
         self.cols , self.padding = 2, Design.padding
+        self.spacing= dp(10) 
         # default shape is rectangle        
         self.view = self.shapeRectangle.view
         self.reinforcmentEditor.set_cross_section(self.shapeRectangle)

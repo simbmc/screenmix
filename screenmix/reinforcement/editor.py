@@ -6,7 +6,7 @@ Created on 02.06.2016
 '''
 from decimal import Decimal
 
-from kivy.properties import ObjectProperty,StringProperty
+from kivy.properties import ObjectProperty, StringProperty
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.slider import Slider
@@ -28,15 +28,16 @@ class ReinforcementEditor(GridLayout, IObserver):
     the shape-information is given by the cross-section-shape
     '''
     
-    #important components
+    # important components
     cs = ObjectProperty()
     
-    #strings
+    # strings
     densityStr, stiffnessStr = StringProperty('density[kg/m^3]:'), StringProperty('stiffness[MPa]:')
     priceStr, strengthStr = StringProperty('price[euro/kg]:'), StringProperty('cracking stress [MPa]:')
-    weightStr,percentStr=StringProperty('weight [kg]:'),StringProperty('percent:')
-    nameStr, steelStr=StringProperty('name:'),StringProperty('steel')
-    rectangleStr=StringProperty('rectangle')
+    weightStr, percentStr = StringProperty('weight [kg]:'), StringProperty('percent:')
+    nameStr, steelStr = StringProperty('name:'), StringProperty('steel')
+    rectangleStr, shapeStr = StringProperty('rectangle'), StringProperty('shape')
+    materialStr=StringProperty('material:')
     
     # constructor
     def __init__(self, **kwargs):
@@ -50,7 +51,7 @@ class ReinforcementEditor(GridLayout, IObserver):
 
     def create_gui(self):
         # if you add more shapes, uncomment the follow row
-        #self.create_selection_menu()
+        # self.create_selection_menu()
         self.create_cross_section_area()
         self.create_add_delete_area()
         self.create_material_information()
@@ -95,10 +96,10 @@ class ReinforcementEditor(GridLayout, IObserver):
         materialLayout.add_widget(self.lblDensity)
         materialLayout.add_widget(OwnLabel(text=self.stiffnessStr))
         materialLayout.add_widget(self.lblStiffness)
-        materialLayout.add_widget(OwnLabel(text=self.strengthStr))
-        materialLayout.add_widget(self.lblStrength)
         materialLayout.add_widget(OwnLabel(text=self.percentStr))
         materialLayout.add_widget(self.lblPercent)
+        materialLayout.add_widget(OwnLabel(text=self.strengthStr))
+        materialLayout.add_widget(self.lblStrength)
         self.slidePercent = Slider(min=0.05, max=0.2, value=0.1)
         self.slidePercent.bind(value=self.update_percent)
         self.materialLayout.add_widget(materialLayout)
@@ -115,13 +116,13 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.lblcsWeight = OwnLabel(text='-')
         self.lblcsStrength = OwnLabel(text='-')
         self.csLayout = GridLayout(cols=2, row_force_default=True,
-                                   row_default_height=3 * Design.lblHeight,
-                                   height=3 * Design.lblHeight)
+                                   row_default_height=2 * Design.lblHeight,
+                                   height=2 * Design.lblHeight)
         self.csLayout.add_widget(OwnLabel(text=self.priceStr))
         self.csLayout.add_widget(self.lblcsPrice)
         self.csLayout.add_widget(OwnLabel(text=self.weightStr))
         self.csLayout.add_widget(self.lblcsWeight)
-        self.csLayout.add_widget(OwnLabel(text=self.strengthStr))
+        self.csLayout.add_widget(OwnLabel(text='strength'))
         self.csLayout.add_widget(self.lblcsStrength)
         self.add_widget(self.csLayout)
 
@@ -138,13 +139,13 @@ class ReinforcementEditor(GridLayout, IObserver):
         btnCancel.bind(on_press=self.cancel_adding)
         self.addLayout = GridLayout(cols=2, row_force_default=True,
                                     row_default_height=Design.btnHeight,
-                                    size_hint_y=None, height=5.15*Design.btnHeight,
+                                    size_hint_y=None, height=4.5 * Design.btnHeight,
                                     spacing=Design.spacing)
-        self.addLayout.add_widget(OwnLabel(text='material:'))
+        self.addLayout.add_widget(OwnLabel(text=self.materialStr))
         self.btnMaterialOption = OwnButton(text=self.steelStr)
         self.btnMaterialOption.bind(on_release=self.popup.open)
         self.addLayout.add_widget(self.btnMaterialOption)
-        self.lblMaterialPercent = OwnLabel(text=self.percentStr+' 10%')
+        self.lblMaterialPercent = OwnLabel(text=self.percentStr + ' 10%')
         self.addLayout.add_widget(self.lblMaterialPercent)
         self.sliderLayerPercent = Slider(min=0.05, max=0.2, value=0.1)
         self.sliderLayerPercent.bind(value=self.set_percenet_while_creating)
@@ -168,7 +169,7 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.materialEditor.p = self
         self.popupMaterialEditor = OwnPopup(
             title='editor', content=self.materialEditor)
-        for i in range(0, len(self.allMaterials.allMaterials)-1):
+        for i in range(0, len(self.allMaterials.allMaterials) - 1):
             btnMaterialA = OwnButton(text=self.allMaterials.allMaterials[i].name)
             btnMaterialA.bind(on_press=self.select_material)
             self.materialSelectionLayout.add_widget(btnMaterialA)
@@ -177,9 +178,9 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.materialSelectionLayout.add_widget(self.btnMaterialEditor)
         self.root = ScrollView()
         self.root.add_widget(self.materialSelectionLayout)
-        popupContent=GridLayout(cols=1)
+        popupContent = GridLayout(cols=1)
         popupContent.add_widget(self.root)
-        self.popup = OwnPopup(title='materials', content=popupContent)
+        self.popup = OwnPopup(title=self.materialStr, content=popupContent)
     
     '''
     create the layout where you can select the cross-section-shape
@@ -193,7 +194,7 @@ class ReinforcementEditor(GridLayout, IObserver):
                                       height=Design.btnHeight)
         self.btnSelection = OwnButton(text=self.rectangleStr)
         self.btnSelection.bind(on_press=self.show_shape_selection)
-        selectionContent.add_widget(OwnLabel(text='shape'))
+        selectionContent.add_widget(OwnLabel(text=self.shapeStr))
         selectionContent.add_widget(self.btnSelection)
         self.add_widget(selectionContent)
     
@@ -205,7 +206,7 @@ class ReinforcementEditor(GridLayout, IObserver):
         shapeContent = ShapeSelection()
         shapeContent.information = self
         shapeContent.create_gui()
-        self.shapeSelection = OwnPopup(title='shape', content=shapeContent)
+        self.shapeSelection = OwnPopup(title=self.shapeStr, content=shapeContent)
     
     '''
     open the popup where the user can select the shape

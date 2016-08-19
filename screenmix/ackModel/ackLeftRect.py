@@ -100,7 +100,7 @@ class AckLeftRect(GridLayout):
         self.graph.ymax = points[-1][1] * 1.2
         self.ack.sliderStrain.max = points[-1][0]
         if self.cs.layers:
-            self.graph.x_ticks_major = float(format(self.graph.xmax / 5., '.1g'))
+            self.graph.x_ticks_major = float(format(self.graph.xmax / 4., '.1g'))
         else:
             self.graph.x_ticks_major = self.graph.xmax / 4.
         self.graph.y_ticks_major = float(format(self.graph.ymax / 5., '.1g'))
