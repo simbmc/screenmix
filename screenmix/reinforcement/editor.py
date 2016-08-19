@@ -33,11 +33,11 @@ class ReinforcementEditor(GridLayout, IObserver):
     
     # strings
     densityStr, stiffnessStr = StringProperty('density[kg/m^3]:'), StringProperty('stiffness[MPa]:')
-    priceStr, strengthStr = StringProperty('price[euro/kg]:'), StringProperty('cracking stress [MPa]:')
-    weightStr, percentStr = StringProperty('weight [kg]:'), StringProperty('percent:')
+    priceStr, strengthStr = StringProperty('price[euro/m]:'), StringProperty('cracking stress [MPa]:')
+    weightStr, percentStr = StringProperty('weight [kg/m]:'), StringProperty('percent:')
     nameStr, steelStr = StringProperty('name:'), StringProperty('steel')
     rectangleStr, shapeStr = StringProperty('rectangle'), StringProperty('shape')
-    materialStr=StringProperty('material:')
+    materialStr = StringProperty('material:')
     
     # constructor
     def __init__(self, **kwargs):
@@ -98,7 +98,7 @@ class ReinforcementEditor(GridLayout, IObserver):
         materialLayout.add_widget(self.lblStiffness)
         materialLayout.add_widget(OwnLabel(text=self.percentStr))
         materialLayout.add_widget(self.lblPercent)
-        materialLayout.add_widget(OwnLabel(text=self.strengthStr))
+        materialLayout.add_widget(OwnLabel(text='strength[MPa]'))
         materialLayout.add_widget(self.lblStrength)
         self.slidePercent = Slider(min=0.05, max=0.2, value=0.1)
         self.slidePercent.bind(value=self.update_percent)
@@ -122,7 +122,7 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.csLayout.add_widget(self.lblcsPrice)
         self.csLayout.add_widget(OwnLabel(text=self.weightStr))
         self.csLayout.add_widget(self.lblcsWeight)
-        self.csLayout.add_widget(OwnLabel(text='strength'))
+        self.csLayout.add_widget(OwnLabel(text=self.strengthStr))
         self.csLayout.add_widget(self.lblcsStrength)
         self.add_widget(self.csLayout)
 
@@ -222,7 +222,7 @@ class ReinforcementEditor(GridLayout, IObserver):
     def finished_shape_selection(self, btn):
         if btn.text == self.rectangleStr:
             self.btnSelection.text = btn.text
-            # self.cs.show_rectangle_view()
+            self.cs.show_rectangle_view()
         self.shapeSelection.dismiss()
     
     '''
@@ -250,6 +250,8 @@ class ReinforcementEditor(GridLayout, IObserver):
 
     def show_add_layer_area(self, button):
         self.remove_widget(self.materialLayout)
+        self.remove_widget(self.csLayout)
+        self.remove_widget(self.information)
         self.remove_widget(self.addDeleteLayout)
         self.sliderLayerPercent.value = 0.1
         self.add_widget(self.addLayout, 0)
@@ -263,6 +265,8 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.remove_widget(self.addLayout)
         self.add_widget(self.materialLayout, 0)
         self.add_widget(self.addDeleteLayout, 1)
+        self.add_widget(self.csLayout, 2)
+        self.add_widget(self.information, 3)
 
     '''
     the method add_layer add a new layer at the cross section
