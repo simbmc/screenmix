@@ -110,6 +110,8 @@ class AckRightRect(GridLayout):
             else:
                 layer_stress = layer.material.stiffness * eps1 + \
                     layer.material.stiffness * (self.ack.sliderStrain.value - eps2)
+                self.graph.xmax = self.maxStress
+                self.graph.x_ticks_major = int(self.graph.xmax / 5.)
             max_stress = max(max_stress, layer_stress)
             layer.layerAck.xrange = [0, layer_stress]
             self.graph.add_plot(layer.layerAck)

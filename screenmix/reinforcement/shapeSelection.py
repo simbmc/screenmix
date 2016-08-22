@@ -10,6 +10,7 @@ from kivy.uix.scrollview import ScrollView
 from ownComponents.design import Design
 from ownComponents.ownButton import OwnButton
 from ownComponents.ownGraph import OwnGraph
+from ownComponents.strings import Strings
 from plot.line import LinePlot
 
 
@@ -23,9 +24,6 @@ class ShapeSelection(GridLayout):
     # important components
     information = ObjectProperty()
     
-    # strings
-    rectangleStr = StringProperty('rectangle')
-    # when you add more shapes use always string-properties for the name
     
     # constructor
     def __init__(self, **kwargs):
@@ -105,15 +103,15 @@ class ShapeSelection(GridLayout):
     '''
 
     def create_btns(self):
-        self.btnOK = OwnButton(text='ok')
+        self.btnOK = OwnButton(text=Strings.okStr)
         self.btnOK.bind(on_press=self.finished)
-        self.btnCancel = OwnButton(text='cancel')
+        self.btnCancel = OwnButton(text=Strings.cancelStr)
         self.btnCancel.bind(on_press=self.cancel)
         # default-shape=rectangle
-        self.focusShape = OwnButton(text=self.rectangleStr)
+        self.focusShape = OwnButton(text=Strings.rectangleStr)
         self.focusShape.bind(on_press=self.show_shapes_btn)
         # btns
-        self.plot = OwnButton(text=self.rectangleStr)
+        self.plot = OwnButton(text=Strings.rectangleStr)
         self.plot.bind(on_press=self.show_rectangle)
         #######################################################################
         # here you can add more shapes                                         #
