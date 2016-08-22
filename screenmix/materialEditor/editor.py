@@ -242,6 +242,6 @@ class Material_Editor(GridLayout):
     '''
     close the numpad and change nothing
     '''
-    def closeNumpad(self):
+    def close_numpad(self):
         self.editNumpad.dismiss()
     

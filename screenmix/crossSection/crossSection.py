@@ -34,7 +34,7 @@ class CrossSection(GridLayout):
     # constructor
     def __init__(self, **kwargs):
         super(CrossSection, self).__init__(**kwargs)
-        self.cols , self.padding = 2, Design.padding
+        self.cols = 2
         self.spacing= dp(10) 
         # default shape is rectangle        
         self.view = self.shapeRectangle.view

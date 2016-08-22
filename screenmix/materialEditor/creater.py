@@ -37,9 +37,6 @@ class MaterialCreater(GridLayout):
     def __init__(self, **kwargs):
         super(MaterialCreater, self).__init__(**kwargs)
         self.cols, self.spacing = 2, Design.spacing
-        self.row_force_default=True
-        self.row_default_height=Design.btnHeight
-        self.size_hint_y=None
         self.height=Design.btnHeight
         self.create_gui()
     
@@ -167,7 +164,7 @@ class MaterialCreater(GridLayout):
     '''
     close the numpad
     '''
-    def closeNumpad(self):
+    def close_numpad(self):
         self.popupNumpad.dismiss()
     
     '''

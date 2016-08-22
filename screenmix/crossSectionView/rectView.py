@@ -247,10 +247,12 @@ class RectView(BoxLayout, IView):
         y = (touch.y - y0) / gh * self.h
         # change is a switch to make sure, that the view just update,
         # when something has changed
-        changed = False 
+        changed = False
+        layerFocus=False
         for layer in self.cs.layers:
             # if the touch is in the layer
             if layer.mouse_within(x, y):
+                layerFocus=True
                 # when the layer has already the focus
                 if layer.focus:
                     self.update_all_graph()
@@ -271,3 +273,5 @@ class RectView(BoxLayout, IView):
         # update just when something has change
         if changed:
             self.update_all_graph()
+        if not layerFocus:
+            self.cs.reset_layer_information()

@@ -69,16 +69,17 @@ class RectangleInformation(GridLayout):
     '''
 
     def finished_numpad(self):
-        self.btnFocus.text = self.numpad.lblTextinput.text
+        v=float(self.numpad.lblTextinput.text)
+        self.btnFocus.text = str(v)
         if self.btnFocus == self.btnheight:
-            self.cs.update_height(float(self.btnFocus.text))
+            self.cs.update_height(v)
         else:
-            self.cs.update_width(float(self.btnFocus.text))
+            self.cs.update_width(v)
         self.popupNumpad.dismiss()
     
     '''
     close the numpad, when the user cancel the input
     '''
 
-    def closeNumpad(self):
+    def close_numpad(self):
         self.popupNumpad.dismiss()

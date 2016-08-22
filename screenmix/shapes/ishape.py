@@ -66,6 +66,14 @@ class IShape:
     def update_layer_information(self, name, price, density, stiffness, strength, percent):
         self.refEdit.update_layer_information(name, price, density, stiffness,
                                               strength, percent)
+    
+    '''
+    reset the layer_information
+    '''
+    def reset_layer_information(self):
+        self.refEdit.reset_layer_information()
+    
+    
 
     '''
     the method update_layer_information update the cross section information

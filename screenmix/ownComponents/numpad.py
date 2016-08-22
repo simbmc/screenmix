@@ -109,5 +109,5 @@ class Numpad(GridLayout):
     '''
 
     def cancel(self, btn):
-        self.p.closeNumpad()
+        self.p.close_numpad()
         self.reset_text()

@@ -10,7 +10,6 @@ from kivy.uix.scrollview import ScrollView
 from ownComponents.design import Design
 from ownComponents.ownButton import OwnButton
 from ownComponents.ownGraph import OwnGraph
-from ownComponents.strings import Strings
 from plot.line import LinePlot
 
 

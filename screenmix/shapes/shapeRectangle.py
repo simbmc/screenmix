@@ -3,6 +3,8 @@ Created on 25.07.2016
 
 @author: mkennert
 '''
+from decimal import Decimal
+
 from kivy.properties import ListProperty, NumericProperty, ObjectProperty
 from kivy.uix.gridlayout import GridLayout
 
@@ -26,7 +28,7 @@ class ShapeRectangle(GridLayout, IShape):
     layers = ListProperty([])
     
     #height, width of the rectangle
-    h, w = NumericProperty(0.5), NumericProperty(0.25)
+    h, w, size = NumericProperty(0.5), NumericProperty(0.25), NumericProperty(0.25*0.5)
     weight, price = NumericProperty(), NumericProperty()
     strength = NumericProperty()
 
@@ -56,7 +58,11 @@ class ShapeRectangle(GridLayout, IShape):
     def update_height(self, value):
         self.view.update_height(value)
         self.h = value
-
+        self.size=self.h*self.w
+        for layer in self.layers:
+            if layer.focus:
+                self.refEdit.areaInput.text='%.2E' % Decimal(str(self.size*layer.p))
+        
     '''
     the method update_width change the width of the view
     '''
@@ -64,7 +70,11 @@ class ShapeRectangle(GridLayout, IShape):
     def update_width(self, value):
         self.view.update_width(value)
         self.w = value
-
+        self.size=self.h*self.w
+        for layer in self.layers:
+            if layer.focus:
+                self.refEdit.areaInput.text='%.2E' % Decimal(str(self.size*layer.p))
+        
     '''
     calculate the weight and the lblPrice of the cross section
     '''
