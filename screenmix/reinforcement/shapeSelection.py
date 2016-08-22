@@ -3,7 +3,7 @@ Created on 13.05.2016
 
 @author: mkennert
 '''
-from kivy.properties import ObjectProperty, StringProperty
+from kivy.properties import ObjectProperty
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.scrollview import ScrollView
 

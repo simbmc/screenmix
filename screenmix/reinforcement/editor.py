@@ -305,7 +305,7 @@ class ReinforcementEditor(GridLayout, IObserver):
     '''
 
     def update_layer_information(self, name, price, density, stiffness, strength, percent):
-        self.lblName.text, self.lblRatio.text = str(name), str(percent)
+        self.lblName.text, self.lblRatio.text = str(name), str(percent*100)
         self.lblDensity.text = str(density)
         self.lblStiffness.text = str(stiffness)
         self.lblStrength.text = str(strength)
