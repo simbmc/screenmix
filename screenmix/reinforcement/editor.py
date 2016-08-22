@@ -37,6 +37,7 @@ class ReinforcementEditor(GridLayout, IObserver):
     nameStr, steelStr = StringProperty('name:'), StringProperty('steel')
     rectangleStr, shapeStr = StringProperty('rectangle'), StringProperty('shape')
     materialStr, resetStr = StringProperty('material:'), StringProperty('-')
+    ratioStr=StringProperty('reinforcement ratio [%]:')
     
     # constructor
     def __init__(self, **kwargs):
@@ -83,7 +84,7 @@ class ReinforcementEditor(GridLayout, IObserver):
 
     def create_material_information(self):
         self.materialLayout = GridLayout(cols=1)
-        self.lblName, self.lblPrice = OwnLabel(text=self.resetStr), OwnLabel(text=self.resetStr)
+        self.lblName, self.lblRatio = OwnLabel(text=self.resetStr), OwnLabel(text=self.resetStr)
         self.lblDensity, self.lblStiffness = OwnLabel(text=self.resetStr), OwnLabel(text=self.resetStr)
         self.lblStrength, self.areaInput = OwnLabel(text=self.resetStr),OwnButton(text=self.resetStr)
         self.areaInput.bind(on_press=self.show_numpad)
@@ -92,8 +93,8 @@ class ReinforcementEditor(GridLayout, IObserver):
                                     height=Design.btnHeight)
         materialLayout.add_widget(OwnLabel(text=self.nameStr))
         materialLayout.add_widget(self.lblName)
-        materialLayout.add_widget(OwnLabel(text=self.priceStr))
-        materialLayout.add_widget(self.lblPrice)
+        materialLayout.add_widget(OwnLabel(text=self.ratioStr))
+        materialLayout.add_widget(self.lblRatio)
         materialLayout.add_widget(OwnLabel(text=self.densityStr))
         materialLayout.add_widget(self.lblDensity)
         materialLayout.add_widget(OwnLabel(text=self.stiffnessStr))
@@ -275,13 +276,10 @@ class ReinforcementEditor(GridLayout, IObserver):
         for i in range(0, len(self.allMaterials.allMaterials)):
             if self.allMaterials.allMaterials[i].name == self.btnMaterialOption.text:
                 p=float(self.areaBtn.text)/self.cs.size
-                print('layer percent: '+str(p))
                 #proofs whether the layer is bigger as the cs
                 if p>1:
                     #wrong input
                     return
-                elif p<0.01:
-                    p=0.01
                 self.cs.add_layer(p, self.allMaterials.allMaterials[i])
                 return
 
@@ -307,7 +305,7 @@ class ReinforcementEditor(GridLayout, IObserver):
     '''
 
     def update_layer_information(self, name, price, density, stiffness, strength, percent):
-        self.lblName.text, self.lblPrice.text = str(name), str(price)
+        self.lblName.text, self.lblRatio.text = str(name), str(percent)
         self.lblDensity.text = str(density)
         self.lblStiffness.text = str(stiffness)
         self.lblStrength.text = str(strength)
@@ -318,7 +316,7 @@ class ReinforcementEditor(GridLayout, IObserver):
     '''
     def reset_layer_information(self):
         self.lblName.text=self.resetStr
-        self.lblPrice.text=self.resetStr
+        self.lblRatio.text=self.resetStr
         self.lblDensity.text=self.resetStr
         self.lblStiffness.text=self.resetStr
         self.lblStrength.text=self.resetStr
@@ -364,16 +362,6 @@ class ReinforcementEditor(GridLayout, IObserver):
     def select_material(self, btn):
         self.popup.dismiss()
         self.btnMaterialOption.text = btn.text
-
-    '''
-    set the percentage share of the layer which has the focus
-    '''
-
-    def update_percent(self, instance, value):
-        self.sliderLayerPercent.value = value
-        self.cs.view.update_percent(value)
-        value = int(value * 100)
-        self.lblPercent.text = str(value) + ' %'
 
     '''
     the method set_cross_section was developed to say the view, 

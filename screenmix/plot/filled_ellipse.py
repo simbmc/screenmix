@@ -15,6 +15,7 @@ class FilledEllipse(Plot):
     '''
     draw a filled rectangular for given color and geometric parameters
     '''
+    
     _image = ObjectProperty()
     xrange = ListProperty([0, 100])
     yrange = ListProperty([0, 100])
