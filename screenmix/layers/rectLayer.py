@@ -39,7 +39,11 @@ class RectLayer(ILayer):
     '''
 
     def mouse_within(self, x, y):
-        if y < self.layerCs.yrange[1] + self.h / 2. and y > self.layerCs.yrange[0] and \
+        if self.p<0.05:
+            m=1.08
+        else:
+            m=1
+        if y < self.layerCs.yrange[1]*m and y > self.layerCs.yrange[0] and \
         x > self.layerCs.xrange[0] and x < self.layerCs.xrange[1]:
             return True
         else:
