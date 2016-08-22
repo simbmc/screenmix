@@ -7,28 +7,28 @@ from kivy.properties import ListProperty, StringProperty
 from kivy.properties import ObjectProperty
 from kivy.uix.gridlayout import GridLayout
 
-from kivy.garden.graph import  MeshLinePlot
+from kivy.garden.graph import MeshLinePlot
 from ownComponents.design import Design
 from ownComponents.ownGraph import OwnGraph
 from plot.filled_ellipse import FilledEllipse
 
 
 class AckLeftRect(GridLayout):
-    
+
     '''
     left-component of the ackrect. it shows the strain-stress-behavior 
     of the cross-section-shape rectangle by a diagram
     '''
-    
+
     # important components
     cs = ObjectProperty()
     ack, ackRight = ObjectProperty(), ObjectProperty()
     allPlots = ListProperty([])
-    
+
     # strings
     ylabelStr = StringProperty('stress [MPa]')
     xlabelStr = StringProperty('strain')
-    
+
     # constructor
     def __init__(self, **kwargs):
         super(AckLeftRect, self).__init__(**kwargs)
@@ -39,6 +39,7 @@ class AckLeftRect(GridLayout):
     '''
     the method create_graph create the graph and the focus-point
     '''
+
     def create_graph(self):
         self.graph = OwnGraph(xlabel=self.xlabelStr, ylabel=self.ylabelStr,
                               y_grid_label=True, x_grid_label=True,)
@@ -54,8 +55,9 @@ class AckLeftRect(GridLayout):
     the method calculate_points calculate the points for 
     the graphh 
     '''
+
     def calculate_points(self):
-        # the strain-stress-behavior beginning 
+        # the strain-stress-behavior beginning
         # always with the points (0,0)
         points = [(0, 0)]
         points.append((self.cs.minOfMaxstrain, self.cs.strength))
@@ -91,25 +93,31 @@ class AckLeftRect(GridLayout):
                 max_strain_r = min(cur_strain, max_strain_r)
             # maximum composite strength
             max_strangth_c = E_r * max_strain_r * percent_of_layers
-            # maximum composite strain
-            max_strain_c = eps_r_avg + (max_strain_r - eps_r_max)
-            points.append((max_strain_c, max_strangth_c))
-            self.thirdpoint = points[-1]
+            # two small reinforcement ratio, no mulitplecracking
+            if max_strangth_c < self.cs.strength:
+                points.pop()
+            else:  # multiple cracking
+                # maximum composite strain
+                max_strain_c = eps_r_avg + (max_strain_r - eps_r_max)
+                points.append((max_strain_c, max_strangth_c))
+                self.thirdpoint = points[-1]
         # setting the maximum of the graph
         self.graph.xmax = points[-1][0] * 1.2
         self.graph.ymax = points[-1][1] * 1.2
         self.ack.sliderStrain.max = points[-1][0]
         if self.cs.layers:
-            self.graph.x_ticks_major = float(format(self.graph.xmax / 4., '.1g'))
+            self.graph.x_ticks_major = float(
+                format(self.graph.xmax / 4., '.1g'))
         else:
             self.graph.x_ticks_major = self.graph.xmax / 4.
         self.graph.y_ticks_major = float(format(self.graph.ymax / 5., '.1g'))
         return points
-    
+
     '''
     set the position of the focuspoint.
     the point is dependet from the strainvalue of ackRight
     '''
+
     def move_position(self, value):
         eps_x = self.graph.xmax / Design.deltaCircle
         eps_y = self.graph.ymax / Design.deltaCircle
@@ -134,11 +142,12 @@ class AckLeftRect(GridLayout):
         else:
             # m=0 => independet from the x-value
             b = self.cs.strength
-            self.focus.yrange = [ b - eps_y , b + eps_y ]
+            self.focus.yrange = [b - eps_y, b + eps_y]
 
     '''
     update the plot
     '''
+
     def update(self):
         self.plot = MeshLinePlot(color=[1, 0, 0, 1])
         self.plot.points = self.calculate_points()
