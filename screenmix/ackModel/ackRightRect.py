@@ -110,7 +110,10 @@ class AckRightRect(GridLayout):
                 self.graph.xmax = self.maxStress
                 self.graph.x_ticks_major = int(self.graph.xmax / 5.)
             max_stress = max(max_stress, layer_stress)
-            layer.layerAck.xrange = [0, layer_stress]
+            if layer.p > 0.01:
+                layer.layerAck.xrange = [0, layer_stress]
+            else:
+                layer.layerAck.points = [(0, layer.y), (layer_stress, layer.y)]
             self.graph.add_plot(layer.layerAck)
         self.graph.y_ticks_major = self.graph.ymax / 5.
         return self.graph

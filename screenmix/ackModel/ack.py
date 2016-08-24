@@ -12,35 +12,35 @@ from ackModel.ackRect import AckRect
 class Ack(GridLayout):
     
     '''
-    ack contains all acks from the differnt shapes. it manage which ack-should
-    show in the ack-menu.
+    ack contains all acks from the different shapes. it manage which ack-should
+    show in the ack-menu, which is append of the cross-section shape
     '''
     
-    #all acks of the application
-    ackRect= ObjectProperty()
+    # all acks of the application
+    ackRect = ObjectProperty()
     #####################################################
-    #here you can add more ack's. When you add one more #
-    #make sure, that the ack has a show method like the #
-    #show_ack_rect                                      #
+    # here you can add more ack's. When you add one more #
+    # make sure, that the ack has a show method like the #
+    # show_ack_rect                                      #
     #####################################################
     
-    #constructor
+    # constructor
     def __init__(self, **kwargs):
         super(Ack, self).__init__(**kwargs)
-        self.cols=1
-        self.ackRect=AckRect()
-        #default ack is the ack of the rectangle shape
-        self.content=self.ackRect
+        self.cols = 1
+        self.ackRect = AckRect()
+        # default ack is the ack of the rectangle shape
+        self.content = self.ackRect
         self.add_widget(self.content)
     
     '''
     show the ack of the shape rectangle
     '''
     def show_ack_rect(self):
-        #remove the old content
+        # remove the old content
         self.remove_widget(self.content)
         self.add_widget(self.ackRect)
-        #safe the new ack as content
-        self.content=self.ackRect
+        # safe the new ack as content
+        self.content = self.ackRect
     
     

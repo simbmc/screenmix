@@ -13,6 +13,7 @@ from layers.rectLayer import RectLayer
 from ownComponents.design import Design
 from ownComponents.ownGraph import OwnGraph
 from plot.filled_rect import FilledRect
+from plot.dashedLine import DashedLine
 
 
 class RectView(BoxLayout, IView):
@@ -59,11 +60,19 @@ class RectView(BoxLayout, IView):
         cur = RectLayer(self.w / 2, y, h, self.w, material.color, value)
         cur.material = material
         cur.strain = material.strength / material.stiffness
-        # create the filled-rect for the cs-view and the ack-right
-        cur.layerCs = FilledRect(xrange=[0., self.w], color=cur.colors,
-                                  yrange=[y - h / 2., y + h / 2.])
-        cur.layerAck = FilledRect(xrange=[0., 0.], color=cur.colors,
-                                   yrange=[y - h / 2., y + h / 2.])
+        # if the value is too small to see a rectangle
+        # => use dashed line
+        if value < 0.01:
+            cur.layerCs = DashedLine(color=[255, 0, 0],
+                                   points=[(0, y), (self.w, y)])
+            cur.layerAck = DashedLine(color=[255, 0, 0],
+                                   points=[(0, y), (self.w, y)])
+        else:
+            # create the filled-rect for the cs-view and the ack-right.
+            cur.layerCs = FilledRect(xrange=[0., self.w], color=cur.colors,
+                                      yrange=[y - h / 2., y + h / 2.])
+            cur.layerAck = FilledRect(xrange=[0., 0.], color=cur.colors,
+                                       yrange=[y - h / 2., y + h / 2.])
         self.graph.add_plot(cur.layerCs)
         # safe the layer in the cross-section-layers-list 
         self.cs.layers.append(cur) 
@@ -81,8 +90,12 @@ class RectView(BoxLayout, IView):
             return
         for layer in self.cs.layers:
             if layer.focus:
-                layer.layerCs.yrange = [0, 0]
-                layer.layerAck.yrange = [0, 0]
+                if layer.p > 0.01:
+                    layer.layerCs.yrange = [0, 0]
+                    layer.layerAck.yrange = [0, 0]
+                else:
+                    layer.layerAck.points = []
+                    layer.layerCs.points = []
                 self.cs.layers.remove(layer)
         self.update_all_graph()
         # update the cs-information
@@ -142,11 +155,37 @@ class RectView(BoxLayout, IView):
     def update_percent(self, value):
         for layer in self.cs.layers:
             if layer.focus:
-                layer.h, layer.p = self.h * value, value
-                self.update_all_graph()
+                if layer.p > 0.01 and value < 0.01:
+                    layer.h, layer.p = self.h * value, value
+                    self.graph.remove_plot(layer.layerCs)
+                    layer.h, layer.p = self.h * value, value
+                    self.graph.remove_plot(layer.layerCs)
+                    layer.layerCs = DashedLine(color=[255, 0, 0],
+                                   points=[(0, layer.y), (self.w, layer.y)])
+                    layer.layerAck = DashedLine(color=[255, 0, 0],
+                                   points=[(0, layer.y), (self.w, layer.y)])
+                    self.graph.add_plot(layer.layerCs)
+                elif layer.p < 0.01 and value > 0.01:
+                    layer.h, layer.p = self.h * value, value
+                    self.graph.remove_plot(layer.layerCs)
+                    layer.layerCs = DashedLine(color=[255, 0, 0],
+                                   points=[(0, layer.y), (self.w, layer.y)])
+                    layer.layerAck = DashedLine(color=[255, 0, 0],
+                                   points=[(0, layer.y), (self.w, layer.y)])
+                    layer.h, layer.p = self.h * value, value
+                    self.graph.remove_plot(layer.layerCs)
+                    layer.layerCs = FilledRect(xrange=[0., self.w], color=layer.colors,
+                                      yrange=[layer.y - layer.h / 2., layer.y + layer.h / 2.])
+                    layer.layerAck = FilledRect(xrange=[0., 0.], color=layer.colors,
+                                       yrange=[layer.y - layer.h / 2., layer.y + layer.h / 2.])
+                    self.graph.add_plot(layer.layerCs)
+                else:
+                    layer.h, layer.p = self.h * value, value
                 self.cs.calculate_weight_price()
                 self.cs.calculate_strength()
                 self.update_cs_information()
+                self.cs.refEdit.lblRatio.text = str(layer.p * 100)
+                self.update_all_graph()
                 return
 
     '''
@@ -190,9 +229,14 @@ class RectView(BoxLayout, IView):
         for layer in self.cs.layers:
             # update the height and the width of the layers
             y, h = layer.y, layer.h
-            layer.layerCs.xrange = [0., self.w]
-            layer.layerCs.yrange = [y - h / 2., y + h / 2.]
-            layer.layerAck.yrange = [y - h / 2., y + h / 2.]
+            if layer.p > 0.01:
+                layer.layerCs.xrange = [0., self.w]
+                layer.layerCs.yrange = [y - h / 2., y + h / 2.]
+                layer.layerAck.yrange = [y - h / 2., y + h / 2.]
+            else:
+                print(layer)
+                layer.layerAck.points = [(0, y), (self.w, y)]
+                layer.layerCs.points = [(0, y), (self.w, y)]
             # update the focus-color
             if layer.focus:
                 layer.layerCs.color = Design.focusColor
@@ -213,6 +257,12 @@ class RectView(BoxLayout, IView):
         y = (touch.y - y0) / gh * self.h
         for layer in self.cs.layers:
             if layer.focus and layer.mouse_within_x(x):
+                # when the layer is just a dashed line
+                if layer.p < 0.01:
+                    layer.layerAck.points = [(0, y), (self.w, y)]
+                    layer.layerCs.points = [(0, y), (self.w, y)]
+                    layer.y = y
+                    return
                 # case:1 the layer don't collide with the border of the cross
                 # section
                 if y > layer.h and y < self.h :
@@ -248,11 +298,11 @@ class RectView(BoxLayout, IView):
         # change is a switch to make sure, that the view just update,
         # when something has changed
         changed = False
-        layerFocus=False
+        layerFocus = False
         for layer in self.cs.layers:
             # if the touch is in the layer
-            if layer.mouse_within(x, y):
-                layerFocus=True
+            if layer.mouse_within(x, y, self.h / 50.):
+                layerFocus = True
                 # when the layer has already the focus
                 if layer.focus:
                     self.update_all_graph()

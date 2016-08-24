@@ -24,20 +24,22 @@ class Material_Editor(GridLayout):
     the material-creater
     '''
     
-    #important components
+    # important components
     cs = ObjectProperty()
     
-    #strings
-    concrete=StringProperty('concrete')
+    # strings
+    concrete = StringProperty('concrete')
     densityStr, stiffnessStr = StringProperty('density[kg/m^3]:'), StringProperty('stiffness[MPa]:')
     priceStr, strengthStr = StringProperty('price[euro/kg]:'), StringProperty('strength[MPa]:')
-    nameStr, defaultValueStr=StringProperty('name'), StringProperty('1.0')
+    nameStr, defaultValueStr = StringProperty('name'), StringProperty('1.0')
+    createStr, materialStr = StringProperty('create material'), StringProperty('material')
+    backStr, confirmStr = StringProperty('back'), StringProperty('confirm')
     
-    #constructor
+    # constructor
     def __init__(self, **kwargs):
         super(Material_Editor, self).__init__(**kwargs)
-        self.cols=1
-        self.h=dp(40)#height of the btns
+        self.cols = 1
+        self.h = dp(40)  # height of the btns
 
     '''
     the method create gui create the gui of 
@@ -52,14 +54,14 @@ class Material_Editor(GridLayout):
         self.materialLayout.bind(minimum_height=self.materialLayout.setter('height'))
         for i in self.allMaterials.allMaterials:
             btn = OwnButton(text=i.name)
-            btn.height=self.h
+            btn.height = self.h
             btn.bind(on_press=self.show_material_information)
             self.materialLayout.add_widget(btn)
-        self.btnMaterialEditor = OwnButton(text='create material')
-        self.btnMaterialEditor.height=self.h
+        self.btnMaterialEditor = OwnButton(text=self.createStr)
+        self.btnMaterialEditor.height = self.h
         self.btnMaterialEditor.bind(on_press=self.create_material)
         self.materialLayout.add_widget(self.btnMaterialEditor)
-        scrollView=ScrollView()
+        scrollView = ScrollView()
         scrollView.add_widget(self.materialLayout)
         self.add_widget(scrollView)
         
@@ -70,14 +72,14 @@ class Material_Editor(GridLayout):
     '''
 
     def create_popups(self):
-        self.numpad,self.keyboard=Numpad(),Keyboard()
-        self.numpad.p,self.keyboard.p=self,self
-        self.editNumpad=OwnPopup(content=self.numpad)
-        self.editKeyboard=OwnPopup(title=self.nameStr,content=self.keyboard)
+        self.numpad, self.keyboard = Numpad(), Keyboard()
+        self.numpad.p, self.keyboard.p = self, self
+        self.editNumpad = OwnPopup(content=self.numpad)
+        self.editKeyboard = OwnPopup(title=self.nameStr, content=self.keyboard)
         creater = MaterialCreater()
         creater.p = self
-        self.popupInfo = OwnPopup(title='material', content=self.contentLayout)
-        self.popupCreate = OwnPopup(title='create material', content=creater)
+        self.popupInfo = OwnPopup(title=self.materialStr, content=self.contentLayout)
+        self.popupCreate = OwnPopup(title=self.createStr, content=creater)
 
     '''
     create the gui which is necessary for the show of the 
@@ -85,18 +87,18 @@ class Material_Editor(GridLayout):
     '''
 
     def create_material_information(self):
-        #create the btns to edit the values or the name
+        # create the btns to edit the values or the name
         self.btnName, self.btnPrice = OwnButton(), OwnButton()
         self.btnDensity, self.btnStiffness = OwnButton(), OwnButton()
         self.btnStrenght = OwnButton()
-        #bind the values to the methods show_numpad and show_keyboard
+        # bind the values to the methods show_numpad and show_keyboard
         self.btnName.bind(on_press=self.show_keyboard)
         self.btnPrice.bind(on_press=self.show_numpad)
         self.btnDensity.bind(on_press=self.show_numpad)
         self.btnStiffness.bind(on_press=self.show_numpad)
         self.btnStrenght.bind(on_press=self.show_numpad)
-        #fill the contentLayout with the components
-        self.contentLayout = GridLayout(cols=2,spacing=Design.spacing)
+        # fill the contentLayout with the components
+        self.contentLayout = GridLayout(cols=2, spacing=Design.spacing)
         self.contentLayout.add_widget(OwnLabel(text=self.nameStr))
         self.contentLayout.add_widget(self.btnName)
         self.contentLayout.add_widget(OwnLabel(text=self.priceStr))
@@ -107,11 +109,11 @@ class Material_Editor(GridLayout):
         self.contentLayout.add_widget(self.btnStiffness)
         self.contentLayout.add_widget(OwnLabel(text=self.strengthStr))
         self.contentLayout.add_widget(self.btnStrenght)
-        #btn_back=go back to the materials-view
-        btn_back = OwnButton(text='back')
+        # btn_back=go back to the materials-view
+        btn_back = OwnButton(text=self.backStr)
         btn_back.bind(on_press=self.cancel_show)
-        #edit the new values
-        btn_confirm=OwnButton(text='confirm')
+        # edit the new values
+        btn_confirm = OwnButton(text=self.confirmStr)
         btn_confirm.bind(on_press=self.edit_material)
         self.contentLayout.add_widget(btn_back)
         self.contentLayout.add_widget(btn_confirm)
@@ -123,15 +125,15 @@ class Material_Editor(GridLayout):
 
     def show_material_information(self, button):
         for i in range(0, len(self.cs.allMaterials.allMaterials)):
-            material=self.allMaterials.allMaterials[i]
+            material = self.allMaterials.allMaterials[i]
             if material.name == button.text:
-                self.focusMaterial=material
+                self.focusMaterial = material
                 self.btnName.text = material.name
                 self.btnPrice.text = str(material.price)
                 self.btnDensity.text = str(material.density)
                 self.btnStiffness.text = str(material.stiffness)
                 self.btnStrenght.text = str(material.strength)
-                self.popupInfo.title=material.name
+                self.popupInfo.title = material.name
                 self.popupInfo.open()
 
     '''
@@ -158,7 +160,7 @@ class Material_Editor(GridLayout):
     def update(self):
         self.materialLayout.remove_widget(self.btnMaterialEditor)
         btn_material_A = OwnButton(text=self.allMaterials.allMaterials[-1].name)
-        btn_material_A.height=self.h
+        btn_material_A.height = self.h
         btn_material_A.bind(on_press=self.show_material_information)
         self.materialLayout.add_widget(btn_material_A)
         self.materialLayout.add_widget(self.btnMaterialEditor)
@@ -187,40 +189,40 @@ class Material_Editor(GridLayout):
     '''
     edit the selected material by the new values
     '''
-    def edit_material(self,btn):
+    def edit_material(self, btn):
         self.popupInfo.dismiss()
-        self.focusMaterial.name=self.btnName.text
-        self.focusMaterial.density=float(self.btnDensity.text)
-        self.focusMaterial.price=float(self.btnPrice.text)
-        self.focusMaterial.stiffness=float(self.btnStiffness.text)
-        self.focusMaterial.strength=float(self.btnStrenght.text)
-        if self.focusMaterial.name==self.concrete:
-            self.cs.update_concrete_information(self.focusMaterial.density,self.focusMaterial.price,
-                                                self.focusMaterial.stiffness,self.focusMaterial.strength)
+        self.focusMaterial.name = self.btnName.text
+        self.focusMaterial.density = float(self.btnDensity.text)
+        self.focusMaterial.price = float(self.btnPrice.text)
+        self.focusMaterial.stiffness = float(self.btnStiffness.text)
+        self.focusMaterial.strength = float(self.btnStrenght.text)
+        if self.focusMaterial.name == self.concrete:
+            self.cs.update_concrete_information(self.focusMaterial.density, self.focusMaterial.price,
+                                                self.focusMaterial.stiffness, self.focusMaterial.strength)
         self.cs.update_informations()
     
     '''
     open the popup to edit the value of the material
     '''
-    def show_numpad(self,btn):
-        self.focusBtn=btn
-        self.numpad.lblTextinput.text=btn.text
-        if self.focusBtn==self.btnDensity:
-            self.editNumpad.title=self.densityStr
-        elif self.focusBtn==self.btnPrice:
-            self.editNumpad.title=self.priceStr
-        elif self.focusBtn==self.btnStrenght:
-            self.editNumpad.title=self.strengthStr
-        elif self.focusBtn==self.btnStiffness:
-            self.editNumpad.title=self.stiffnessStr
+    def show_numpad(self, btn):
+        self.focusBtn = btn
+        self.numpad.lblTextinput.text = btn.text
+        if self.focusBtn == self.btnDensity:
+            self.editNumpad.title = self.densityStr
+        elif self.focusBtn == self.btnPrice:
+            self.editNumpad.title = self.priceStr
+        elif self.focusBtn == self.btnStrenght:
+            self.editNumpad.title = self.strengthStr
+        elif self.focusBtn == self.btnStiffness:
+            self.editNumpad.title = self.stiffnessStr
         self.editNumpad.open()
     
     '''
     open the popup to edit the name of the material
     '''
-    def show_keyboard(self,btn):
-        self.focusBtn=btn
-        self.keyboard.lblTextinput.text=btn.text
+    def show_keyboard(self, btn):
+        self.focusBtn = btn
+        self.keyboard.lblTextinput.text = btn.text
         self.editKeyboard.open()
     
     '''
@@ -228,7 +230,7 @@ class Material_Editor(GridLayout):
     btnName
     '''
     def finished_keyboard(self):
-        self.focusBtn.text=self.keyboard.lblTextinput.text
+        self.focusBtn.text = self.keyboard.lblTextinput.text
         self.editKeyboard.dismiss()
     
     '''
@@ -236,7 +238,7 @@ class Material_Editor(GridLayout):
     to the value
     '''
     def finished_numpad(self):
-        self.focusBtn.text=self.numpad.lblTextinput.text
+        self.focusBtn.text = self.numpad.lblTextinput.text
         self.editNumpad.dismiss()
     
     '''

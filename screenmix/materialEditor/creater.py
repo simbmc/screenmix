@@ -25,11 +25,11 @@ class MaterialCreater(GridLayout):
     p = ObjectProperty()  # parent
     
     # strings
-    createStr,cancelStr=StringProperty('create'),StringProperty('cancel')
-    #properties of the material
+    createStr, cancelStr = StringProperty('create'), StringProperty('cancel')
+    # properties of the material
     densityStr, stiffnessStr = StringProperty('density[kg/m^3]:'), StringProperty('stiffness[MPa]:')
     priceStr, strengthStr = StringProperty('price[euro/kg]:'), StringProperty('strength[MPa]:')
-    nameStr, defaultValueStr=StringProperty('name'), StringProperty('1.0')
+    nameStr, defaultValueStr = StringProperty('name'), StringProperty('1.0')
     
     
     
@@ -37,7 +37,7 @@ class MaterialCreater(GridLayout):
     def __init__(self, **kwargs):
         super(MaterialCreater, self).__init__(**kwargs)
         self.cols, self.spacing = 2, Design.spacing
-        self.height=Design.btnHeight
+        self.height = Design.btnHeight
         self.create_gui()
     
     '''
@@ -114,11 +114,10 @@ class MaterialCreater(GridLayout):
     and sign in by the keyboard and numpad 
     '''
     def create_popups(self):
-        self.numpad = Numpad()
+        self.numpad = Numpad(p=self)
         self.keyboard = Keyboard()
         self.popupKeyboard = OwnPopup(title=self.nameStr, content=self.keyboard)
         self.popupNumpad = OwnPopup(content=self.numpad)
-        self.numpad.p = self
         self.keyboard.p = self
     
     '''

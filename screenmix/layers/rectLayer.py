@@ -38,12 +38,15 @@ class RectLayer(ILayer):
     check if the mouse is in the layer
     '''
 
-    def mouse_within(self, x, y):
-        if self.p<0.05:
-            m=1.08
+    def mouse_within(self, x, y, d):
+        if self.p < 0.05:
+            m = 1.08
         else:
-            m=1
-        if y < self.layerCs.yrange[1]*m and y > self.layerCs.yrange[0] and \
+            m = 1
+        if self.p < 0.01:
+            if self.y + d > y and y > self.y - d and x < self.w:
+                return True
+        elif y < self.layerCs.yrange[1] * m and y > self.layerCs.yrange[0] and \
         x > self.layerCs.xrange[0] and x < self.layerCs.xrange[1]:
             return True
         else:

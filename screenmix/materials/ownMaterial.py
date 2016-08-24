@@ -9,6 +9,7 @@ from materials.amaterial import AMaterial
 
 
 class OwnMaterial(AMaterial):
+    
     '''
     database for ownmaterials. the values must given the 
     constructor. the own-material get a random-color

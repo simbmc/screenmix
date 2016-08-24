@@ -6,6 +6,7 @@ Created on 04.04.2016
 from materials.amaterial import AMaterial
 
 class CarbonFiber(AMaterial):
+    
     '''
     database for the material carbonfiber
     '''

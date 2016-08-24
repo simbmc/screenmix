@@ -37,7 +37,8 @@ class ReinforcementEditor(GridLayout, IObserver):
     nameStr, steelStr = StringProperty('name:'), StringProperty('steel')
     rectangleStr, shapeStr = StringProperty('rectangle'), StringProperty('shape')
     materialStr, resetStr = StringProperty('material:'), StringProperty('-')
-    ratioStr=StringProperty('reinforcement ratio [%]:')
+    ratioStr = StringProperty('reinforcement ratio [%]:')
+    addStr, deleteStr = StringProperty('add layer'), StringProperty('delete layer')
     
     # constructor
     def __init__(self, **kwargs):
@@ -56,8 +57,8 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.create_add_delete_area()
         self.create_material_information()
         self.create_add_layer_information_area()
-        self.numpad=Numpad(p=self)
-        self.popupNumpad=OwnPopup(title=self.areaStr,content=self.numpad)
+        self.numpad = Numpad(p=self)
+        self.popupNumpad = OwnPopup(title=self.areaStr, content=self.numpad)
 
     '''
     the method create_add_delete_area create the area where you can 
@@ -69,8 +70,8 @@ class ReinforcementEditor(GridLayout, IObserver):
                                           row_default_height=Design.btnHeight,
                                           size_hint_y=None, height=Design.btnHeight,
                                           spacing=Design.spacing)
-        btnAdd = OwnButton(text='add layer')
-        btnDelete = OwnButton(text='delete layer')
+        btnAdd = OwnButton(text=self.addStr)
+        btnDelete = OwnButton(text=self.deleteStr)
         btnAdd.bind(on_press=self.show_add_layer_area)
         btnDelete.bind(on_press=self.delete_layer)
         self.addDeleteLayout.add_widget(btnAdd)
@@ -86,7 +87,7 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.materialLayout = GridLayout(cols=1)
         self.lblName, self.lblRatio = OwnLabel(text=self.resetStr), OwnLabel(text=self.resetStr)
         self.lblDensity, self.lblStiffness = OwnLabel(text=self.resetStr), OwnLabel(text=self.resetStr)
-        self.lblStrength, self.areaInput = OwnLabel(text=self.resetStr),OwnButton(text=self.resetStr)
+        self.lblStrength, self.areaInput = OwnLabel(text=self.resetStr), OwnButton(text=self.resetStr)
         self.areaInput.bind(on_press=self.show_numpad)
         materialLayout = GridLayout(cols=4, row_force_default=True,
                                     row_default_height=3 * Design.lblHeight,
@@ -147,7 +148,7 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.addLayout.add_widget(self.btnMaterialOption)
         self.lblMaterialPercent = OwnLabel(text=self.areaStr)
         self.addLayout.add_widget(self.lblMaterialPercent)
-        self.areaBtn=OwnButton(text='0.0')
+        self.areaBtn = OwnButton(text='0.0')
         self.areaBtn.bind(on_press=self.show_numpad)
         self.addLayout.add_widget(self.areaBtn)
         self.addLayout.add_widget(btnConfirm)
@@ -167,8 +168,7 @@ class ReinforcementEditor(GridLayout, IObserver):
             minimum_height=self.materialSelectionLayout.setter('height'))
         self.materialEditor = MaterialCreater()
         self.materialEditor.p = self
-        self.popupMaterialEditor = OwnPopup(
-            title='editor', content=self.materialEditor)
+        self.popupMaterialEditor = OwnPopup(title='editor', content=self.materialEditor)
         for i in range(0, len(self.allMaterials.allMaterials) - 1):
             btnMaterialA = OwnButton(text=self.allMaterials.allMaterials[i].name)
             btnMaterialA.bind(on_press=self.select_material)
@@ -188,7 +188,7 @@ class ReinforcementEditor(GridLayout, IObserver):
 
     def create_selection_menu(self):
         self.create_popup_shape()
-        selectionContent = GridLayout(cols=2,height=Design.btnHeight,
+        selectionContent = GridLayout(cols=2, height=Design.btnHeight,
                                       size_hint_y=None, row_force_default=True,
                                       row_default_height=Design.btnHeight)
         self.btnSelection = OwnButton(text=self.rectangleStr)
@@ -275,10 +275,10 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.finished_adding()
         for i in range(0, len(self.allMaterials.allMaterials)):
             if self.allMaterials.allMaterials[i].name == self.btnMaterialOption.text:
-                p=float(self.areaBtn.text)/self.cs.size
-                #proofs whether the layer is bigger as the cs
-                if p>1:
-                    #wrong input
+                p = float(self.areaBtn.text) / self.cs.size
+                # proofs whether the layer is bigger as the cs
+                if p > 1:
+                    # wrong input
                     return
                 self.cs.add_layer(p, self.allMaterials.allMaterials[i])
                 return
@@ -305,22 +305,22 @@ class ReinforcementEditor(GridLayout, IObserver):
     '''
 
     def update_layer_information(self, name, price, density, stiffness, strength, percent):
-        self.lblName.text, self.lblRatio.text = str(name), str(percent*100)
+        self.lblName.text, self.lblRatio.text = str(name), str(percent * 100)
         self.lblDensity.text = str(density)
         self.lblStiffness.text = str(stiffness)
         self.lblStrength.text = str(strength)
-        self.areaInput.text='%.2E' % Decimal(str(self.cs.h*self.cs.w*percent))
+        self.areaInput.text = '%.2E' % Decimal(str(self.cs.h * self.cs.w * percent))
     
     '''
     reset the layer_information when no layer is focused
     '''
     def reset_layer_information(self):
-        self.lblName.text=self.resetStr
-        self.lblRatio.text=self.resetStr
-        self.lblDensity.text=self.resetStr
-        self.lblStiffness.text=self.resetStr
-        self.lblStrength.text=self.resetStr
-        self.areaInput.text=self.resetStr
+        self.lblName.text = self.resetStr
+        self.lblRatio.text = self.resetStr
+        self.lblDensity.text = self.resetStr
+        self.lblStiffness.text = self.resetStr
+        self.lblStrength.text = self.resetStr
+        self.areaInput.text = self.resetStr
 
     '''
     the method update_cs_information update the cross section information.
@@ -378,19 +378,19 @@ class ReinforcementEditor(GridLayout, IObserver):
     '''
     open the numpad for the input
     '''
-    def show_numpad(self,btn):
-        self.focusBtn=btn
+    def show_numpad(self, btn):
+        self.focusBtn = btn
         self.popupNumpad.open()
     
     '''
     method when the user confirm the input
     '''
     def finished_numpad(self):
-        v=float(self.numpad.lblTextinput.text)
-        self.focusBtn.text=str(v)
-        #if the percentage of the layer must change
-        if self.focusBtn==self.areaInput:
-            self.cs.view.update_percent(v/self.cs.size)
+        v = float(self.numpad.lblTextinput.text)
+        self.focusBtn.text = str(v)
+        # if the percentage of the layer must change
+        if self.focusBtn == self.areaInput:
+            self.cs.view.update_percent(v / self.cs.size)
         self.popupNumpad.dismiss()
         
     '''
