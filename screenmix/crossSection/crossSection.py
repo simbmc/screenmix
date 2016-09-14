@@ -18,10 +18,16 @@ class CrossSection(GridLayout):
     cross section contains all shapes. it manage which shape should be show
     '''
     
-    # important components
+    # ack-component
     ack = ObjectProperty()
+    
+    # reinforcement-editor
     reinforcmentEditor = ObjectProperty(ReinforcementEditor())
+    
+    # materiallist
     allMaterials = ObjectProperty(MaterialList.Instance())
+    
+    # view of the cross section
     view = ObjectProperty()
     
     # shapes
@@ -34,6 +40,7 @@ class CrossSection(GridLayout):
     def __init__(self, **kwargs):
         super(CrossSection, self).__init__(**kwargs)
         self.cols = 2
+        self.padding = [5, 0, 5, 0]
         self.spacing = dp(10) 
         # default shape is rectangle        
         self.view = self.shapeRectangle.view
@@ -65,6 +72,7 @@ class CrossSection(GridLayout):
     update the informations of the shapes when the user
     edit the material
     '''
+        
     def update_informations(self):
         self.shapeRectangle.view.update_cs_information()
         # when you add new shapes, make sure that the shape has a update 
@@ -73,6 +81,7 @@ class CrossSection(GridLayout):
     '''
     update the concrete-properties
     '''
+        
     def update_concrete_information(self, density, price, stiffness, strength):
         # when you add more shapes, make sure that your shape makes a update when the 
         # concrete has changed

@@ -5,7 +5,7 @@ Created on 15.03.2016
 '''
 from abc import abstractmethod
 
-
+from kivy.properties import StringProperty
 class IView:
     
     '''
@@ -13,6 +13,14 @@ class IView:
     that the view has the necessary methods, which the other components
     are use
     '''
+    ylabelStr = StringProperty('cross-section-height [m]')
+    
+    xlabelStr = StringProperty('cross-section-width [m]')
+    
+    #############################################################################
+    # the following methods must implemented individual in the class,           #
+    # which implements the interface                                            #
+    #############################################################################
     
     @abstractmethod
     def add_layer(self, x, y, material):
@@ -41,6 +49,11 @@ class IView:
     def update_percent(self, value):
         # update the percent of the selected layer
         raise NotImplemented('not implemented')
+    
+    #############################################################################
+    # the following methods must not implemented in the class,                  #
+    # which implements the interface                                            #
+    #############################################################################
     
     '''
     the method update_cs_information update the cross section information of 

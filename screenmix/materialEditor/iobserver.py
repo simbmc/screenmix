@@ -16,6 +16,6 @@ class IObserver:
 
     @abstractmethod
     def update(self):
-        #update the listen when the materiallist
-        #has changed
+        # update the gui when the materiallist
+        # has changed 
         raise NotImplemented('not implemented')

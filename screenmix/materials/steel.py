@@ -1,6 +1,5 @@
 '''
 Created on 04.04.2016
-
 @author: mkennert
 '''
 from materials.amaterial import AMaterial

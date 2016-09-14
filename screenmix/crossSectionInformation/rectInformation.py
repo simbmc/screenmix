@@ -21,17 +21,19 @@ class RectangleInformation(GridLayout):
     the width of the cross-section-rectangle
     '''
     
-    # important components
+    # cross section shape - rectangle
     cs = ObjectProperty()
     
-    # strings
-    heightStr, widthStr = StringProperty('height [m]'), StringProperty('width [m]')
+    heightStr = StringProperty('height [m]')
+    
+    widthStr = StringProperty('width [m]')
     
     # constructor
     def __init__(self, **kwargs):
         super(RectangleInformation, self).__init__(**kwargs)
         self.cols, self.spacing = 2, Design.spacing
-
+        self.size_hint_y = None
+        
     '''
     create the gui
     '''
@@ -69,7 +71,7 @@ class RectangleInformation(GridLayout):
     '''
 
     def finished_numpad(self):
-        v=float(self.numpad.lblTextinput.text)
+        v = float(self.numpad.lblTextinput.text)
         self.btnFocus.text = str(v)
         if self.btnFocus == self.btnheight:
             self.cs.update_height(v)

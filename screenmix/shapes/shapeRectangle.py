@@ -22,14 +22,34 @@ class ShapeRectangle(GridLayout, IShape):
     of a rectangle
     '''
     
-    #important components
-    view, information = ObjectProperty(), ObjectProperty()
+    # important components
+    view = ObjectProperty()
+    
+    # information- rectangle
+    information = ObjectProperty()
+    
+    # ack-rectangle
     ack = ObjectProperty()
+    
+    # layer of the cross-section-shape
     layers = ListProperty([])
     
-    #height, width of the rectangle
-    h, w, size = NumericProperty(0.5), NumericProperty(0.25), NumericProperty(0.25*0.5)
-    weight, price = NumericProperty(), NumericProperty()
+    # height of the rectangle
+    h = NumericProperty(0.5)
+    
+    # width of the rectangle
+    w = NumericProperty(0.25)
+    
+    # area of the rectangle
+    size = NumericProperty(0.25 * 0.5)
+    
+    # weight of the rectangle
+    weight = NumericProperty()
+    
+    # price of the rectangle
+    price = NumericProperty()
+    
+    # cracking-stress of the rectangle
     strength = NumericProperty()
 
     # constructor
@@ -40,7 +60,7 @@ class ShapeRectangle(GridLayout, IShape):
         concrete = Concrete()
         self.concreteDensity, self.concretePrice = concrete.density, concrete.price
         self.concreteStiffness, self.concreteStrength = concrete.stiffness, concrete.strength
-        self.concreteStrain=self.concreteStrength / self.concreteStiffness
+        self.concreteStrain = self.concreteStrength / self.concreteStiffness
         self.information, self.view = RectangleInformation(), RectView()
     
     '''
@@ -49,7 +69,7 @@ class ShapeRectangle(GridLayout, IShape):
     def update_concrete_information(self, density, price, stiffness, strength):
         self.concreteDensity, self.concretePrice = density, price
         self.concreteStiffness, self.concreteStrength = stiffness, strength
-        self.concreteStrain=self.concreteStrength / self.concreteStiffness
+        self.concreteStrain = self.concreteStrength / self.concreteStiffness
         
     '''
     the method update_height changes the height of the view
@@ -58,10 +78,10 @@ class ShapeRectangle(GridLayout, IShape):
     def update_height(self, value):
         self.view.update_height(value)
         self.h = value
-        self.size=self.h*self.w
+        self.size = self.h * self.w
         for layer in self.layers:
             if layer.focus:
-                self.refEdit.areaInput.text='%.2E' % Decimal(str(self.size*layer.p))
+                self.refEdit.areaInput.text = '%.2E' % Decimal(str(self.size * layer.p))
         
     '''
     the method update_width change the width of the view
@@ -70,10 +90,10 @@ class ShapeRectangle(GridLayout, IShape):
     def update_width(self, value):
         self.view.update_width(value)
         self.w = value
-        self.size=self.h*self.w
+        self.size = self.h * self.w
         for layer in self.layers:
             if layer.focus:
-                self.refEdit.areaInput.text='%.2E' % Decimal(str(self.size*layer.p))
+                self.refEdit.areaInput.text = '%.2E' % Decimal(str(self.size * layer.p))
         
     '''
     calculate the weight and the lblPrice of the cross section

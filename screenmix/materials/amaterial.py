@@ -1,6 +1,5 @@
 '''
 Created on 16.03.2016
-
 @author: mkennert
 '''
 class AMaterial(object):
@@ -18,5 +17,3 @@ class AMaterial(object):
         self.stiffness = float(stiffness)
         self.strength = float(strength)
         self.color = color
-    
-    

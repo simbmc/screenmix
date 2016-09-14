@@ -27,13 +27,27 @@ class Material_Editor(GridLayout):
     # important components
     cs = ObjectProperty()
     
-    # strings
     concrete = StringProperty('concrete')
-    densityStr, stiffnessStr = StringProperty('density[kg/m^3]:'), StringProperty('stiffness[MPa]:')
-    priceStr, strengthStr = StringProperty('price[euro/kg]:'), StringProperty('strength[MPa]:')
-    nameStr, defaultValueStr = StringProperty('name'), StringProperty('1.0')
-    createStr, materialStr = StringProperty('create material'), StringProperty('material')
-    backStr, confirmStr = StringProperty('back'), StringProperty('confirm')
+    
+    densityStr = StringProperty('density[kg/m^3]:')
+    
+    stiffnessStr = StringProperty('stiffness[MPa]:')
+    
+    priceStr = StringProperty('price[euro/kg]:')
+    
+    strengthStr = StringProperty('strength[MPa]:')
+    
+    nameStr = StringProperty('name')
+    
+    defaultValueStr = StringProperty('1.0')
+    
+    createStr = StringProperty('create material')
+    
+    materialStr = StringProperty('material')
+    
+    backStr = StringProperty('cancel')
+    
+    confirmStr = StringProperty('confirm')
     
     # constructor
     def __init__(self, **kwargs):
@@ -98,7 +112,10 @@ class Material_Editor(GridLayout):
         self.btnStiffness.bind(on_press=self.show_numpad)
         self.btnStrenght.bind(on_press=self.show_numpad)
         # fill the contentLayout with the components
-        self.contentLayout = GridLayout(cols=2, spacing=Design.spacing)
+        self.contentLayout = GridLayout(cols=2, row_force_default=True,
+                                    row_default_height=Design.btnHeight,
+                                    height=Design.btnHeight,
+                                    spacing=Design.spacing)
         self.contentLayout.add_widget(OwnLabel(text=self.nameStr))
         self.contentLayout.add_widget(self.btnName)
         self.contentLayout.add_widget(OwnLabel(text=self.priceStr))
@@ -115,8 +132,8 @@ class Material_Editor(GridLayout):
         # edit the new values
         btn_confirm = OwnButton(text=self.confirmStr)
         btn_confirm.bind(on_press=self.edit_material)
-        self.contentLayout.add_widget(btn_back)
         self.contentLayout.add_widget(btn_confirm)
+        self.contentLayout.add_widget(btn_back)
         self.create_popups()
 
     '''
@@ -246,4 +263,3 @@ class Material_Editor(GridLayout):
     '''
     def close_numpad(self):
         self.editNumpad.dismiss()
-    

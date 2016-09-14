@@ -5,7 +5,7 @@ Created on 14.03.2016
 
 import copy
 
-from kivy.properties import ObjectProperty, NumericProperty, StringProperty
+from kivy.properties import ObjectProperty, NumericProperty
 from kivy.uix.boxlayout import BoxLayout
 
 from crossSectionView.iView import IView
@@ -26,12 +26,12 @@ class RectView(BoxLayout, IView):
     # important components
     cs = ObjectProperty()
     
-    # width, height of the cross section
-    w, h = NumericProperty(0.25), NumericProperty(0.5)
+    # width of the cross section
+    w = NumericProperty(0.25)
     
-    # strings
-    ylabelStr = StringProperty('cross-section-height [m]')
-    xlabelStr = StringProperty('cross-section-width [m]')
+    # height of the cross section
+    h = NumericProperty(0.5)
+    
     
     # constructor
     def __init__(self, **kwargs):
@@ -158,20 +158,12 @@ class RectView(BoxLayout, IView):
                 if layer.p > 0.01 and value < 0.01:
                     layer.h, layer.p = self.h * value, value
                     self.graph.remove_plot(layer.layerCs)
-                    layer.h, layer.p = self.h * value, value
-                    self.graph.remove_plot(layer.layerCs)
                     layer.layerCs = DashedLine(color=[255, 0, 0],
                                    points=[(0, layer.y), (self.w, layer.y)])
                     layer.layerAck = DashedLine(color=[255, 0, 0],
                                    points=[(0, layer.y), (self.w, layer.y)])
                     self.graph.add_plot(layer.layerCs)
                 elif layer.p < 0.01 and value > 0.01:
-                    layer.h, layer.p = self.h * value, value
-                    self.graph.remove_plot(layer.layerCs)
-                    layer.layerCs = DashedLine(color=[255, 0, 0],
-                                   points=[(0, layer.y), (self.w, layer.y)])
-                    layer.layerAck = DashedLine(color=[255, 0, 0],
-                                   points=[(0, layer.y), (self.w, layer.y)])
                     layer.h, layer.p = self.h * value, value
                     self.graph.remove_plot(layer.layerCs)
                     layer.layerCs = FilledRect(xrange=[0., self.w], color=layer.colors,

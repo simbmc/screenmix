@@ -5,13 +5,46 @@ Created on 23.07.2016
 '''
 from abc import abstractmethod
 
+from kivy.properties import NumericProperty, ListProperty, ObjectProperty
+
 
 class ILayer:
+    
     '''
     ilayer is a interface which the layers must implement. so this interface gives 
     a structure about the method which are necessary for the other components
     which use the layer
     '''
+    
+    # x-coordinate of the layer
+    x = NumericProperty()
+    
+    # y-coordinate of the layer 
+    y = NumericProperty()
+    
+    # height of the layer
+    h = NumericProperty()
+    
+    # width of the layer
+    w = NumericProperty()
+    
+    # percentage of the layer
+    p = NumericProperty()
+    
+    # strain of the material
+    strain = NumericProperty()
+    
+    # material of the layer
+    material = ObjectProperty()
+    
+    # focus
+    focus = False
+    
+    # color of the filled-rectangle
+    colors = ListProperty()
+    
+    # components to show the layer in the graph
+    layerCs, layerAck = ObjectProperty(), ObjectProperty()
     
     @abstractmethod
     def mouse_within(self, x, y):

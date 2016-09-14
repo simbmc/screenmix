@@ -21,29 +21,40 @@ class MaterialCreater(GridLayout):
     can add new material
     '''
     
-    # important components
-    p = ObjectProperty()  # parent
+    # parent of the creater
+    p = ObjectProperty()  
     
-    # strings
-    createStr, cancelStr = StringProperty('create'), StringProperty('cancel')
-    # properties of the material
-    densityStr, stiffnessStr = StringProperty('density[kg/m^3]:'), StringProperty('stiffness[MPa]:')
-    priceStr, strengthStr = StringProperty('price[euro/kg]:'), StringProperty('strength[MPa]:')
-    nameStr, defaultValueStr = StringProperty('name'), StringProperty('1.0')
+    createStr = StringProperty('create')
     
+    cancelStr = StringProperty('cancel')
     
+    densityStr = StringProperty('density[kg/m^3]:')
+    
+    stiffnessStr = StringProperty('stiffness[MPa]:')
+    
+    priceStr = StringProperty('price[euro/kg]:')
+    
+    strengthStr = StringProperty('strength[MPa]:')
+    
+    nameStr = StringProperty('name')
+    
+    defaultValueStr = StringProperty('1.0')
     
     # constructor
     def __init__(self, **kwargs):
         super(MaterialCreater, self).__init__(**kwargs)
         self.cols, self.spacing = 2, Design.spacing
         self.height = Design.btnHeight
+        self.row_force_default=True
+        self.row_default_height=Design.btnHeight
         self.create_gui()
+        
     
     '''
     the method create gui create the gui of 
     the material_editor and create the popups
     '''
+        
     def create_gui(self):
         self.create_popups()
         self.create_buttons()
@@ -57,12 +68,13 @@ class MaterialCreater(GridLayout):
         self.add_widget(self.btnStiffness)
         self.add_widget(OwnLabel(text=self.strengthStr))
         self.add_widget(self.btnStrength)
-        self.add_widget(self.btnCancel)
         self.add_widget(self.btnCreate)
+        self.add_widget(self.btnCancel)
     
     '''
     the method create_buttons create all buttons of the class
     '''
+        
     def create_buttons(self):
         # materialname
         self.btnName = OwnButton(text=self.nameStr)
@@ -88,6 +100,7 @@ class MaterialCreater(GridLayout):
     '''
     the method use_keyword open the keyboard_popup for the user
     '''
+        
     def use_keyboard(self, button):
         self.keyboard.lblTextinput.text = button.text
         self.popupKeyboard.open()
@@ -95,6 +108,7 @@ class MaterialCreater(GridLayout):
     '''
     the method use_numpad open the numpad_popup for the user
     '''
+        
     def use_numpad(self, btn):
         self.btnFocus = btn
         self.numpad.lblTextinput.text = btn.text
@@ -113,6 +127,7 @@ class MaterialCreater(GridLayout):
     the method create_popups create the popups 
     and sign in by the keyboard and numpad 
     '''
+        
     def create_popups(self):
         self.numpad = Numpad(p=self)
         self.keyboard = Keyboard()
@@ -123,6 +138,7 @@ class MaterialCreater(GridLayout):
     '''
     the method finished_keyboard close the keyboard_popup
     '''
+        
     def finished_keyboard(self):
         self.btnName.text = self.keyboard.lblTextinput.text
         self.popupKeyboard.dismiss()
@@ -131,6 +147,7 @@ class MaterialCreater(GridLayout):
     '''
     the method finished_numpad close the numpad_popup
     '''
+        
     def finished_numpad(self):
         self.btnFocus.text = self.numpad.lblTextinput.text
         self.popupNumpad.dismiss()
@@ -141,6 +158,7 @@ class MaterialCreater(GridLayout):
     the method must be called, when the user cancel or add 
     the material
     '''
+        
     def reset_editor(self):
         self.btnName.text = self.nameStr
         self.btnPrice.text = self.defaultValueStr
@@ -153,6 +171,7 @@ class MaterialCreater(GridLayout):
     materiallist allMaterials and the layout where you can choose 
     the materials
     '''
+        
     def create_material(self, button):
         material = OwnMaterial(self.btnName.text, self.btnPrice.text,
                              self.btnDensity.text, self.btnStiffness.text,
@@ -163,11 +182,13 @@ class MaterialCreater(GridLayout):
     '''
     close the numpad
     '''
+        
     def close_numpad(self):
         self.popupNumpad.dismiss()
     
     '''
     cancel the create-process
     '''
+        
     def cancel_creating(self, btn):
         self.p.cancel_edit_material()

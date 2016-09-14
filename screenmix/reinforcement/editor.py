@@ -46,6 +46,7 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.cols, self.spacing = 1, Design.spacing
         self.containsInformation, self.error = False, False
         
+        
     '''
     create the gui
     '''
@@ -117,7 +118,7 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.lblcsWeight = OwnLabel(text=self.resetStr)
         self.lblcsStrength = OwnLabel(text=self.resetStr)
         self.csLayout = GridLayout(cols=2, row_force_default=True,
-                                   row_default_height=2 * Design.lblHeight,
+                                   row_default_height=3 * Design.lblHeight,
                                    height=2 * Design.lblHeight)
         self.csLayout.add_widget(OwnLabel(text=self.priceStr))
         self.csLayout.add_widget(self.lblcsPrice)
@@ -164,8 +165,7 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.materialSelectionLayout = GridLayout(cols=1, spacing=Design.spacing,
                                                   size_hint_y=None)
         # Make sure the height is such that there is something to scroll.
-        self.materialSelectionLayout .bind(
-            minimum_height=self.materialSelectionLayout.setter('height'))
+        self.materialSelectionLayout .bind(minimum_height=self.materialSelectionLayout.setter('height'))
         self.materialEditor = MaterialCreater()
         self.materialEditor.p = self
         self.popupMaterialEditor = OwnPopup(title='editor', content=self.materialEditor)

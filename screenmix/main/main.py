@@ -13,7 +13,7 @@ from ackModel.ack import Ack
 from crossSection.crossSection import CrossSection
 from materialEditor.editor import Material_Editor
 from ownComponents.design import Design
-
+from kivy.properties import BooleanProperty
 
 Window.clearcolor = (1, 1, 1, 1)
 '''
@@ -29,9 +29,17 @@ class ActionMenu(ActionPrevious):
     pass
 
 class ScreenmixApp(App):
+    
+    # switch to proof whether the ack has been created
+    boolACK = BooleanProperty(True)
+    
+    # switch to proof whether the material-editor has been created
+    boolME = BooleanProperty(True)
+    
     '''
     Build the application
     '''
+    
     def build(self):
         bar = AppActionBar()
         self.content = GridLayout(cols=1, spacing=Design.spacing)
@@ -47,8 +55,8 @@ class ScreenmixApp(App):
 
     def create_componets(self):
         self.create_cross_section_view()
-        self.create_ack_view()
-        self.create_material_editor()
+        # self.create_ack_view()
+        # self.create_material_editor()
 
     '''
     create the cross section
@@ -89,6 +97,9 @@ class ScreenmixApp(App):
     '''
 
     def show_ack_view(self):
+        if self.boolACK:
+            self.create_ack_view()
+            self.boolACK=False
         self.ackView.content.update()
         self.content.remove_widget(self.contentLayout)
         self.content.add_widget(self.ackView)
@@ -108,6 +119,9 @@ class ScreenmixApp(App):
     '''
 
     def show_material_editor(self):
+        if self.boolME:
+            self.create_material_editor()
+            self.boolME=False
         self.content.remove_widget(self.contentLayout)
         self.content.add_widget(self.materialEditor)
         self.contentLayout = self.materialEditor

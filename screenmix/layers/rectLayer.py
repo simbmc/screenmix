@@ -2,7 +2,6 @@
 Created on 14.04.2016
 @author: mkennert
 '''
-from kivy.properties import NumericProperty, ListProperty, ObjectProperty
 
 from iLayer import ILayer
 
@@ -14,25 +13,11 @@ class RectLayer(ILayer):
     a rectangle
     '''
     
-    # x-, y-coordinate of the layer
-    x, y = NumericProperty(), NumericProperty()
-    # height, width, procent of the layer
-    h, w, p = NumericProperty(), NumericProperty(), NumericProperty()
-    # strain of the material
-    strain = NumericProperty()
-    # color of the filled-rectangle
-    colors = ListProperty()
-    material = ObjectProperty()
-    # components to show the layer in the graph
-    layerCs, layerAck = ObjectProperty(), ObjectProperty()
-    
     # Constructor
     def __init__(self, x, y, h, w, colors, p):
         self.x, self.y = x, y
         self.h, self.w, self.p = h, w, p
         self.colors = colors
-        # default the layer has no focus
-        self.focus = False
 
     '''
     check if the mouse is in the layer
