@@ -145,7 +145,7 @@ class RectView(BoxLayout, IView):
                 if y < minY:
                     minY = y
                     cur = layer
-            layers.remove(cur)
+                    layers.remove(cur)
             return cur
         
     '''

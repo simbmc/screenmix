@@ -77,14 +77,14 @@ class AckLeftRect(GridLayout):
             percent_of_layers = 0.  # the sum of the p of the reinforcement layers
             for layer in self.cs.layers:
                 percent_of_layers += layer.p
-            # lblStiffness of the section
+            # stiffness of the section
             E_s = self.cs.strength / \
                 self.cs.minOfMaxstrain
-            E_r = 0.  # the lblStiffness of the reinforement mixture
+            E_r = 0.  # the stiffness of the reinforement mixture
             for layer in self.cs.layers:
                 E_r += layer.material.stiffness * \
                     layer.p / percent_of_layers
-            # the reinforcement strain at the crack postion
+            # the reinforcement strain at the crack position
             eps_r_max = self.cs.minOfMaxstrain * \
                 E_s / (E_r * percent_of_layers)
             # the minimum reinforcement strain
@@ -139,8 +139,6 @@ class AckLeftRect(GridLayout):
         self.graph.xmax = float(maxM) * eps
         self.graph.ymin = float(minN) * eps
         self.graph.ymax = float(maxN) * eps
-        print(minM,maxM)
-        print(minN,maxN)
         self.graph.y_ticks_major = float(
             format((self.graph.ymax - self.graph.ymin) / 5., '.1g'))
         self.graph.x_ticks_major = float(
