@@ -45,8 +45,7 @@ class ReinforcementEditor(GridLayout, IObserver):
         super(ReinforcementEditor, self).__init__(**kwargs)
         self.cols, self.spacing = 1, Design.spacing
         self.containsInformation, self.error = False, False
-        
-        
+  
     '''
     create the gui
     '''
@@ -271,9 +270,12 @@ class ReinforcementEditor(GridLayout, IObserver):
 
     def add_layer(self, button):
         self.finished_adding()
+        v=float(self.areaBtn.text)
+        if v<=0:
+            return
         for i in range(0, len(self.allMaterials.allMaterials)):
             if self.allMaterials.allMaterials[i].name == self.btnMaterialOption.text:
-                p = float(self.areaBtn.text) / self.cs.size
+                p = v / self.cs.size
                 # proofs whether the layer is bigger as the cs
                 if p > 1:
                     # wrong input
