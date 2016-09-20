@@ -6,6 +6,8 @@ Created on 15.03.2016
 from abc import abstractmethod
 
 from kivy.properties import StringProperty
+
+
 class IView:
     
     '''
@@ -13,6 +15,7 @@ class IView:
     that the view has the necessary methods, which the other components
     are use
     '''
+    
     ylabelStr = StringProperty('cross-section-height [m]')
     
     xlabelStr = StringProperty('cross-section-width [m]')

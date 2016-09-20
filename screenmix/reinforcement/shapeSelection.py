@@ -3,7 +3,7 @@ Created on 13.05.2016
 
 @author: mkennert
 '''
-from kivy.properties import ObjectProperty
+from kivy.properties import ObjectProperty, StringProperty
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.scrollview import ScrollView
 
@@ -20,15 +20,21 @@ class ShapeSelection(GridLayout):
     the cross-section-shape
     '''
     
-    # important components
+    #reinforcement-editor
     information = ObjectProperty()
     
+    okStr = StringProperty('ok')
+    
+    cancelStr = StringProperty('cancel')
+    
+    rectStr = StringProperty('rectangle')
     
     # constructor
     def __init__(self, **kwargs):
         super(ShapeSelection, self).__init__(**kwargs)
         self.padding = Design.padding
         self.cols, self.spacing = 2, Design.spacing
+        self.create_gui()
     '''
     create the gui
     '''
@@ -102,15 +108,15 @@ class ShapeSelection(GridLayout):
     '''
 
     def create_btns(self):
-        self.btnOK = OwnButton(text=Strings.okStr)
+        self.btnOK = OwnButton(text=self.okStr)
         self.btnOK.bind(on_press=self.finished)
-        self.btnCancel = OwnButton(text=Strings.cancelStr)
+        self.btnCancel = OwnButton(text=self.cancelStr)
         self.btnCancel.bind(on_press=self.cancel)
         # default-shape=rectangle
-        self.focusShape = OwnButton(text=Strings.rectangleStr)
+        self.focusShape = OwnButton(text=self.rectStr)
         self.focusShape.bind(on_press=self.show_shapes_btn)
         # btns
-        self.plot = OwnButton(text=Strings.rectangleStr)
+        self.plot = OwnButton(text=self.rectStr)
         self.plot.bind(on_press=self.show_rectangle)
         #######################################################################
         # here you can add more shapes                                         #

@@ -44,37 +44,21 @@ class ScreenmixApp(App):
         bar = AppActionBar()
         self.content = GridLayout(cols=1, spacing=Design.spacing)
         self.content.add_widget(bar)
-        self.create_componets()
+        self.cs = CrossSection()
+        self.content.add_widget(self.cs)
         # Cross Section is the default view
         self.contentLayout = self.cs
         return self.content
-    
-    '''
-    create all components of the Scrollview root
-    '''
-
-    def create_componets(self):
-        self.create_cross_section_view()
-        # self.create_ack_view()
-        # self.create_material_editor()
-
-    '''
-    create the cross section
-    '''
-
-    def create_cross_section_view(self):
-        self.cs = CrossSection()
-        self.content.add_widget(self.cs)
 
     '''
     create the ask_view
     '''
 
     def create_ack_view(self):
-        self.ackView = Ack()
-        self.cs.shapeRectangle.ack = self.ackView.ackRect
-        self.ackView.ackRect.cs = self.cs.shapeRectangle
-        self.ackView.ackRect.create_gui()
+        self.ack= Ack()
+        self.cs.shapeRectangle.ack = self.ack.ackRect
+        self.ack.ackRect.cs = self.cs.shapeRectangle
+        self.ack.ackRect.create_gui()
         # when you add more shapes, make sure that the
         # shapes has a ownAck
 
@@ -100,10 +84,10 @@ class ScreenmixApp(App):
         if self.boolACK:
             self.create_ack_view()
             self.boolACK=False
-        self.ackView.content.update()
+        self.ack.content.update()
         self.content.remove_widget(self.contentLayout)
-        self.content.add_widget(self.ackView)
-        self.contentLayout = self.ackView
+        self.content.add_widget(self.ack)
+        self.contentLayout = self.ack
 
     '''
     show the cross section view

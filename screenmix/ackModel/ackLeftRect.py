@@ -3,6 +3,8 @@ Created on 12.04.2016
 @author: mkennert
 '''
 
+from decimal import Decimal
+
 from kivy.properties import ListProperty, StringProperty
 from kivy.properties import ObjectProperty
 from kivy.uix.gridlayout import GridLayout
@@ -20,13 +22,20 @@ class AckLeftRect(GridLayout):
     of the cross-section-shape rectangle by a diagram
     '''
 
-    # important components
+    # cross-section-shape
     cs = ObjectProperty()
-    ack, ackRight = ObjectProperty(), ObjectProperty()
+    
+    ack = ObjectProperty()
+    
+    # right-content of the ackComponent
+    ackRight = ObjectProperty()
+    
+    # list to save all plots
     allPlots = ListProperty([])
 
     # strings
     ylabelStr = StringProperty('stress [MPa]')
+    
     xlabelStr = StringProperty('strain')
 
     # constructor
@@ -101,18 +110,48 @@ class AckLeftRect(GridLayout):
                 max_strain_c = eps_r_avg + (max_strain_r - eps_r_max)
                 points.append((max_strain_c, max_strangth_c))
                 self.thirdpoint = points[-1]
-        # setting the maximum of the graph
-        self.graph.xmax = points[-1][0] * 1.2
-        self.graph.ymax = points[-1][1] * 1.2
         self.ack.sliderStrain.max = points[-1][0]
-        if self.cs.layers:
-            self.graph.x_ticks_major = float(
-                format(self.graph.xmax / 4., '.1g'))
-        else:
-            self.graph.x_ticks_major = self.graph.xmax / 4.
-        self.graph.y_ticks_major = float(format(self.graph.ymax / 5., '.1g'))
         return points
-
+    
+    '''
+    update the graph-borders
+    '''
+   
+    def update_graph_border(self):
+        # cur minimum/maximum
+        minM, maxM = 1e10, -1e10  # x-values
+        minN, maxN = 1e10, -1e10  # y-values
+        # find the min and max values
+        for plt in self.graph.plots:
+                for p in plt.points:
+                    x, y = p[0], p[1]
+                    if x > maxM:
+                        maxM = x
+                    if x < minM:
+                        minM = x
+                    if y > maxN:
+                        maxN = y
+                    if y < minN:
+                        minN = y
+        eps = 1.05
+        # update the graph-borders
+        self.graph.xmin = float(minM) * eps
+        self.graph.xmax = float(maxM) * eps
+        self.graph.ymin = float(minN) * eps
+        self.graph.ymax = float(maxN) * eps
+        print(minM,maxM)
+        print(minN,maxN)
+        self.graph.y_ticks_major = float(
+            format((self.graph.ymax - self.graph.ymin) / 5., '.1g'))
+        self.graph.x_ticks_major = float(
+            format((self.graph.xmax - self.graph.xmin) / 5., '.1g'))
+        # update the circle size
+        eps_x = self.graph.xmax / Design.deltaCircle
+        eps_y = self.graph.ymax / Design.deltaCircle
+        self.focus.xrange = [ -eps_x, eps_x]
+        self.focus.yrange = [ -eps_y, eps_y]
+        self.ack.sliderStrain.value = 0
+        
     '''
     set the position of the focuspoint.
     the point is dependet from the strainvalue of ackRight
@@ -128,6 +167,7 @@ class AckLeftRect(GridLayout):
             # f(x)=mx => m=y1-0/x1-0
             m = self.cs.strength / self.cs.minOfMaxstrain
             self.focus.yrange = [value * m - eps_y, value * m + eps_y]
+            self.ack.lblStress.text = self.ack.stressStr + str('%.2E' % Decimal(str(value * m)))
         # calculation when the value is between the  second and the third point
         elif value > self.secondpoint[0]:
             # f(x)=mx => m=y3-y2/x3-x2
@@ -138,11 +178,13 @@ class AckLeftRect(GridLayout):
             # set the circle in the middle of the line
             # it's dependent from the self.graph.ymax
             self.focus.yrange = [y - eps_y, y + eps_y]
+            self.ack.lblStress.text = self.ack.stressStr + str('%.2E' % Decimal(str(y)))
         # calculation when the value is between the first- and secondpoint
         else:
             # m=0 => independet from the x-value
             b = self.cs.strength
             self.focus.yrange = [b - eps_y, b + eps_y]
+            self.ack.lblStress.text = self.ack.stressStr + str('%.2E' % Decimal(str(b)))
 
     '''
     update the plot
@@ -162,3 +204,4 @@ class AckLeftRect(GridLayout):
         # safe the plot in the allplot list. it's necessary for the update
         self.allPlots.append(self.plot)
         self.graph.add_plot(self.plot)
+        self.update_graph_border()

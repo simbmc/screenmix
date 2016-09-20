@@ -303,7 +303,7 @@ class RectView(BoxLayout, IView):
                 if not layer.focus:
                     layer.focus = True
                     cur = layer.get_material_informations()
-                    self.cs.update_layer_information(cur[0], cur[1], cur[
+                    self.cs.update_layinfo(cur[0], cur[1], cur[
                         2], cur[3], cur[4], layer.h / self.h)
                     changed = True
             # if the touch is not in the layer and the the layer has the focus then

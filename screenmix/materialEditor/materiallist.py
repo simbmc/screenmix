@@ -3,8 +3,6 @@ Created on 18.04.2016
 @author: mkennert
 '''
 
-from kivy.properties import ListProperty
-
 from materialEditor.singleton import Singleton
 from materials.carbonFiber import CarbonFiber
 from materials.concrete import Concrete

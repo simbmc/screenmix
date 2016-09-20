@@ -23,14 +23,20 @@ class AckRect(GridLayout):
     the cross section
     '''
     
-    # important components
+    # cross-section-shape
     cs = ObjectProperty()
+    
+    # left-component of the ack-rectangle
     ackLeft = ObjectProperty(AckLeftRect())
+    
+    # right-component of the ack-rectangle
     ackRight = ObjectProperty(AckRightRect())
     
-    # strings
     strainStr = StringProperty('strain: ')
-    clearStr=StringProperty('clear')
+    
+    stressStr = StringProperty('stress: ')
+    
+    clearStr = StringProperty('clear')
     
     # constructor
     def __init__(self, **kwargs):
@@ -58,13 +64,15 @@ class AckRect(GridLayout):
         # height of the area is small
         sliderLayout = GridLayout(cols=2, row_force_default=True,
                                   row_default_height=Design.btnHeight, size_hint_y=None,
-                                  height=1.1*Design.btnHeight)
+                                  height=1.1 * Design.btnHeight)
         # lbl to show the cur-strain
         self.lblStrain = OwnLabel(text=self.strainStr)
+        self.lblStress = OwnLabel(text=self.stressStr)
         # hlp is used to to save space for the slider
-        self.hlp = GridLayout(cols=2,padding=Design.padding)
+        self.hlp = GridLayout(cols=3, padding=Design.padding)
         self.hlp.add_widget(self.btnClear)
         self.hlp.add_widget(self.lblStrain)
+        self.hlp.add_widget(self.lblStress)
         sliderLayout.add_widget(self.hlp)
         sliderLayout.add_widget(self.sliderStrain)
         self.add_widget(self.contentLayout)
@@ -105,6 +113,7 @@ class AckRect(GridLayout):
                     self.ackLeft.graph.remove_plot(plot)
             # clear the graph
             self.ackLeft.graph._clear_buffer()
+        self.ackLeft.update_graph_border()
             
     '''
     update the left and the right side. by the update the strain will
@@ -127,6 +136,7 @@ class AckRect(GridLayout):
         # make a sci-notation. it's necessary to avoid that the 
         # value is too long
         self.lblStrain.text = self.strainStr + str('%.2E' % Decimal(str(value)))
+        
         # update the ackRight/Left after with new value
         self.ackRight.update_plots()
         self.ackLeft.move_position(value)

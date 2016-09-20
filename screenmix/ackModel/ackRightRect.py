@@ -16,12 +16,17 @@ class AckRightRect(GridLayout):
     stress-behavior of the single layers and the matrix
     '''
 
-    # important components
+    #cross-section-shape rectangle
     cs = ObjectProperty()
-    ack, ackLeft = ObjectProperty(), ObjectProperty()
+    
+    #main-ack-component
+    ack=ObjectProperty()
+    
+    #left-component of the ack
+    ackLeft = ObjectProperty()
 
-    # strings
     xlabelStr = StringProperty('stress [MPa]')  # string-xlabel of the graph
+    
     ylabelStr = StringProperty('height [m]')  # string-ylabel of the graph
 
     # constructor

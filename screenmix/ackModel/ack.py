@@ -28,8 +28,8 @@ class Ack(GridLayout):
     def __init__(self, **kwargs):
         super(Ack, self).__init__(**kwargs)
         self.cols = 1
-        self.ackRect = AckRect()
         # default ack is the ack of the rectangle shape
+        self.ackRect = AckRect()
         self.content = self.ackRect
         self.add_widget(self.content)
     

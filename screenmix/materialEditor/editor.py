@@ -14,9 +14,10 @@ from ownComponents.numpad import Numpad
 from ownComponents.ownButton import OwnButton
 from ownComponents.ownLabel import OwnLabel
 from ownComponents.ownPopup import OwnPopup
+from materialEditor.iobserver import IObserver
 
 
-class Material_Editor(GridLayout):
+class Material_Editor(GridLayout, IObserver):
     
     '''
     the material-edit is the component, where the user 
@@ -26,6 +27,8 @@ class Material_Editor(GridLayout):
     
     # important components
     cs = ObjectProperty()
+    
+    creater=ObjectProperty()
     
     concrete = StringProperty('concrete')
     
@@ -54,6 +57,7 @@ class Material_Editor(GridLayout):
         super(Material_Editor, self).__init__(**kwargs)
         self.cols = 1
         self.h = dp(40)  # height of the btns
+        self.creater=MaterialCreater(p=self)
 
     '''
     the method create gui create the gui of 
@@ -90,10 +94,8 @@ class Material_Editor(GridLayout):
         self.numpad.p, self.keyboard.p = self, self
         self.editNumpad = OwnPopup(content=self.numpad)
         self.editKeyboard = OwnPopup(title=self.nameStr, content=self.keyboard)
-        creater = MaterialCreater()
-        creater.p = self
         self.popupInfo = OwnPopup(title=self.materialStr, content=self.contentLayout)
-        self.popupCreate = OwnPopup(title=self.createStr, content=creater)
+        self.popupCreate = OwnPopup(title=self.createStr, content=self.creater)
 
     '''
     create the gui which is necessary for the show of the 

@@ -22,7 +22,7 @@ class CrossSection(GridLayout):
     ack = ObjectProperty()
     
     # reinforcement-editor
-    reinforcmentEditor = ObjectProperty(ReinforcementEditor())
+    reEdit = ObjectProperty(ReinforcementEditor())
     
     # materiallist
     allMaterials = ObjectProperty(MaterialList.Instance())
@@ -44,11 +44,11 @@ class CrossSection(GridLayout):
         self.spacing = dp(10) 
         # default shape is rectangle        
         self.view = self.shapeRectangle.view
-        self.reinforcmentEditor.set_cross_section(self.shapeRectangle)
-        self.shapeRectangle.set_reinforcement_editor(self.reinforcmentEditor)
-        self.reinforcmentEditor.show_information(self.shapeRectangle.information)
+        self.reEdit.set_cross_section(self.shapeRectangle)
+        self.shapeRectangle.set_reinforcement_editor(self.reEdit)
+        self.reEdit.show_information(self.shapeRectangle.information)
         self.add_widget(self.view)
-        self.add_widget(self.reinforcmentEditor)
+        self.add_widget(self.reEdit)
     
     ######################################################
     # When you add more shapes, make sure that the shapes#
@@ -65,7 +65,7 @@ class CrossSection(GridLayout):
         self.view = self.csRectangle.view
         self.add_widget(self.view)
         # show the shape in the reinforcementEditor and in the ack-menu
-        self.reinforcmentEditor.show_information(self.shapeRectangle.information)
+        self.reEdit.show_information(self.shapeRectangle.information)
         self.ack.show_ack_rect()
     
     '''

@@ -27,7 +27,7 @@ class ReinforcementEditor(GridLayout, IObserver):
     the shape-information is given by the cross-section-shape
     '''
     
-    # important components
+    #cross-section
     cs = ObjectProperty()
     
     # strings
@@ -202,9 +202,7 @@ class ReinforcementEditor(GridLayout, IObserver):
     '''
 
     def create_popup_shape(self):
-        shapeContent = ShapeSelection()
-        shapeContent.information = self
-        shapeContent.create_gui()
+        shapeContent = ShapeSelection(information=self)
         self.shapeSelection = OwnPopup(title=self.shapeStr, content=shapeContent)
     
     '''
@@ -300,11 +298,11 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.cs.delete_layer()
 
     '''
-    the method update_layer_information was developed to update
+    the method update_layinfo was developed to update
     the information, when the user selected a other rectangle in the view
     '''
 
-    def update_layer_information(self, name, price, density, stiffness, strength, percent):
+    def update_layinfo(self, name, price, density, stiffness, strength, percent):
         self.lblName.text, self.lblRatio.text = str(name), str(percent * 100)
         self.lblDensity.text = str(density)
         self.lblStiffness.text = str(stiffness)

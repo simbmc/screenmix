@@ -49,7 +49,6 @@ class MaterialCreater(GridLayout):
         self.row_default_height=Design.btnHeight
         self.create_gui()
         
-    
     '''
     the method create gui create the gui of 
     the material_editor and create the popups
