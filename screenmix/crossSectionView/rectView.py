@@ -135,7 +135,7 @@ class RectView(BoxLayout, IView):
     def findMin(self, layers):
         # if the layers-list don't contains layers
         # change the switch of the method get-free-places
-        if not layers:
+        if len(layers)<1:
             self.switch = -1
         else:
             # for the beginning minY=cross-section-height
