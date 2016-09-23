@@ -45,6 +45,7 @@ class CrossSection(GridLayout):
         # default shape is rectangle        
         self.view = self.shapeRectangle.view
         self.reEdit.set_cross_section(self.shapeRectangle)
+        self.reEdit.crossSection = self
         self.shapeRectangle.set_reinforcement_editor(self.reEdit)
         self.reEdit.show_information(self.shapeRectangle.information)
         self.add_widget(self.view)
@@ -60,9 +61,11 @@ class CrossSection(GridLayout):
     '''
 
     def show_rectangle_view(self):
+        if self.view==self.shapeRectangle.view:
+            return
         # delete the current view and add the new shape
         self.remove_widget(self.view)
-        self.view = self.csRectangle.view
+        self.view = self.shapeRectangle.view
         self.add_widget(self.view)
         # show the shape in the reinforcementEditor and in the ack-menu
         self.reEdit.show_information(self.shapeRectangle.information)
