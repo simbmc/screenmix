@@ -10,36 +10,43 @@ from kivy.uix.gridlayout import GridLayout
 
 from materialEditor.iobserver import IObserver
 from ownComponents.design import Design
+from ownComponents.ownButton import OwnButton
 from reinforcement.gui import ReinforcementEditorGui
 
 
 class ReinforcementEditor(GridLayout, IObserver, ReinforcementEditorGui):
-    
+
     '''
     the reinforcement-editor is the component, where you can edit the layers of a shape
     the shape-information is given by the cross-section-shape
     '''
-    
+
     # cross-section-shape
     cs = ObjectProperty()
-    
+
     # cross section
     crossSection = ObjectProperty()
-    
-    
+
     # constructor
     def __init__(self, **kwargs):
         super(ReinforcementEditor, self).__init__(**kwargs)
         self.cols, self.spacing = 1, Design.spacing
         self.containsInformation, self.error = False, False
-  
+
+    def update(self):
+        self.materialSelectionLayout.remove_widget(self.btnMaterialEditor)
+        btnMaterial = OwnButton(text=self.allMaterials.allMaterials[-1].name)
+        btnMaterial.bind(on_press=self.select_material)
+        self.materialSelectionLayout.add_widget(btnMaterial)
+        self.materialSelectionLayout.add_widget(self.btnMaterialEditor)
+
     '''
     open the popup where the user can select the shape
     '''
 
     def show_shape_selection(self, btn):
         self.shapeSelection.open()
-    
+
     '''
     look which shape the user has selected
     '''
@@ -49,16 +56,18 @@ class ReinforcementEditor(GridLayout, IObserver, ReinforcementEditorGui):
             self.btnSelection.text = btn.text
             self.crossSection.show_rectangle_view()
         self.shapeSelection.dismiss()
-    
+
     '''
     cancel the shape-selection
     '''
+
     def cancel_shape_selection(self):
         self.shapeSelection.dismiss()
-        
+
     '''
     add the information of the selected shape
     '''
+
     def show_information(self, information):
         if not self.containsInformation:
             self.information = information

@@ -33,6 +33,7 @@ class MaterialList:
 
     def update(self):
         for listener in self.listeners:
+            print listener
             listener.update()
 
     '''
